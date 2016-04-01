@@ -1,0 +1,495 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           29/Feb/2016  12:22:46
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\SkyDrive\ECE 306\Project-04\shapes.c
+#    Command line  =  
+#        "C:\Users\David\SkyDrive\ECE 306\Project-04\shapes.c" -lC
+#        "C:\Users\David\SkyDrive\ECE 306\Project-04\Debug\List" -o
+#        "C:\Users\David\SkyDrive\ECE 306\Project-04\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\SkyDrive\ECE 306\Project-04\Debug\List\shapes.lst
+#    Object file   =  
+#        C:\Users\David\SkyDrive\ECE 306\Project-04\Debug\Obj\shapes.r43
+#
+###############################################################################
+
+C:\Users\David\SkyDrive\ECE 306\Project-04\shapes.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : shapes.c
+      3          //
+      4          //  Description: This file contains the routines required for project 3
+      5          //
+      6          //
+      7          //  David Pryor
+      8          //  Feb 2016
+      9          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+     10          //------------------------------------------------------------------------------
+     11          #include "macros.h"
+     12          #include "functions.h"
+     13          #include "msp430.h"
+     14          
+     15          
+
+   \                                 In  segment CODE, align 2
+     16          void straight_line(void){
+   \                     straight_line:
+   \   000000   0A12         PUSH.W  R10
+     17          //==============================================================================
+     18          // Straight Line
+     19          // 
+     20          // Description: This function turns on the motors and travels forward for a short distance
+     21          //
+     22          // Passed : no variables passed
+     23          // Locals: no variables declared
+     24          // Returned: no values returned
+     25          // Globals:  no global variables
+     26          //
+     27          // Author: David Pryor
+     28          // Date: Feb 2016
+     29          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     30          //==============================================================================
+     31            int i;
+     32            right_wheel_forward_on(); //right wheel on
+   \   000002   ........     CALLA   #right_wheel_forward_on
+     33            for(i=INCREMENT_START;i<TEN_ITERATIONS; i++){
+   \   000006   0A43         MOV.W   #0x0, R10
+   \                     ??straight_line_0:
+   \   000008   3A900A00     CMP.W   #0xa, R10
+   \   00000C   0D34         JGE     ??straight_line_1
+     34              left_wheel_forward_on(); //left wheel on
+   \   00000E   ........     CALLA   #left_wheel_forward_on
+     35              Five_msec_Delay(FOR_THIRTY_MSEC);
+   \   000012   3C400600     MOV.W   #0x6, R12
+   \   000016   ........     CALLA   #Five_msec_Delay
+     36              left_wheel_forward_off(); //left wheel off
+   \   00001A   ........     CALLA   #left_wheel_forward_off
+     37              Five_msec_Delay(FOR_TEN_MSEC);
+   \   00001E   2C43         MOV.W   #0x2, R12
+   \   000020   ........     CALLA   #Five_msec_Delay
+     38            }
+   \   000024   1A53         ADD.W   #0x1, R10
+   \   000026   F03F         JMP     ??straight_line_0
+     39            right_wheel_forward_off(); //right wheel off
+   \                     ??straight_line_1:
+   \   000028   ........     CALLA   #right_wheel_forward_off
+     40          }
+   \   00002C   3A41         POP.W   R10
+   \   00002E   1001         RETA
+     41          
+
+   \                                 In  segment CODE, align 2
+     42          void straight_line_reverse(void){
+   \                     straight_line_reverse:
+   \   000000   0A12         PUSH.W  R10
+     43          //==============================================================================
+     44          // Straight Line Reverse
+     45          // 
+     46          // Description: This function turns on the motors and travels Reverse for a short distance
+     47          //
+     48          // Passed : no variables passed
+     49          // Locals: no variables declared
+     50          // Returned: no values returned
+     51          // Globals:  no global variables
+     52          //
+     53          // Author: David Pryor
+     54          // Date: Feb 2016
+     55          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     56          //==============================================================================
+     57            int i;
+     58            right_wheel_reverse_on(); //right wheel on
+   \   000002   ........     CALLA   #right_wheel_reverse_on
+     59            for(i=INCREMENT_START;i<TWENTY_ITERATIONS; i++){
+   \   000006   0A43         MOV.W   #0x0, R10
+   \                     ??straight_line_reverse_0:
+   \   000008   3A901400     CMP.W   #0x14, R10
+   \   00000C   0D34         JGE     ??straight_line_reverse_1
+     60              left_wheel_reverse_on(); //left wheel on
+   \   00000E   ........     CALLA   #left_wheel_reverse_on
+     61              Five_msec_Delay(FOR_THIRTY_MSEC);
+   \   000012   3C400600     MOV.W   #0x6, R12
+   \   000016   ........     CALLA   #Five_msec_Delay
+     62              left_wheel_reverse_off(); //left wheel off
+   \   00001A   ........     CALLA   #left_wheel_reverse_off
+     63              Five_msec_Delay(FOR_TEN_MSEC);
+   \   00001E   2C43         MOV.W   #0x2, R12
+   \   000020   ........     CALLA   #Five_msec_Delay
+     64            }
+   \   000024   1A53         ADD.W   #0x1, R10
+   \   000026   F03F         JMP     ??straight_line_reverse_0
+     65            right_wheel_reverse_off(); //right wheel off
+   \                     ??straight_line_reverse_1:
+   \   000028   ........     CALLA   #right_wheel_reverse_off
+     66          }
+   \   00002C   3A41         POP.W   R10
+   \   00002E   1001         RETA
+     67          
+
+   \                                 In  segment CODE, align 2
+     68          void clockwise_spin(void){
+   \                     clockwise_spin:
+     69          //==============================================================================
+     70          // Clockwise Spin
+     71          // 
+     72          // Description: This function turns on the motors and travels clockwise for a short distance
+     73          //
+     74          // Passed : no variables passed
+     75          // Locals: no variables declared
+     76          // Returned: no values returned
+     77          // Globals:  no global variables
+     78          //
+     79          // Author: David Pryor
+     80          // Date: Feb 2016
+     81          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     82          //==============================================================================
+     83            left_wheel_forward_on(); //left wheel on
+   \   000000   ........     CALLA   #left_wheel_forward_on
+     84            right_wheel_reverse_on(); //right wheel on
+   \   000004   ........     CALLA   #right_wheel_reverse_on
+     85            Five_msec_Delay(FOR_ONE_SECOND);
+   \   000008   3C40C800     MOV.W   #0xc8, R12
+   \   00000C   ........     CALLA   #Five_msec_Delay
+     86            left_wheel_forward_off(); //left wheel off
+   \   000010   ........     CALLA   #left_wheel_forward_off
+     87            right_wheel_reverse_off(); //right wheel off
+   \   000014   ........     BRA     #right_wheel_reverse_off
+     88          }
+     89          
+
+   \                                 In  segment CODE, align 2
+     90          void counterclockwise_spin(void){
+   \                     counterclockwise_spin:
+     91          //==============================================================================
+     92          // Counter Clockwise Spin
+     93          // 
+     94          // Description: This function turns on the motors and travels counter clockwise for a short distance
+     95          //
+     96          // Passed : no variables passed
+     97          // Locals: no variables declared
+     98          // Returned: no values returned
+     99          // Globals:  no global variables
+    100          //
+    101          // Author: David Pryor
+    102          // Date: Feb 2016
+    103          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    104          //==============================================================================
+    105            left_wheel_reverse_on(); //left wheel on
+   \   000000   ........     CALLA   #left_wheel_reverse_on
+    106            right_wheel_forward_on(); //right wheel on
+   \   000004   ........     CALLA   #right_wheel_forward_on
+    107            Five_msec_Delay(FOR_ONE_SECOND);
+   \   000008   3C40C800     MOV.W   #0xc8, R12
+   \   00000C   ........     CALLA   #Five_msec_Delay
+    108            left_wheel_reverse_off(); //left wheel off
+   \   000010   ........     CALLA   #left_wheel_reverse_off
+    109            right_wheel_forward_off(); //right wheel off
+   \   000014   ........     BRA     #right_wheel_forward_off
+    110          }
+    111          
+
+   \                                 In  segment CODE, align 2
+    112          void curved_right180_line(void){
+   \                     curved_right180_line:
+   \   000000   0A12         PUSH.W  R10
+    113          //==============================================================================
+    114          // Right Curve 180 degrees
+    115          // 
+    116          // Description: This function turns on the motors and travels a 180degree curve to the right
+    117          //
+    118          // Passed : no variables passed
+    119          // Locals: no variables declared
+    120          // Returned: no values returned
+    121          // Globals:  no global variables
+    122          //
+    123          // Author: David Pryor
+    124          // Date: Feb 2016
+    125          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    126          //==============================================================================
+    127            int i;
+    128            left_wheel_forward_on(); //left wheel on
+   \   000002   ........     CALLA   #left_wheel_forward_on
+    129            for(i=INCREMENT_START;i<EIGHT_ITERATIONS; i++){
+   \   000006   0A43         MOV.W   #0x0, R10
+   \                     ??curved_right180_line_0:
+   \   000008   3A92         CMP.W   #0x8, R10
+   \   00000A   0C34         JGE     ??curved_right180_line_1
+    130              right_wheel_forward_on(); //right wheel on
+   \   00000C   ........     CALLA   #right_wheel_forward_on
+    131              Five_msec_Delay(FOR_TEN_MSEC);
+   \   000010   2C43         MOV.W   #0x2, R12
+   \   000012   ........     CALLA   #Five_msec_Delay
+    132              right_wheel_forward_off(); //right wheel off
+   \   000016   ........     CALLA   #right_wheel_forward_off
+    133              Five_msec_Delay(FOR_FORTY_MSEC);
+   \   00001A   3C42         MOV.W   #0x8, R12
+   \   00001C   ........     CALLA   #Five_msec_Delay
+    134            }
+   \   000020   1A53         ADD.W   #0x1, R10
+   \   000022   F23F         JMP     ??curved_right180_line_0
+    135            left_wheel_forward_off(); //left wheel off
+   \                     ??curved_right180_line_1:
+   \   000024   ........     CALLA   #left_wheel_forward_off
+    136          }
+   \   000028   3A41         POP.W   R10
+   \   00002A   1001         RETA
+    137          
+
+   \                                 In  segment CODE, align 2
+    138          void curved_right120_line(void){
+   \                     curved_right120_line:
+   \   000000   0A12         PUSH.W  R10
+    139          //==============================================================================
+    140          // Right Curve 120 degrees
+    141          // 
+    142          // Description: This function turns on the motors and travels a 120degree curve to the right
+    143          //
+    144          // Passed : no variables passed
+    145          // Locals: no variables declared
+    146          // Returned: no values returned
+    147          // Globals:  no global variables
+    148          //
+    149          // Author: David Pryor
+    150          // Date: Feb 2016
+    151          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    152          //==============================================================================  
+    153            int i;
+    154            left_wheel_forward_on(); //left wheel on
+   \   000002   ........     CALLA   #left_wheel_forward_on
+    155            for(i=INCREMENT_START;i<FOUR_ITERATIONS; i++){
+   \   000006   0A43         MOV.W   #0x0, R10
+   \                     ??curved_right120_line_0:
+   \   000008   2A92         CMP.W   #0x4, R10
+   \   00000A   0E34         JGE     ??curved_right120_line_1
+    156              right_wheel_forward_on(); //right wheel on
+   \   00000C   ........     CALLA   #right_wheel_forward_on
+    157              Five_msec_Delay(FOR_FIFTEEN_MSEC);
+   \   000010   3C400300     MOV.W   #0x3, R12
+   \   000014   ........     CALLA   #Five_msec_Delay
+    158              right_wheel_forward_off(); //right wheel off
+   \   000018   ........     CALLA   #right_wheel_forward_off
+    159              Five_msec_Delay(FOR_FORTYFIVE_MSEC);
+   \   00001C   3C400900     MOV.W   #0x9, R12
+   \   000020   ........     CALLA   #Five_msec_Delay
+    160            }
+   \   000024   1A53         ADD.W   #0x1, R10
+   \   000026   F03F         JMP     ??curved_right120_line_0
+    161            left_wheel_forward_off(); //left wheel off
+   \                     ??curved_right120_line_1:
+   \   000028   ........     CALLA   #left_wheel_forward_off
+    162          }
+   \   00002C   3A41         POP.W   R10
+   \   00002E   1001         RETA
+    163          
+
+   \                                 In  segment CODE, align 2
+    164          void curved_left180_line(void){
+   \                     curved_left180_line:
+   \   000000   0A12         PUSH.W  R10
+    165          //==============================================================================
+    166          // Left Curve 180 degrees
+    167          // 
+    168          // Description: This function turns on the motors and travels a 180degree curve to the left
+    169          //
+    170          // Passed : no variables passed
+    171          // Locals: no variables declared
+    172          // Returned: no values returned
+    173          // Globals:  no global variables
+    174          //
+    175          // Author: David Pryor
+    176          // Date: Feb 2016
+    177          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    178          //==============================================================================  
+    179            int i;
+    180            right_wheel_forward_on(); //right wheel on
+   \   000002   ........     CALLA   #right_wheel_forward_on
+    181            for(i=INCREMENT_START;i<EIGHT_ITERATIONS; i++){
+   \   000006   0A43         MOV.W   #0x0, R10
+   \                     ??curved_left180_line_0:
+   \   000008   3A92         CMP.W   #0x8, R10
+   \   00000A   0D34         JGE     ??curved_left180_line_1
+    182              left_wheel_forward_on(); //left wheel on
+   \   00000C   ........     CALLA   #left_wheel_forward_on
+    183              Five_msec_Delay(FOR_TEN_MSEC);
+   \   000010   2C43         MOV.W   #0x2, R12
+   \   000012   ........     CALLA   #Five_msec_Delay
+    184              left_wheel_forward_off(); //left wheel off
+   \   000016   ........     CALLA   #left_wheel_forward_off
+    185              Five_msec_Delay(FOR_FIFTY_MSEC);
+   \   00001A   3C400A00     MOV.W   #0xa, R12
+   \   00001E   ........     CALLA   #Five_msec_Delay
+    186            }
+   \   000022   1A53         ADD.W   #0x1, R10
+   \   000024   F13F         JMP     ??curved_left180_line_0
+    187            right_wheel_forward_off(); //right wheel off
+   \                     ??curved_left180_line_1:
+   \   000026   ........     CALLA   #right_wheel_forward_off
+    188          }
+   \   00002A   3A41         POP.W   R10
+   \   00002C   1001         RETA
+    189          
+
+   \                                 In  segment CODE, align 2
+    190          void right_circle_routine(void){
+   \                     right_circle_routine:
+    191          //==============================================================================
+    192          // Right Circle
+    193          // 
+    194          // Description: This function turns on the motors and travels a 360degree circle to the right twice
+    195          //
+    196          // Passed : no variables passed
+    197          // Locals: no variables declared
+    198          // Returned: no values returned
+    199          // Globals:  no global variables
+    200          //
+    201          // Author: David Pryor
+    202          // Date: Feb 2016
+    203          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    204          //==============================================================================
+    205            curved_right180_line(); // first circle
+   \   000000   ........     CALLA   #curved_right180_line
+    206            Five_msec_Delay(FOR_150_MSEC);
+   \   000004   3C401E00     MOV.W   #0x1e, R12
+   \   000008   ........     CALLA   #Five_msec_Delay
+    207            curved_right180_line();
+   \   00000C   ........     CALLA   #curved_right180_line
+    208            Five_msec_Delay(FOR_150_MSEC);
+   \   000010   3C401E00     MOV.W   #0x1e, R12
+   \   000014   ........     CALLA   #Five_msec_Delay
+    209            curved_right180_line(); //second circle
+   \   000018   ........     CALLA   #curved_right180_line
+    210            Five_msec_Delay(FOR_150_MSEC);
+   \   00001C   3C401E00     MOV.W   #0x1e, R12
+   \   000020   ........     CALLA   #Five_msec_Delay
+    211            curved_right180_line();
+   \   000024   ........     BRA     #curved_right180_line
+    212          }
+    213          
+
+   \                                 In  segment CODE, align 2
+    214          void left_circle_routine(void){
+   \                     left_circle_routine:
+    215          //==============================================================================
+    216          // Left Circle
+    217          // 
+    218          // Description: This function turns on the motors and travels a 360degree circle to the left twice
+    219          //
+    220          // Passed : no variables passed
+    221          // Locals: no variables declared
+    222          // Returned: no values returned
+    223          // Globals:  no global variables
+    224          //
+    225          // Author: David Pryor
+    226          // Date: Feb 2016
+    227          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    228          //==============================================================================
+    229            curved_left180_line(); //first circle
+   \   000000   ........     CALLA   #curved_left180_line
+    230            Five_msec_Delay(FOR_100_MSEC);
+   \   000004   3C401400     MOV.W   #0x14, R12
+   \   000008   ........     CALLA   #Five_msec_Delay
+    231            curved_left180_line();
+   \   00000C   ........     CALLA   #curved_left180_line
+    232            Five_msec_Delay(FOR_100_MSEC);
+   \   000010   3C401400     MOV.W   #0x14, R12
+   \   000014   ........     CALLA   #Five_msec_Delay
+    233            curved_left180_line(); //second circle
+   \   000018   ........     CALLA   #curved_left180_line
+    234            Five_msec_Delay(FOR_100_MSEC);
+   \   00001C   3C401400     MOV.W   #0x14, R12
+   \   000020   ........     CALLA   #Five_msec_Delay
+    235            curved_left180_line();
+   \   000024   ........     BRA     #curved_left180_line
+    236          }
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   clockwise_spin
+        4   -> Five_msec_Delay
+        4   -> left_wheel_forward_off
+        4   -> left_wheel_forward_on
+        0   -> right_wheel_reverse_off
+        4   -> right_wheel_reverse_on
+      4   counterclockwise_spin
+        4   -> Five_msec_Delay
+        4   -> left_wheel_reverse_off
+        4   -> left_wheel_reverse_on
+        0   -> right_wheel_forward_off
+        4   -> right_wheel_forward_on
+      6   curved_left180_line
+        6   -> Five_msec_Delay
+        6   -> left_wheel_forward_off
+        6   -> left_wheel_forward_on
+        6   -> right_wheel_forward_off
+        6   -> right_wheel_forward_on
+      6   curved_right120_line
+        6   -> Five_msec_Delay
+        6   -> left_wheel_forward_off
+        6   -> left_wheel_forward_on
+        6   -> right_wheel_forward_off
+        6   -> right_wheel_forward_on
+      6   curved_right180_line
+        6   -> Five_msec_Delay
+        6   -> left_wheel_forward_off
+        6   -> left_wheel_forward_on
+        6   -> right_wheel_forward_off
+        6   -> right_wheel_forward_on
+      4   left_circle_routine
+        4   -> Five_msec_Delay
+        0   -> curved_left180_line
+        4   -> curved_left180_line
+      4   right_circle_routine
+        4   -> Five_msec_Delay
+        0   -> curved_right180_line
+        4   -> curved_right180_line
+      6   straight_line
+        6   -> Five_msec_Delay
+        6   -> left_wheel_forward_off
+        6   -> left_wheel_forward_on
+        6   -> right_wheel_forward_off
+        6   -> right_wheel_forward_on
+      6   straight_line_reverse
+        6   -> Five_msec_Delay
+        6   -> left_wheel_reverse_off
+        6   -> left_wheel_reverse_on
+        6   -> right_wheel_reverse_off
+        6   -> right_wheel_reverse_on
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      24  clockwise_spin
+      24  counterclockwise_spin
+      46  curved_left180_line
+      48  curved_right120_line
+      44  curved_right180_line
+      40  left_circle_routine
+      40  right_circle_routine
+      48  straight_line
+      48  straight_line_reverse
+
+ 
+ 362 bytes in segment CODE
+ 
+ 362 bytes of CODE memory
+
+Errors: none
+Warnings: none

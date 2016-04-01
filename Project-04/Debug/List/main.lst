@@ -1,0 +1,385 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           29/Feb/2016  12:22:45
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\SkyDrive\ECE 306\Project-04\main.c
+#    Command line  =  
+#        "C:\Users\David\SkyDrive\ECE 306\Project-04\main.c" -lC
+#        "C:\Users\David\SkyDrive\ECE 306\Project-04\Debug\List" -o
+#        "C:\Users\David\SkyDrive\ECE 306\Project-04\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\SkyDrive\ECE 306\Project-04\Debug\List\main.lst
+#    Object file   =  
+#        C:\Users\David\SkyDrive\ECE 306\Project-04\Debug\Obj\main.r43
+#
+###############################################################################
+
+C:\Users\David\SkyDrive\ECE 306\Project-04\main.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : main.c
+      3          //
+      4          //  Description: This file contains the Main Routine - "While" Operating System
+      5          //
+      6          //
+      7          //  David Pryor
+      8          //  Jan 2016
+      9          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+     10          //------------------------------------------------------------------------------
+     11          
+     12          //------------------------------------------------------------------------------
+     13          #include  "macros.h"
+     14          #include  "msp430.h"
+     15          #include  "functions.h"
+     16          
+     17          // Required defines
+     18          // In the event the universe no longer exists, this bit will reset
+     19          // ALWAYS                                       (1)
+     20          // CNTL_STATE_INDEX                             (3) // Control States
+     21          // SW1                  	                (0x01) // Switch 1
+     22          // SW2                  	                (0x02) // Switch 2
+     23          // START				        (0x00)
+     24          // MAX_SIZE_COUNT			        (0x05) 
+     25          // LINE_POS_1                                   (0x01) // starting postion on lcd
+     26          // LINE_POS_2                                   (0x02) // starting postion on lcd
+     27          // LINE_POS_3                                   (0x03) // starting postion on lcd
+     28          // LCD--------------------------------------------------------------------------
+     29          // LCD_HOME_L1	                                (0x80)
+     30          // LCD_HOME_L2         	                        (0xA0)
+     31          // LCD_HOME_L3         	                        (0xC0)
+     32          // LCD_HOME_L4         	                        (0xE0)
+     33          // LINE_SIZE				        (0x0B)
+     34          // CASE NUMBERS (THESE ARE TEMPORARY FILLERS!)----------------------------------
+     35          // COUNT_TWOFIDDY_MSEC			        (0x32) //50
+     36          // COUNT_FIVEHUNNED_MSEC			(0x64) //100
+     37          // COUNT_SEVENFIDDY_MSEC			(0x96) //150
+     38          // COUNT_ONETHOUSAND_MSEC			(0xC8) //200
+     39          // COUNT_TWELVEFIDDY_MSEC			(0xFA) //250
+     40          // SWITCHES---------------------------------------------------------------------
+     41          // SWITCH_OFF				        (0x00)
+     42          // SWITCH_ON			                (0x01)
+     43          //------------------------------------------------------------------------------
+     44          
+     45          
+     46          
+     47          // Global Variables
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     48          volatile unsigned char control_state[CNTL_STATE_INDEX];
+   \                     control_state:
+   \   000000                DS8 3
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     49          volatile unsigned int Time_Sequence;
+   \                     Time_Sequence:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     50          char led_smclk;
+   \                     led_smclk:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     51          volatile char one_time;
+   \                     one_time:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     52          volatile unsigned int five_msec_delay;
+   \                     five_msec_delay:
+   \   000000                DS8 2
+     53          extern char display_line_1[LINE_SIZE];
+     54          extern char display_line_2[LINE_SIZE];
+     55          extern char display_line_3[LINE_SIZE];
+     56          extern char display_line_4[LINE_SIZE];
+     57          extern char *display_1;
+     58          extern char *display_2;
+     59          extern char *display_3;
+     60          extern char *display_4;
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     61          char posL1;
+   \                     posL1:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     62          char posL2;
+   \                     posL2:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     63          char posL3;
+   \                     posL3:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     64          char posL4;
+   \                     posL4:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     65          char size_count;
+   \                     size_count:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     66          char big;
+   \                     big:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     67          volatile unsigned int do_this = FALSE;
+   \                     do_this:
+   \   000000                DS8 2
+     68          
+
+   \                                 In  segment CODE, align 2
+     69          void main(void){
+   \                     main:
+     70          //==============================================================================
+     71          // Main Program
+     72          // 
+     73          // Description: This function contains the while loop that runs continuously
+     74          // to act for the operating system. It also calls all the functions to
+     75          // initialize the system.
+     76          //
+     77          // Passed : no variables passed
+     78          // Locals: no variables declared
+     79          // Returned: no values returned
+     80          // Globals:     volatile unsigned int Time_Sequence;
+     81          //              volatile char one_time;
+     82          //              char* display_1
+     83          //              char* display_2
+     84          //              char* display_3
+     85          //              char* display_4
+     86          //              slow_input_down
+     87          //              control_state[CNTL_STATE_INDEX]
+     88          //              char big
+     89          //              char size_count;
+     90          //              char posL1
+     91          //              char posL2
+     92          //              char posL3
+     93          //              char posL4
+     94          //
+     95          // Author: David Pryor
+     96          // Date: Feb 2016
+     97          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     98          //==============================================================================
+     99            Init_Ports();                             // Initialize Ports
+   \   000000   ........     CALLA   #Init_Ports
+    100            Init_Clocks();                            // Initialize Clock System 
+   \   000004   ........     CALLA   #Init_Clocks
+    101            Init_Conditions();
+   \   000008   ........     CALLA   #Init_Conditions
+    102            Time_Sequence = SWITCH_OFF;               // 
+   \   00000C   8243....     MOV.W   #0x0, &Time_Sequence
+    103            Init_Timers();                            // Initialize Timers
+   \   000010   ........     CALLA   #Init_Timers
+    104            Init_LEDs();                              // Initialize LEDs
+   \   000014   ........     CALLA   #Init_LEDs
+    105            Init_LCD();                               // Initialize LCD
+   \   000018   ........     CALLA   #Init_LCD
+    106            
+    107          
+    108          //------------------------------------------------------------------------------
+    109          // Begining of the "While" Operating System
+    110          //------------------------------------------------------------------------------
+    111           while(ALWAYS) {                            // Can the Operating system run
+    112             if(do_this == TRUE){
+   \                     ??main_0:
+   \   00001C   9293....     CMP.W   #0x1, &do_this
+   \   000020   FD23         JNE     ??main_0
+    113                Five_msec_Delay(FOR_ONE_SECOND);                     //pause
+   \   000022   3C40C800     MOV.W   #0xc8, R12
+   \   000026   ........     CALLA   #Five_msec_Delay
+    114                display_2 = "FORWARD";                    //change display
+   \   00002A   B240........ MOV.W   #`?<Constant "FORWARD">`, &display_2
+    115                posL2 = LINE_POS_1;
+   \   000030   D243....     MOV.B   #0x1, &posL2
+    116                Display_Process();                        //push display
+   \   000034   ........     CALLA   #Display_Process
+    117                straight_line();                          //forward
+   \   000038   ........     CALLA   #straight_line
+    118                
+    119                Five_msec_Delay(FOR_ONE_SECOND);                     //pause
+   \   00003C   3C40C800     MOV.W   #0xc8, R12
+   \   000040   ........     CALLA   #Five_msec_Delay
+    120                display_2 = "REVERSE";                    //change display
+   \   000044   B240........ MOV.W   #`?<Constant "REVERSE">`, &display_2
+    121                posL2 = LINE_POS_1;
+   \   00004A   D243....     MOV.B   #0x1, &posL2
+    122                Display_Process();                        //push display
+   \   00004E   ........     CALLA   #Display_Process
+    123                straight_line_reverse();                  //reverse
+   \   000052   ........     CALLA   #straight_line_reverse
+    124                
+    125                Five_msec_Delay(FOR_ONE_SECOND);
+   \   000056   3C40C800     MOV.W   #0xc8, R12
+   \   00005A   ........     CALLA   #Five_msec_Delay
+    126                display_2 = "FORWARD";                    //change display
+   \   00005E   B240........ MOV.W   #`?<Constant "FORWARD">`, &display_2
+    127                posL2 = LINE_POS_1;
+   \   000064   D243....     MOV.B   #0x1, &posL2
+    128                Display_Process();                        //push display
+   \   000068   ........     CALLA   #Display_Process
+    129                straight_line();                          //forward
+   \   00006C   ........     CALLA   #straight_line
+    130                
+    131                Five_msec_Delay(FOR_ONE_SECOND);
+   \   000070   3C40C800     MOV.W   #0xc8, R12
+   \   000074   ........     CALLA   #Five_msec_Delay
+    132                display_2 = "CW-SPIN";                   //change display
+   \   000078   B240........ MOV.W   #`?<Constant "CW-SPIN">`, &display_2
+    133                posL2 = LINE_POS_1;
+   \   00007E   D243....     MOV.B   #0x1, &posL2
+    134                Display_Process();                         //push display
+   \   000082   ........     CALLA   #Display_Process
+    135                clockwise_spin();                          //forward
+   \   000086   ........     CALLA   #clockwise_spin
+    136                
+    137                Five_msec_Delay(FOR_ONE_SECOND);
+   \   00008A   3C40C800     MOV.W   #0xc8, R12
+   \   00008E   ........     CALLA   #Five_msec_Delay
+    138                display_2 = "CCW-SPIN";                   //change display
+   \   000092   B240........ MOV.W   #`?<Constant "CCW-SPIN">`, &display_2
+    139                posL2 = LINE_POS_1;
+   \   000098   D243....     MOV.B   #0x1, &posL2
+    140                Display_Process();                         //push display
+   \   00009C   ........     CALLA   #Display_Process
+    141                counterclockwise_spin();                          //forward
+   \   0000A0   ........     CALLA   #counterclockwise_spin
+    142                
+    143                Five_msec_Delay(FOR_ONE_SECOND);                     //pause
+   \   0000A4   3C40C800     MOV.W   #0xc8, R12
+   \   0000A8   ........     CALLA   #Five_msec_Delay
+    144                display_2 = "";                           //clear display
+   \   0000AC   B240........ MOV.W   #`?<Constant "">`, &display_2
+    145                posL2 = LINE_POS_1;
+   \   0000B2   D243....     MOV.B   #0x1, &posL2
+    146                Display_Process();                        //push display
+   \   0000B6   ........     CALLA   #Display_Process
+    147                do_this = FALSE;
+   \   0000BA   8243....     MOV.W   #0x0, &do_this
+   \   0000BE   AE3F         JMP     ??main_0
+   \   0000C0   0343         NOP
+    148             }
+    149           }
+    150          //------------------------------------------------------------------------------
+    151          }
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "FORWARD">`:
+   \   000000   464F52574152 DC8 "FORWARD"
+   \            4400        
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "REVERSE">`:
+   \   000000   524556455253 DC8 "REVERSE"
+   \            4500        
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "CW-SPIN">`:
+   \   000000   43572D535049 DC8 "CW-SPIN"
+   \            4E00        
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "CCW-SPIN">`:
+   \   000000   4343572D5350 DC8 "CCW-SPIN"
+   \            494E00      
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "">`:
+   \   000000   00           DC8 ""
+    152          
+    153          
+    154          
+    155          
+    156          
+    157          
+    158          
+    159          
+    160          
+    161          
+    162          
+    163          
+    164          
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   main
+        4   -> Display_Process
+        4   -> Five_msec_Delay
+        4   -> Init_Clocks
+        4   -> Init_Conditions
+        4   -> Init_LCD
+        4   -> Init_LEDs
+        4   -> Init_Ports
+        4   -> Init_Timers
+        4   -> clockwise_spin
+        4   -> counterclockwise_spin
+        4   -> straight_line
+        4   -> straight_line_reverse
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       1  ?<Constant "">
+       9  ?<Constant "CCW-SPIN">
+       8  ?<Constant "CW-SPIN">
+       8  ?<Constant "FORWARD">
+       8  ?<Constant "REVERSE">
+       2  Time_Sequence
+       1  big
+       3  control_state
+       2  do_this
+       2  five_msec_delay
+       1  led_smclk
+     194  main
+       1  one_time
+       1  posL1
+       1  posL2
+       1  posL3
+       1  posL4
+       1  size_count
+
+ 
+ 194 bytes in segment CODE
+  34 bytes in segment DATA16_C
+  17 bytes in segment DATA16_Z
+ 
+ 194 bytes of CODE  memory
+  34 bytes of CONST memory
+  17 bytes of DATA  memory
+
+Errors: none
+Warnings: none

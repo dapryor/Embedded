@@ -1,0 +1,200 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           25/Feb/2016  23:35:02
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\SkyDrive\ECE 306\homework-05\init.c
+#    Command line  =  
+#        "C:\Users\David\SkyDrive\ECE 306\homework-05\init.c" -lC
+#        "C:\Users\David\SkyDrive\ECE 306\homework-05\Debug\List" -o
+#        "C:\Users\David\SkyDrive\ECE 306\homework-05\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\SkyDrive\ECE 306\homework-05\Debug\List\init.lst
+#    Object file   =  
+#        C:\Users\David\SkyDrive\ECE 306\homework-05\Debug\Obj\init.r43
+#
+###############################################################################
+
+C:\Users\David\SkyDrive\ECE 306\homework-05\init.c
+      1          //------------------------------------------------------------------------------
+      2          //
+      3          //  Description: This file contains the Initialize functions
+      4          //
+      5          //
+      6          //  David Pryor
+      7          //  Jan 2016
+      8          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+      9          //------------------------------------------------------------------------------
+     10          #include "macros.h"
+     11          #include "functions.h"
+     12          #include "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x322
+   \   union <unnamed> _A_PJOUT_L
+   \                     _A_PJOUT_L:
+   \   000000                DS8 2
+     13          //------------------------------------------------------------------------------
+     14          // Required defines
+     15          // IOT_WAKEUP           	                (0x01) // This was LED 1
+     16          // IOT_FACTORY   			        (0x02) // This was LED 2
+     17          // IOT_STA_MINIAP       	                (0x04) // This was LED 3
+     18          // R_FORWARD        	                        (0x10) // This was LED 5
+     19          // R_REVERSE        	                        (0x20) // This was LED 6
+     20          // L_FORWARD        	                        (0x40) // This was LED 7
+     21          // L_REVERSE        	                        (0x80) // This was LED 8
+     22          //------------------------------------------------------------------------------
+     23          // GLOBAL VARIABLES
+     24          extern char display_line_1[LINE_SIZE];
+     25          extern char display_line_2[LINE_SIZE];
+     26          extern char display_line_3[LINE_SIZE];
+     27          extern char display_line_4[LINE_SIZE];
+     28          extern char *display_1;
+     29          extern char *display_2;
+     30          extern char *display_3;
+     31          extern char *display_4;
+     32          //------------------------------------------------------------------------------
+
+   \                                 In  segment CODE, align 2
+     33          void Init_Conditions(void){
+   \                     Init_Conditions:
+     34          //==============================================================================
+     35          // Initializations Configurations
+     36          // 
+     37          // Description: This function intializes display_1 through 4 pointers to start of LCD lines
+     38          //
+     39          // Passed : no variables passed
+     40          // Locals: no variables declared
+     41          // Returned: no values returned
+     42          // Globals:     volatile unsigned int Time_Sequence;
+     43          //              volatile char one_time;
+     44          //              char* display_1
+     45          //              char* display_2
+     46          //              char* display_3
+     47          //              char* display_4
+     48          //              char display_line_1[LINE_SIZE];
+     49          //              char display_line_2[LINE_SIZE];
+     50          //              char display_line_3[LINE_SIZE];
+     51          //              char display_line_4[LINE_SIZE];
+     52          //
+     53          // Author: David Pryor
+     54          // Date: Feb 2016
+     55          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     56          //==============================================================================
+     57          // Interrupts are disabled by default, enable them. 
+     58            enable_interrupts();
+   \   000000   ........     CALLA   #enable_interrupts
+     59            display_1 = &display_line_1[START];
+   \   000004   B240........ MOV.W   #display_line_1, &display_1
+     60            display_2 = &display_line_2[START];
+   \   00000A   B240........ MOV.W   #display_line_2, &display_2
+     61            display_3 = &display_line_3[START];
+   \   000010   B240........ MOV.W   #display_line_3, &display_3
+     62            display_4 = &display_line_4[START];
+   \   000016   B240........ MOV.W   #display_line_4, &display_4
+     63          
+     64          //------------------------------------------------------------------------------
+     65          }
+   \   00001C   1001         RETA
+     66          
+
+   \                                 In  segment CODE, align 2
+     67          void Init_Timers(void){
+   \                     Init_Timers:
+     68          //==============================================================================
+     69          // Timer Configurations
+     70          // 
+     71          // Description: This function initializes timers used for the board
+     72          //
+     73          // Passed : no variables passed
+     74          // Locals: no variables declared
+     75          // Returned: no values returned
+     76          // Globals:     NONE
+     77          //
+     78          // Author: David Pryor
+     79          // Date: Feb 2016
+     80          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     81          //==============================================================================
+     82            Init_Timer_A0(); //
+   \   000000   ........     BRA     #Init_Timer_A0
+     83          //  Init_Timer_A1(); // 
+     84          //  Init_Timer_B0(); // 
+     85          //  Init_Timer_B1(); //  
+     86          //  Init_Timer_B2();   //  Required for provided compiled code to work
+     87          //------------------------------------------------------------------------------
+     88          }
+     89          
+
+   \                                 In  segment CODE, align 2
+     90          void Init_LEDs(void){
+   \                     Init_LEDs:
+     91          //==============================================================================
+     92          // LED Configurations
+     93          // 
+     94          // Description: This function initializes the LED output to 0
+     95          //
+     96          // Passed : no variables passed
+     97          // Locals: no variables declared
+     98          // Returned: no values returned
+     99          // Globals:     NONE
+    100          //
+    101          // Author: David Pryor
+    102          // Date: Feb 2016
+    103          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    104          //==============================================================================
+    105          //------------------------------------------------------------------------------
+    106          // Turns off all 8 LEDs
+    107            PJOUT &= ~IOT_WAKEUP;
+   \   000000   92C32203     BIC.W   #0x1, &0x322
+    108            PJOUT &= ~IOT_FACTORY;
+   \   000004   A2C32203     BIC.W   #0x2, &0x322
+    109            PJOUT &= ~IOT_STA_MINIAP;
+   \   000008   A2C22203     BIC.W   #0x4, &0x322
+    110          
+    111          //------------------------------------------------------------------------------
+    112          }
+   \   00000C   1001         RETA
+   \   00000E                REQUIRE _A_PJOUT_L
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   Init_Conditions
+        4   -> enable_interrupts
+      4   Init_LEDs
+      4   Init_Timers
+        0   -> Init_Timer_A0
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      30  Init_Conditions
+      14  Init_LEDs
+       4  Init_Timers
+       2  _A_PJOUT_L
+
+ 
+ 48 bytes in segment CODE
+  2 bytes in segment DATA16_AN
+ 
+ 48 bytes of CODE memory
+  0 bytes of DATA memory (+ 2 bytes shared)
+
+Errors: none
+Warnings: none

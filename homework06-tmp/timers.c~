@@ -1,0 +1,38 @@
+//------------------------------------------------------------------------------
+//
+//  Description: This file contains the Timing functions (five_msec_sleep, Timer_code)
+//
+//
+//  David Pryor
+//  Jan 2016
+//  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void five_msec_sleep(unsigned int fivemsec){
+//------------------------------------------------------------------------------
+//Each count passed is at least x times 5 milliseconds
+  five_msec_count = 0;
+  while(fivemsec > (five_msec_count+1));
+//------------------------------------------------------------------------------
+}
+
+void Timer_code(void){
+//------------------------------------------------------------------------------
+// Timer A0 interrupt code
+//------------------------------------------------------------------------------
+  Time_Sequence++;
+  one_time = 1;
+  if (five_msec_count < 1000){
+    five_msec_count++;
+  }
+//------------------------------------------------------------------------------
+}
+
+void Display_Process(void){
+  ClrDisplay();
+  lcd_out(display_1, LCD_HOME_L1, posL1);
+  lcd_out(display_2, LCD_HOME_L2, posL2);
+  lcd_out(display_3, LCD_HOME_L3, posL3);
+  lcd_out(display_4, LCD_HOME_L4, posL4);
+}

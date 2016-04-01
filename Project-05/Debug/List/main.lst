@@ -1,0 +1,600 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           21/Mar/2016  02:10:25
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\SkyDrive\ECE 306\Project-05\main.c
+#    Command line  =  
+#        "C:\Users\David\SkyDrive\ECE 306\Project-05\main.c" -lC
+#        "C:\Users\David\SkyDrive\ECE 306\Project-05\Debug\List" -o
+#        "C:\Users\David\SkyDrive\ECE 306\Project-05\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\SkyDrive\ECE 306\Project-05\Debug\List\main.lst
+#    Object file   =  
+#        C:\Users\David\SkyDrive\ECE 306\Project-05\Debug\Obj\main.r43
+#
+###############################################################################
+
+C:\Users\David\SkyDrive\ECE 306\Project-05\main.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : main.c
+      3          //
+      4          //  Description: This file contains the Main Routine - "While" Operating System
+      5          //
+      6          //
+      7          //  David Pryor
+      8          //  Jan 2016
+      9          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+     10          //------------------------------------------------------------------------------
+     11          
+     12          //------------------------------------------------------------------------------
+     13          #include  "macros.h"
+     14          #include  "msp430.h"
+     15          #include  "functions.h"
+     16          
+     17          // Required defines
+     18          // In the event the universe no longer exists, this bit will reset
+     19          // ALWAYS                                       (1)
+     20          // CNTL_STATE_INDEX                             (3) // Control States
+     21          // SW1                  	                (0x01) // Switch 1
+     22          // SW2                  	                (0x02) // Switch 2
+     23          // START				        (0x00)
+     24          // MAX_SIZE_COUNT			        (0x05) 
+     25          // LINE_POS_1                                   (0x01) // starting postion on lcd
+     26          // LINE_POS_2                                   (0x02) // starting postion on lcd
+     27          // LINE_POS_3                                   (0x03) // starting postion on lcd
+     28          // LCD--------------------------------------------------------------------------
+     29          // LCD_HOME_L1	                                (0x80)
+     30          // LCD_HOME_L2         	                        (0xA0)
+     31          // LCD_HOME_L3         	                        (0xC0)
+     32          // LCD_HOME_L4         	                        (0xE0)
+     33          // LINE_SIZE				        (0x0B)
+     34          // CASE NUMBERS (THESE ARE TEMPORARY FILLERS!)----------------------------------
+     35          // COUNT_TWOFIDDY_MSEC			        (0x32) //50
+     36          // COUNT_FIVEHUNNED_MSEC			(0x64) //100
+     37          // COUNT_SEVENFIDDY_MSEC			(0x96) //150
+     38          // COUNT_ONETHOUSAND_MSEC			(0xC8) //200
+     39          // COUNT_TWELVEFIDDY_MSEC			(0xFA) //250
+     40          // SWITCHES---------------------------------------------------------------------
+     41          // SWITCH_OFF				        (0x00)
+     42          // SWITCH_ON			                (0x01)
+     43          //------------------------------------------------------------------------------
+     44          
+     45          
+     46          
+     47          // Global Variables
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     48          volatile unsigned char control_state[CNTL_STATE_INDEX];
+   \                     control_state:
+   \   000000                DS8 3
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     49          volatile unsigned int Time_Sequence;
+   \                     Time_Sequence:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     50          char led_smclk;
+   \                     led_smclk:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     51          volatile char one_time;
+   \                     one_time:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     52          volatile unsigned int five_msec_delay;
+   \                     five_msec_delay:
+   \   000000                DS8 2
+     53          extern char display_line_1[LINE_SIZE];
+     54          extern char display_line_2[LINE_SIZE];
+     55          extern char display_line_3[LINE_SIZE];
+     56          extern char display_line_4[LINE_SIZE];
+     57          extern char *display_1;
+     58          extern char *display_2;
+     59          extern char *display_3;
+     60          extern char *display_4;
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     61          char posL1;
+   \                     posL1:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     62          char posL2;
+   \                     posL2:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     63          char posL3;
+   \                     posL3:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     64          char posL4;
+   \                     posL4:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     65          char size_count;
+   \                     size_count:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     66          char big;
+   \                     big:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     67          volatile unsigned int do_this = FALSE;
+   \                     do_this:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     68          volatile unsigned int display_count = 0; //used to write display every 250ms
+   \                     display_count:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     69          char adc_char[5];
+   \                     adc_char:
+   \   000000                DS8 5
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     70          volatile unsigned int ADC_Left_Detector;
+   \                     ADC_Left_Detector:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     71          volatile unsigned int ADC_Right_Detector;
+   \                     ADC_Right_Detector:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     72          volatile unsigned int ADC_Thumb;
+   \                     ADC_Thumb:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     73          unsigned int left_calibration_black;
+   \                     left_calibration_black:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     74          unsigned int right_calibration_black;
+   \                     right_calibration_black:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     75          unsigned int left_calibration_white;
+   \                     left_calibration_white:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     76          unsigned int right_calibration_white;
+   \                     right_calibration_white:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     77          unsigned int left_calibration_ambient;
+   \                     left_calibration_ambient:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     78          unsigned int right_calibration_ambient;
+   \                     right_calibration_ambient:
+   \   000000                DS8 2
+     79          extern volatile unsigned int switch_one_pressed;
+     80          extern volatile unsigned int switch_two_pressed;
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     81          unsigned int menu_items = FALSE;
+   \                     menu_items:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     82          unsigned int threshold;
+   \                     threshold:
+   \   000000                DS8 2
+     83          
+
+   \                                 In  segment CODE, align 2
+     84          void main(void){
+   \                     main:
+     85          //==============================================================================
+     86          // Main Program
+     87          // 
+     88          // Description: This function contains the while loop that runs continuously
+     89          // to act for the operating system. It also calls all the functions to
+     90          // initialize the system.
+     91          //
+     92          // Passed : no variables passed
+     93          // Locals: no variables declared
+     94          // Returned: no values returned
+     95          // Globals:     volatile unsigned int Time_Sequence;
+     96          //              volatile char one_time;
+     97          //              char* display_1
+     98          //              char* display_2
+     99          //              char* display_3
+    100          //              char* display_4
+    101          //              slow_input_down
+    102          //              control_state[CNTL_STATE_INDEX]
+    103          //              char big
+    104          //              char size_count;
+    105          //              char posL1
+    106          //              char posL2
+    107          //              char posL3
+    108          //              char posL4
+    109          //
+    110          // Author: David Pryor
+    111          // Date: Feb 2016
+    112          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    113          //==============================================================================
+    114            Init_Ports();                             // Initialize Ports
+   \   000000   ........     CALLA   #Init_Ports
+    115            Init_Clocks();                            // Initialize Clock System 
+   \   000004   ........     CALLA   #Init_Clocks
+    116            Init_Conditions();
+   \   000008   ........     CALLA   #Init_Conditions
+    117            Time_Sequence = SWITCH_OFF;               // 
+   \   00000C   8243....     MOV.W   #0x0, &Time_Sequence
+    118            Init_Timers();                            // Initialize Timers
+   \   000010   ........     CALLA   #Init_Timers
+    119            Init_LEDs();                              // Initialize LEDs
+   \   000014   ........     CALLA   #Init_LEDs
+    120            Init_LCD();                               // Initialize LCD
+   \   000018   ........     CALLA   #Init_LCD
+    121            Init_ADC();                               // Initialize ADC
+   \   00001C   ........     CALLA   #Init_ADC
+    122          
+    123          //------------------------------------------------------------------------------
+    124          // Begining of the "While" Operating System
+    125          //------------------------------------------------------------------------------
+    126            while(ALWAYS) {                            // Can the Operating system run
+    127              Menu_Process();
+   \                     ??main_0:
+   \   000020   ........     CALLA   #Menu_Process
+    128              ADC_Process();              // call sampling function
+   \   000024   ........     CALLA   #ADC_Process
+    129              if(display_count >= FOR_FOURTH_SECOND){    // update screen every 250 msec
+   \   000028   B2903200.... CMP.W   #0x32, &display_count
+   \   00002E   0428         JNC     ??main_1
+    130                Display_Process();
+   \   000030   ........     CALLA   #Display_Process
+    131                display_count = SWITCH_OFF;
+   \   000034   8243....     MOV.W   #0x0, &display_count
+    132              }
+    133              if(menu_items == FALSE){  
+   \                     ??main_1:
+   \   000038   8293....     CMP.W   #0x0, &menu_items
+   \   00003C   0320         JNE     ??main_2
+    134                display_4 = "SW2: Menu";
+   \   00003E   B240........ MOV.W   #`?<Constant "SW2: Menu">`, &display_4
+    135              }
+    136              if(switch_two_pressed){
+   \                     ??main_2:
+   \   000044   8293....     CMP.W   #0x0, &switch_two_pressed
+   \   000048   EB27         JEQ     ??main_0
+    137                menu_items = TRUE;
+   \   00004A   9243....     MOV.W   #0x1, &menu_items
+    138                switch_two_pressed = SWITCH_OFF;
+   \   00004E   8243....     MOV.W   #0x0, &switch_two_pressed
+   \   000052   E63F         JMP     ??main_0
+   \   000054   0343         NOP
+    139              }
+    140            }
+    141          //------------------------------------------------------------------------------
+    142          }
+    143          
+    144          
+
+   \                                 In  segment CODE, align 2
+    145          void Menu_Process(void){
+   \                     Menu_Process:
+    146            if(menu_items && ADC_Thumb <= SECTION_SIX_START){
+   \   000000   8293....     CMP.W   #0x0, &menu_items
+   \   000004   1824         JEQ     ??Menu_Process_0
+   \   000006   B2907E00.... CMP.W   #0x7e, &ADC_Thumb
+   \   00000C   142C         JC      ??Menu_Process_0
+    147              display_1 = "Option 4";
+   \   00000E   B240........ MOV.W   #`?<Constant "Option 4">`, &display_1
+    148              display_2 = "";  
+   \   000014   B240........ MOV.W   #`?<Constant "">`, &display_2
+    149              display_3 = "";
+   \   00001A   B240........ MOV.W   #`?<Constant "">`, &display_3
+    150              display_4 = "SW1 Select";
+   \   000020   B240........ MOV.W   #`?<Constant "SW1 Select">`, &display_4
+    151              if(switch_one_pressed){
+   \   000026   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   00002A   9224         JEQ     ??Menu_Process_1
+    152                clockwise_spin();
+   \   00002C   ........     CALLA   #clockwise_spin
+    153                switch_one_pressed = FALSE;
+   \   000030   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   000034   1001         RETA
+    154              } 
+    155            }
+    156            else if(menu_items && ADC_Thumb <= SECTION_FIVE_START && ADC_Thumb > SECTION_SIX_START){
+   \                     ??Menu_Process_0:
+   \   000036   8293....     CMP.W   #0x0, &menu_items
+   \   00003A   1C24         JEQ     ??Menu_Process_2
+   \   00003C   B2900001.... CMP.W   #0x100, &ADC_Thumb
+   \   000042   182C         JC      ??Menu_Process_2
+   \   000044   B2907E00.... CMP.W   #0x7e, &ADC_Thumb
+   \   00004A   1428         JNC     ??Menu_Process_2
+    157              display_1 = "Just Do It";
+   \   00004C   B240........ MOV.W   #`?<Constant "Just Do It">`, &display_1
+    158              display_2 = "";  
+   \   000052   B240........ MOV.W   #`?<Constant "">`, &display_2
+    159              display_3 = "";
+   \   000058   B240........ MOV.W   #`?<Constant "">`, &display_3
+    160              display_4 = "SW1 Select";
+   \   00005E   B240........ MOV.W   #`?<Constant "SW1 Select">`, &display_4
+    161              if(switch_one_pressed){
+   \   000064   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   000068   7324         JEQ     ??Menu_Process_1
+    162                Project5();
+   \   00006A   ........     CALLA   #Project5
+    163                switch_one_pressed = FALSE;
+   \   00006E   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   000072   1001         RETA
+    164              }    
+    165            }
+    166            else if(menu_items && ADC_Thumb <= SECTION_FOUR_START && ADC_Thumb > SECTION_FIVE_START){
+   \                     ??Menu_Process_2:
+   \   000074   8293....     CMP.W   #0x0, &menu_items
+   \   000078   1924         JEQ     ??Menu_Process_3
+   \   00007A   B290FF01.... CMP.W   #0x1ff, &ADC_Thumb
+   \   000080   152C         JC      ??Menu_Process_3
+   \   000082   B2900001.... CMP.W   #0x100, &ADC_Thumb
+   \   000088   1128         JNC     ??Menu_Process_3
+    167              HEXtoBCD(right_calibration_black);
+   \   00008A   1C42....     MOV.W   &right_calibration_black, R12
+   \   00008E   ........     CALLA   #HEXtoBCD
+    168              display_1 = "Black";
+   \   000092   B240........ MOV.W   #`?<Constant "Black">`, &display_1
+    169              display_2 = adc_char;  
+   \   000098   B240........ MOV.W   #adc_char, &display_2
+    170              display_3 = "";
+   \   00009E   B240........ MOV.W   #`?<Constant "">`, &display_3
+    171              display_4 = "";
+   \   0000A4   B240........ MOV.W   #`?<Constant "">`, &display_4
+   \   0000AA   1001         RETA
+    172            }
+    173            else if(menu_items && ADC_Thumb <= SECTION_THREE_START && ADC_Thumb > SECTION_FOUR_START){
+   \                     ??Menu_Process_3:
+   \   0000AC   8293....     CMP.W   #0x0, &menu_items
+   \   0000B0   1924         JEQ     ??Menu_Process_4
+   \   0000B2   B2907202.... CMP.W   #0x272, &ADC_Thumb
+   \   0000B8   152C         JC      ??Menu_Process_4
+   \   0000BA   B290FF01.... CMP.W   #0x1ff, &ADC_Thumb
+   \   0000C0   1128         JNC     ??Menu_Process_4
+    174              HEXtoBCD(right_calibration_white);
+   \   0000C2   1C42....     MOV.W   &right_calibration_white, R12
+   \   0000C6   ........     CALLA   #HEXtoBCD
+    175              display_1 = "White";
+   \   0000CA   B240........ MOV.W   #`?<Constant "White">`, &display_1
+    176              display_2 = adc_char;  
+   \   0000D0   B240........ MOV.W   #adc_char, &display_2
+    177              display_3 = "";
+   \   0000D6   B240........ MOV.W   #`?<Constant "">`, &display_3
+    178              display_4 = "";
+   \   0000DC   B240........ MOV.W   #`?<Constant "">`, &display_4
+   \   0000E2   1001         RETA
+    179            }
+    180            else if(menu_items && ADC_Thumb <= SECTION_TWO_START && ADC_Thumb > SECTION_THREE_START){
+   \                     ??Menu_Process_4:
+   \   0000E4   8293....     CMP.W   #0x0, &menu_items
+   \   0000E8   1924         JEQ     ??Menu_Process_5
+   \   0000EA   B290EF02.... CMP.W   #0x2ef, &ADC_Thumb
+   \   0000F0   152C         JC      ??Menu_Process_5
+   \   0000F2   B2907202.... CMP.W   #0x272, &ADC_Thumb
+   \   0000F8   1128         JNC     ??Menu_Process_5
+    181              HEXtoBCD(right_calibration_ambient);
+   \   0000FA   1C42....     MOV.W   &right_calibration_ambient, R12
+   \   0000FE   ........     CALLA   #HEXtoBCD
+    182              display_1 = "Ambient";
+   \   000102   B240........ MOV.W   #`?<Constant "Ambient">`, &display_1
+    183              display_2 = adc_char;  
+   \   000108   B240........ MOV.W   #adc_char, &display_2
+    184              display_3 = "";
+   \   00010E   B240........ MOV.W   #`?<Constant "">`, &display_3
+    185              display_4 = "";
+   \   000114   B240........ MOV.W   #`?<Constant "">`, &display_4
+   \   00011A   1001         RETA
+    186            }
+    187            else if(menu_items  && ADC_Thumb > SECTION_TWO_START){
+   \                     ??Menu_Process_5:
+   \   00011C   8293....     CMP.W   #0x0, &menu_items
+   \   000120   1724         JEQ     ??Menu_Process_1
+   \   000122   B290EF02.... CMP.W   #0x2ef, &ADC_Thumb
+   \   000128   1328         JNC     ??Menu_Process_1
+    188              display_1 = "Calibrate";
+   \   00012A   B240........ MOV.W   #`?<Constant "Calibrate">`, &display_1
+    189              display_2 = "";  
+   \   000130   B240........ MOV.W   #`?<Constant "">`, &display_2
+    190              display_3 = "";
+   \   000136   B240........ MOV.W   #`?<Constant "">`, &display_3
+    191              display_4 = "SW1 Select";
+   \   00013C   B240........ MOV.W   #`?<Constant "SW1 Select">`, &display_4
+    192              if(switch_one_pressed){
+   \   000142   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   000146   0424         JEQ     ??Menu_Process_1
+    193                IR_Calibration();
+   \   000148   ........     CALLA   #IR_Calibration
+    194                switch_one_pressed = FALSE;
+   \   00014C   8243....     MOV.W   #0x0, &switch_one_pressed
+    195              }  
+    196            }
+    197          }
+   \                     ??Menu_Process_1:
+   \   000150   1001         RETA
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "SW2: Menu">`:
+   \   000000   5357323A204D DC8 "SW2: Menu"
+   \            656E7500    
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Option 4">`:
+   \   000000   4F7074696F6E DC8 "Option 4"
+   \            203400      
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "">`:
+   \   000000   00           DC8 ""
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "SW1 Select">`:
+   \   000000   535731205365 DC8 "SW1 Select"
+   \            6C65637400  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Just Do It">`:
+   \   000000   4A7573742044 DC8 "Just Do It"
+   \            6F20497400  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Black">`:
+   \   000000   426C61636B00 DC8 "Black"
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "White">`:
+   \   000000   576869746500 DC8 "White"
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Ambient">`:
+   \   000000   416D6269656E DC8 "Ambient"
+   \            7400        
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Calibrate">`:
+   \   000000   43616C696272 DC8 "Calibrate"
+   \            61746500    
+    198          
+    199          
+    200          
+    201          
+    202          
+    203          
+    204          
+    205          
+    206          
+    207          
+    208          
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   Menu_Process
+        4   -> HEXtoBCD
+        4   -> IR_Calibration
+        4   -> Project5
+        4   -> clockwise_spin
+      4   main
+        4   -> ADC_Process
+        4   -> Display_Process
+        4   -> Init_ADC
+        4   -> Init_Clocks
+        4   -> Init_Conditions
+        4   -> Init_LCD
+        4   -> Init_LEDs
+        4   -> Init_Ports
+        4   -> Init_Timers
+        4   -> Menu_Process
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       1  ?<Constant "">
+       8  ?<Constant "Ambient">
+       6  ?<Constant "Black">
+      10  ?<Constant "Calibrate">
+      11  ?<Constant "Just Do It">
+       9  ?<Constant "Option 4">
+      11  ?<Constant "SW1 Select">
+      10  ?<Constant "SW2: Menu">
+       6  ?<Constant "White">
+       2  ADC_Left_Detector
+       2  ADC_Right_Detector
+       2  ADC_Thumb
+     338  Menu_Process
+       2  Time_Sequence
+       5  adc_char
+       1  big
+       3  control_state
+       2  display_count
+       2  do_this
+       2  five_msec_delay
+       1  led_smclk
+       2  left_calibration_ambient
+       2  left_calibration_black
+       2  left_calibration_white
+      86  main
+       2  menu_items
+       1  one_time
+       1  posL1
+       1  posL2
+       1  posL3
+       1  posL4
+       2  right_calibration_ambient
+       2  right_calibration_black
+       2  right_calibration_white
+       1  size_count
+       2  threshold
+
+ 
+ 424 bytes in segment CODE
+  72 bytes in segment DATA16_C
+  46 bytes in segment DATA16_Z
+ 
+ 424 bytes of CODE  memory
+  72 bytes of CONST memory
+  46 bytes of DATA  memory
+
+Errors: none
+Warnings: none

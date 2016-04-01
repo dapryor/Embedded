@@ -1,0 +1,110 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           14/Feb/2016  23:25:29
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\SkyDrive\ECE 306\project-03\routines.c
+#    Command line  =  
+#        "C:\Users\David\SkyDrive\ECE 306\project-03\routines.c" -lC
+#        "C:\Users\David\SkyDrive\ECE 306\project-03\Debug\List" -o
+#        "C:\Users\David\SkyDrive\ECE 306\project-03\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\SkyDrive\ECE 306\project-03\Debug\List\routines.lst
+#    Object file   =  
+#        C:\Users\David\SkyDrive\ECE 306\project-03\Debug\Obj\routines.r43
+#
+###############################################################################
+
+C:\Users\David\SkyDrive\ECE 306\project-03\routines.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : routines.c
+      3          //
+      4          //  Description: This file contains the routines required for project 3
+      5          //
+      6          //
+      7          //  David Pryor
+      8          //  Feb 2016
+      9          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+     10          //------------------------------------------------------------------------------
+     11          #include "functions.h"
+     12          #include "msp430.h"
+     13          
+     14          
+
+   \                                 In  segment CODE, align 2
+     15          void straight_line(void){
+   \                     straight_line:
+     16            return;
+   \   000000   1001         RETA
+     17          }
+
+   \                                 In  segment CODE, align 2
+     18          void curved_line(void){
+   \                     curved_line:
+     19            return;
+   \   000000   1001         RETA
+     20          }
+
+   \                                 In  segment CODE, align 2
+     21          void circle_routine(void){
+   \                     circle_routine:
+     22            return;
+   \   000000   1001         RETA
+     23          }
+
+   \                                 In  segment CODE, align 2
+     24          void triangle_routine(void){
+   \                     triangle_routine:
+     25            return;
+   \   000000   1001         RETA
+     26          }
+
+   \                                 In  segment CODE, align 2
+     27          void figure_eight_routine(void){
+   \                     figure_eight_routine:
+     28            return;
+   \   000000   1001         RETA
+     29          }
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   circle_routine
+      4   curved_line
+      4   figure_eight_routine
+      4   straight_line
+      4   triangle_routine
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       2  circle_routine
+       2  curved_line
+       2  figure_eight_routine
+       2  straight_line
+       2  triangle_routine
+
+ 
+ 10 bytes in segment CODE
+ 
+ 10 bytes of CODE memory
+
+Errors: none
+Warnings: none

@@ -1,0 +1,214 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           25/Feb/2016  23:35:03
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\SkyDrive\ECE 306\homework-05\timers.c
+#    Command line  =  
+#        "C:\Users\David\SkyDrive\ECE 306\homework-05\timers.c" -lC
+#        "C:\Users\David\SkyDrive\ECE 306\homework-05\Debug\List" -o
+#        "C:\Users\David\SkyDrive\ECE 306\homework-05\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\SkyDrive\ECE 306\homework-05\Debug\List\timers.lst
+#    Object file   =  
+#        C:\Users\David\SkyDrive\ECE 306\homework-05\Debug\Obj\timers.r43
+#
+###############################################################################
+
+C:\Users\David\SkyDrive\ECE 306\homework-05\timers.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : timers.c
+      3          //
+      4          //  Description: This file contains the Timing functions (five_msec_sleep, Timer_code)
+      5          //
+      6          //
+      7          //  David Pryor
+      8          //  Jan 2016
+      9          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+     10          //------------------------------------------------------------------------------
+     11          #include "macros.h"
+     12          #include "functions.h"
+     13          #include "msp430.h"
+     14          //------------------------------------------------------------------------------
+     15          // Required defines
+     16          // LCD_HOME_L1	                        (0x80)
+     17          // LCD_HOME_L2         	                (0xA0)
+     18          // LCD_HOME_L3         	                (0xC0)
+     19          // LCD_HOME_L4         	                (0xE0)
+     20          // SWITCH_OFF				(0x00) 
+     21          // SWITCH_ON				(0x01)
+     22          // INCREMENT_ONCE                       (0x01)   // increment by 1
+     23          // MAX_FIVE_MSEC_COUNT                  (0x03E8) //1000
+     24          //------------------------------------------------------------------------------
+     25          //GLOBALS
+     26          extern volatile unsigned int Time_Sequence;
+     27          extern volatile char one_time;
+     28          extern volatile unsigned int five_msec_count;
+     29          extern char display_line_1[LINE_SIZE];
+     30          extern char display_line_2[LINE_SIZE];
+     31          extern char display_line_3[LINE_SIZE];
+     32          extern char display_line_4[LINE_SIZE];
+     33          extern char *display_1;
+     34          extern char *display_2;
+     35          extern char *display_3;
+     36          extern char *display_4;
+     37          extern char posL1;
+     38          extern char posL2;
+     39          extern char posL3;
+     40          extern char posL4;
+     41          //------------------------------------------------------------------------------
+
+   \                                 In  segment CODE, align 2
+     42          void five_msec_sleep(unsigned int fivemsec){
+   \                     five_msec_sleep:
+     43          //==============================================================================
+     44          // Five msec sleep
+     45          // 
+     46          // Description: Each count passed is at least x times 5 milliseconds
+     47          //
+     48          // Passed : unsigned int fivemsec
+     49          // Locals: no variables declared
+     50          // Returned: no values returned
+     51          // Globals:     volatile unsigned int five_msec_count;
+     52          //
+     53          // Author: David Pryor
+     54          // Date: Feb 2016
+     55          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     56          //==============================================================================
+     57            five_msec_count = SWITCH_OFF;
+   \   000000   8243....     MOV.W   #0x0, &five_msec_count
+     58            while(fivemsec > (five_msec_count+INCREMENT_ONCE));
+   \                     ??five_msec_sleep_0:
+   \   000004   1F42....     MOV.W   &five_msec_count, R15
+   \   000008   1F53         ADD.W   #0x1, R15
+   \   00000A   0F9C         CMP.W   R12, R15
+   \   00000C   FB2B         JNC     ??five_msec_sleep_0
+     59          //------------------------------------------------------------------------------
+     60          }
+   \   00000E   1001         RETA
+     61          
+
+   \                                 In  segment CODE, align 2
+     62          void Timer_code(void){
+   \                     Timer_code:
+     63          //==============================================================================
+     64          // Timer A0 interrupt code
+     65          // 
+     66          // Description: Not sure yet...
+     67          //
+     68          // Passed : no variables passed
+     69          // Locals: no variables declared
+     70          // Returned: no values returned
+     71          // Globals:     volatile unsigned int Time_Sequence;
+     72          //              volatile char one_time;
+     73          //              volatile unsigned int five_msec_count;
+     74          //
+     75          // Author: David Pryor
+     76          // Date: Feb 2016
+     77          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     78          //==============================================================================
+     79            Time_Sequence++;
+   \   000000   9253....     ADD.W   #0x1, &Time_Sequence
+     80            one_time = SWITCH_ON;
+   \   000004   D243....     MOV.B   #0x1, &one_time
+     81            if (five_msec_count < MAX_FIVE_MSEC_COUNT){
+   \   000008   B290E803.... CMP.W   #0x3e8, &five_msec_count
+   \   00000E   022C         JC      ??Timer_code_0
+     82              five_msec_count++;
+   \   000010   9253....     ADD.W   #0x1, &five_msec_count
+     83            }
+     84          //------------------------------------------------------------------------------
+     85          }
+   \                     ??Timer_code_0:
+   \   000014   1001         RETA
+     86          
+
+   \                                 In  segment CODE, align 2
+     87          void Display_Process(void){
+   \                     Display_Process:
+     88          //==============================================================================
+     89          // Display Process interrupt code
+     90          // 
+     91          // Description: This function ends out text for display
+     92          //
+     93          // Passed : no variables passed
+     94          // Locals: no variables declared
+     95          // Returned: no values returned
+     96          // Globals:     char* display_1
+     97          //              char* display_2
+     98          //              char* display_3
+     99          //              char* display_4
+    100          //              char posL1
+    101          //              char posL2
+    102          //              char posL3
+    103          //              char posL4
+    104          //
+    105          // Author: David Pryor
+    106          // Date: Feb 2016
+    107          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    108          //==============================================================================
+    109            ClrDisplay();
+   \   000000   ........     CALLA   #ClrDisplay
+    110            lcd_out(display_1, LCD_HOME_L1, posL1);
+   \   000004   5E42....     MOV.B   &posL1, R14
+   \   000008   7D408000     MOV.B   #0x80, R13
+   \   00000C   1C42....     MOV.W   &display_1, R12
+   \   000010   ........     CALLA   #lcd_out
+    111            lcd_out(display_2, LCD_HOME_L2, posL2);
+   \   000014   5E42....     MOV.B   &posL2, R14
+   \   000018   7D40A000     MOV.B   #0xa0, R13
+   \   00001C   1C42....     MOV.W   &display_2, R12
+   \   000020   ........     CALLA   #lcd_out
+    112            lcd_out(display_3, LCD_HOME_L3, posL3);
+   \   000024   5E42....     MOV.B   &posL3, R14
+   \   000028   7D40C000     MOV.B   #0xc0, R13
+   \   00002C   1C42....     MOV.W   &display_3, R12
+   \   000030   ........     CALLA   #lcd_out
+    113            lcd_out(display_4, LCD_HOME_L4, posL4);
+   \   000034   5E42....     MOV.B   &posL4, R14
+   \   000038   7D40E000     MOV.B   #0xe0, R13
+   \   00003C   1C42....     MOV.W   &display_4, R12
+   \   000040   ........     BRA     #lcd_out
+    114          }
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   Display_Process
+        4   -> ClrDisplay
+        0   -> lcd_out
+        4   -> lcd_out
+      4   Timer_code
+      4   five_msec_sleep
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      68  Display_Process
+      22  Timer_code
+      16  five_msec_sleep
+
+ 
+ 106 bytes in segment CODE
+ 
+ 106 bytes of CODE memory
+
+Errors: none
+Warnings: none

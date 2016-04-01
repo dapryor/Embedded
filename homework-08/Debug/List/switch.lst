@@ -1,0 +1,160 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           29/Feb/2016  10:58:13
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\SkyDrive\ECE 306\Project-04\switch.c
+#    Command line  =  
+#        "C:\Users\David\SkyDrive\ECE 306\Project-04\switch.c" -lC
+#        "C:\Users\David\SkyDrive\ECE 306\Project-04\Debug\List" -o
+#        "C:\Users\David\SkyDrive\ECE 306\Project-04\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\SkyDrive\ECE 306\Project-04\Debug\List\switch.lst
+#    Object file   =  
+#        C:\Users\David\SkyDrive\ECE 306\Project-04\Debug\Obj\switch.r43
+#
+###############################################################################
+
+C:\Users\David\SkyDrive\ECE 306\Project-04\switch.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : switch.c
+      3          //
+      4          //  Description: This file contains the Switches_Process function
+      5          //
+      6          //
+      7          //  David Pryor
+      8          //  Jan 2016
+      9          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+     10          //------------------------------------------------------------------------------
+     11          #include "macros.h"
+     12          #include "functions.h"
+     13          #include "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x220
+   \   union <unnamed> _A_PBIN_L
+   \                     _A_PBIN_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x23c
+   \   union <unnamed> _A_PBIFG_L
+   \                     _A_PBIFG_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x322
+   \   union <unnamed> _A_PJOUT_L
+   \                     _A_PJOUT_L:
+   \   000000                DS8 2
+     14          //------------------------------------------------------------------------------
+     15          // Required defines
+     16          // FOR_ONE_SECOND                       (200)  // for use with 5msec sleep
+     17          // SW1                  	        (0x01) // Switch 1
+     18          // SW2                  	        (0x02) // Switch 2
+     19          // LINE_POS_1                              (0x01) // starting postion on lcd
+     20          // LINE_POS_2                              (0x02) // starting postion on lcd
+     21          // LINE_POS_3                              (0x03) // starting postion on lcd
+     22          //------------------------------------------------------------------------------
+     23          //GLOBALS
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     24          int menu_count = MENU_ITEM_ONE;
+   \                     menu_count:
+   \   000000                DS8 2
+     25          extern char *display_1;
+     26          extern char *display_2;
+     27          extern char *display_3;
+     28          extern char *display_4;
+     29          extern char posL1;
+     30          extern char posL2;
+     31          extern char posL3;
+     32          extern char posL4;
+     33          //------------------------------------------------------------------------------
+     34          
+
+   \                                 In  segment CODE, align 2
+     35          void Switches_Process(void){
+   \                     Switches_Process:
+     36          //==============================================================================
+     37          // Switch Process
+     38          // 
+     39          // Description: This function takes an input from the push button and switches which lines
+     40          //  are display on the LCD
+     41          //
+     42          // Passed : no variables passed
+     43          // Locals: no variables declared
+     44          // Returned: no values returned
+     45          // Globals:     char *display_1
+     46          //              char *display_2
+     47          //              char *display_3
+     48          //              char *display_4
+     49          //              char posL1
+     50          //              char posL2
+     51          //              char posL3
+     52          //              char posL4
+     53          //              int menu_count
+     54          //
+     55          // Author: David Pryor
+     56          // Date: Feb 2016
+     57          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     58          //==============================================================================
+     59            if (!(P4IN & SW1)){
+   \   000000   D2B32102     BIT.B   #0x1, &0x221
+   \   000004   082C         JC      ??Switches_Process_0
+     60              Five_msec_Delay(200); //prevent double detection of switch
+   \   000006   3C40C800     MOV.W   #0xc8, R12
+   \   00000A   ........     CALLA   #Five_msec_Delay
+     61              PJOUT ^= IOT_WAKEUP;
+   \   00000E   92E32203     XOR.W   #0x1, &0x322
+     62              P4IFG &= ~SW1; // IFG SW1 cleared
+   \   000012   D2C33D02     BIC.B   #0x1, &0x23d
+     63            }
+     64          //------------------------------------------------------------------------------
+     65          }
+   \                     ??Switches_Process_0:
+   \   000016   1001         RETA
+   \   000018                REQUIRE _A_PBIN_L
+   \   000018                REQUIRE _A_PJOUT_L
+   \   000018                REQUIRE _A_PBIFG_L
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   Switches_Process
+        4   -> Five_msec_Delay
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      24  Switches_Process
+       2  _A_PBIFG_L
+       2  _A_PBIN_L
+       2  _A_PJOUT_L
+       2  menu_count
+
+ 
+ 24 bytes in segment CODE
+  6 bytes in segment DATA16_AN
+  2 bytes in segment DATA16_Z
+ 
+ 24 bytes of CODE memory
+  2 bytes of DATA memory (+ 6 bytes shared)
+
+Errors: none
+Warnings: none

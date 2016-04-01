@@ -1,0 +1,213 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           05/Feb/2016  11:49:08
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\SkyDrive\ECE 306\homework-03\switch.c
+#    Command line  =  
+#        "C:\Users\David\SkyDrive\ECE 306\homework-03\switch.c" -lC
+#        "C:\Users\David\SkyDrive\ECE 306\homework-03\Debug\List" -o
+#        "C:\Users\David\SkyDrive\ECE 306\homework-03\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\SkyDrive\ECE 306\homework-03\Debug\List\switch.lst
+#    Object file   =  
+#        C:\Users\David\SkyDrive\ECE 306\homework-03\Debug\Obj\switch.r43
+#
+###############################################################################
+
+C:\Users\David\SkyDrive\ECE 306\homework-03\switch.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : switch.c
+      3          //
+      4          //  Description: This file contains the Switches_Process function
+      5          //
+      6          //
+      7          //  David Pryor
+      8          //  Jan 2016
+      9          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+     10          //------------------------------------------------------------------------------
+     11          #include "macros.h"
+     12          #include "functions.h"
+     13          #include "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x220
+   \   union <unnamed> _A_PBIN_L
+   \                     _A_PBIN_L:
+   \   000000                DS8 2
+     14          //------------------------------------------------------------------------------
+     15          // Required defines
+     16          // SW1                  	        (0x01) // Switch 1
+     17          // SW2                  	        (0x02) // Switch 2
+     18          // LINE_POS_1                              (0x01) // starting postion on lcd
+     19          // LINE_POS_2                              (0x02) // starting postion on lcd
+     20          // LINE_POS_3                              (0x03) // starting postion on lcd
+     21          //------------------------------------------------------------------------------
+     22          //GLOBALS
+     23          extern char *display_1;
+     24          extern char *display_2;
+     25          extern char *display_3;
+     26          extern char *display_4;
+     27          extern char posL1;
+     28          extern char posL2;
+     29          extern char posL3;
+     30          extern char posL4;
+     31          //------------------------------------------------------------------------------
+     32          
+
+   \                                 In  segment CODE, align 2
+     33          void Switches_Process(void){
+   \                     Switches_Process:
+     34          //==============================================================================
+     35          // Switch Process
+     36          // 
+     37          // Description: This function takes an input from the push button and switches which lines
+     38          //  are display on the LCD
+     39          //
+     40          // Passed : no variables passed
+     41          // Locals: no variables declared
+     42          // Returned: no values returned
+     43          // Globals:     char *display_1
+     44          //              char *display_2
+     45          //              char *display_3
+     46          //              char *display_4
+     47          //              char posL1
+     48          //              posL2
+     49          //              posL3
+     50          //              posL4
+     51          //
+     52          // Author: David Pryor
+     53          // Date: Feb 2016
+     54          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     55          //==============================================================================
+     56            if (!(P4IN & SW1)){
+   \   000000   D2B32102     BIT.B   #0x1, &0x221
+   \   000004   152C         JC      ??Switches_Process_0
+     57              display_1 = "NCSU";
+   \   000006   B240........ MOV.W   #`?<Constant "NCSU">`, &display_1
+     58              posL1 = LINE_POS_3;
+   \   00000C   F2400300.... MOV.B   #0x3, &posL1
+     59              display_2 = "WOLFPACK";
+   \   000012   B240........ MOV.W   #`?<Constant "WOLFPACK">`, &display_2
+     60              posL2 = LINE_POS_1;
+   \   000018   D243....     MOV.B   #0x1, &posL2
+     61              display_3 = "ECE306";
+   \   00001C   B240........ MOV.W   #`?<Constant "ECE306">`, &display_3
+     62              posL3 = LINE_POS_2;
+   \   000022   E243....     MOV.B   #0x2, &posL3
+     63              display_4 = "D Pryor";
+   \   000026   B240........ MOV.W   #`?<Constant "D Pryor">`, &display_4
+     64              posL4 = LINE_POS_1;
+   \   00002C   D243....     MOV.B   #0x1, &posL4
+     65            }
+     66            if (!(P4IN & SW2)) {
+   \                     ??Switches_Process_0:
+   \   000030   E2B32102     BIT.B   #0x2, &0x221
+   \   000034   152C         JC      ??Switches_Process_1
+     67              display_1 = "Embedded";
+   \   000036   B240........ MOV.W   #`?<Constant "Embedded">`, &display_1
+     68              posL1 = LINE_POS_1;
+   \   00003C   D243....     MOV.B   #0x1, &posL1
+     69              display_2 = "Systems";
+   \   000040   B240........ MOV.W   #`?<Constant "Systems">`, &display_2
+     70              posL2 = LINE_POS_2;
+   \   000046   E243....     MOV.B   #0x2, &posL2
+     71              display_3 = "Rock!";
+   \   00004A   B240........ MOV.W   #`?<Constant "Rock!">`, &display_3
+     72              posL3 = LINE_POS_3;
+   \   000050   F2400300.... MOV.B   #0x3, &posL3
+     73              display_4 = "Go Pack!";
+   \   000056   B240........ MOV.W   #`?<Constant "Go Pack!">`, &display_4
+     74              posL4 = LINE_POS_1;
+   \   00005C   D243....     MOV.B   #0x1, &posL4
+     75            }
+     76          //------------------------------------------------------------------------------
+     77          }
+   \                     ??Switches_Process_1:
+   \   000060   1001         RETA
+   \   000062                REQUIRE _A_PBIN_L
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "NCSU">`:
+   \   000000   4E43535500   DC8 "NCSU"
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "WOLFPACK">`:
+   \   000000   574F4C465041 DC8 "WOLFPACK"
+   \            434B00      
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "ECE306">`:
+   \   000000   454345333036 DC8 "ECE306"
+   \            00          
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "D Pryor">`:
+   \   000000   44205072796F DC8 "D Pryor"
+   \            7200        
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Embedded">`:
+   \   000000   456D62656464 DC8 "Embedded"
+   \            656400      
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Systems">`:
+   \   000000   53797374656D DC8 "Systems"
+   \            7300        
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Rock!">`:
+   \   000000   526F636B2100 DC8 "Rock!"
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Go Pack!">`:
+   \   000000   476F20506163 DC8 "Go Pack!"
+   \            6B2100      
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   Switches_Process
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       8  ?<Constant "D Pryor">
+       7  ?<Constant "ECE306">
+       9  ?<Constant "Embedded">
+       9  ?<Constant "Go Pack!">
+       5  ?<Constant "NCSU">
+       6  ?<Constant "Rock!">
+       8  ?<Constant "Systems">
+       9  ?<Constant "WOLFPACK">
+      98  Switches_Process
+       2  _A_PBIN_L
+
+ 
+ 98 bytes in segment CODE
+  2 bytes in segment DATA16_AN
+ 61 bytes in segment DATA16_C
+ 
+ 98 bytes of CODE  memory
+ 61 bytes of CONST memory
+  0 bytes of DATA  memory (+ 2 bytes shared)
+
+Errors: none
+Warnings: none

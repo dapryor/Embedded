@@ -1,0 +1,343 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           29/Mar/2016  20:23:57
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  
+#        C:\Users\David\SkyDrive\ECE 306\Project-06\interrupts_serial.c
+#    Command line  =  
+#        "C:\Users\David\SkyDrive\ECE 306\Project-06\interrupts_serial.c" -lC
+#        "C:\Users\David\SkyDrive\ECE 306\Project-06\Debug\List" -o
+#        "C:\Users\David\SkyDrive\ECE 306\Project-06\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\SkyDrive\ECE
+#        306\Project-06\Debug\List\interrupts_serial.lst
+#    Object file   =  
+#        C:\Users\David\SkyDrive\ECE
+#        306\Project-06\Debug\Obj\interrupts_serial.r43
+#
+###############################################################################
+
+C:\Users\David\SkyDrive\ECE 306\Project-06\interrupts_serial.c
+      1          #include  "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x5cc
+   \   union <unnamed> _A_UCA0RXBUF_L
+   \                     _A_UCA0RXBUF_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5de
+   \   unsigned short volatile UCA0IV
+   \                     UCA0IV:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5ec
+   \   union <unnamed> _A_UCA1RXBUF_L
+   \                     _A_UCA1RXBUF_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5fe
+   \   unsigned short volatile UCA1IV
+   \                     UCA1IV:
+   \   000000                DS8 2
+      2          #include  "functions.h"
+      3          #include "macros.h"
+      4          
+      5          //GLOBALS---------------------------------------------------------------------//
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      6          volatile unsigned int usb_rx_ring_wr0;
+   \                     usb_rx_ring_wr0:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      7          volatile unsigned int usb_rx_ring_rd0;
+   \                     usb_rx_ring_rd0:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      8          volatile unsigned int usb_tx_ring_wr0;
+   \                     usb_tx_ring_wr0:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      9          volatile unsigned int usb_tx_ring_rd0;
+   \                     usb_tx_ring_rd0:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     10          volatile unsigned int usb_rx_ring_wr1;
+   \                     usb_rx_ring_wr1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     11          volatile unsigned int usb_rx_ring_rd1;
+   \                     usb_rx_ring_rd1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     12          volatile unsigned int usb_tx_ring_wr1;
+   \                     usb_tx_ring_wr1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     13          volatile unsigned int usb_tx_ring_rd1;
+   \                     usb_tx_ring_rd1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     14          volatile char USB_Char_Rx0[SMALL_RING_SIZE];
+   \                     USB_Char_Rx0:
+   \   000000                DS8 16
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     15          volatile char USB_Char_Tx0[LARGE_RING_SIZE];
+   \                     USB_Char_Tx0:
+   \   000000                DS8 16
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     16          volatile char USB_Char_Rx1[SMALL_RING_SIZE];
+   \                     USB_Char_Rx1:
+   \   000000                DS8 16
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     17          volatile char USB_Char_Tx1[LARGE_RING_SIZE];
+   \                     USB_Char_Tx1:
+   \   000000                DS8 16
+     18          extern volatile int passed_value;
+     19          extern volatile int pass_flag;
+     20          extern char *display_1;
+     21          extern char adc_char[5];
+     22          
+     23          //----------------------------------------------------------------------------//
+     24          
+     25          #pragma vector=USCI_A0_VECTOR
+
+   \                                 In  segment ISR_CODE, align 2
+     26          __interrupt void USCI_A0_ISR(void){
+   \                     USCI_A0_ISR:
+   \   000000   5F15         PUSHM.W #0x6, R15
+     27              unsigned int temp;
+     28              switch(__even_in_range(UCA0IV,0x08)){
+   \   000002   1F42DE05     MOV.W   &0x5de, R15
+   \   000006   E00F         ADDA    R15, PC
+   \                     `?<Jumptable for USCI_A0_ISR>_0`:
+   \   000008   293C         JMP     ??USCI_A0_ISR_2
+   \   00000A   033C         JMP     ??USCI_A0_ISR_4
+   \   00000C   273C         JMP     ??USCI_A0_ISR_2
+   \   00000E   263C         JMP     ??USCI_A0_ISR_2
+   \   000010   253C         JMP     ??USCI_A0_ISR_2
+     29                  case 0: // Vector 0 - no interrupt
+     30                      break;
+     31                  case 2: // Vector 2 - RXIFG
+     32                      temp = usb_rx_ring_wr0;
+   \                     ??USCI_A0_ISR_4:
+   \   000012   1A42....     MOV.W   &usb_rx_ring_wr0, R10
+     33                      USB_Char_Rx0[temp] = UCA0RXBUF; // RX -> USB_Char_Rx character
+   \   000016   1E42CC05     MOV.W   &0x5cc, R14
+   \   00001A   CA4E....     MOV.B   R14, USB_Char_Rx0(R10)
+     34                      
+     35                      
+     36                      passed_value = USB_Char_Rx0[temp];
+   \   00001E   5F4A....     MOV.B   USB_Char_Rx0(R10), R15
+   \   000022   4F4F         MOV.B   R15, R15
+   \   000024   824F....     MOV.W   R15, &passed_value
+     37                      passed_value++;
+   \   000028   9253....     ADD.W   #0x1, &passed_value
+     38                      HEXtoBCD(passed_value);
+   \   00002C   1C42....     MOV.W   &passed_value, R12
+   \   000030   ........     CALLA   #HEXtoBCD
+     39                      display_1 = adc_char;
+   \   000034   B240........ MOV.W   #adc_char, &display_1
+     40                      Display_Process();
+   \   00003A   ........     CALLA   #Display_Process
+     41                      
+     42                      
+     43                      if (++usb_rx_ring_wr0 >= (SMALL_RING_SIZE)){
+   \   00003E   1F42....     MOV.W   &usb_rx_ring_wr0, R15
+   \   000042   1F53         ADD.W   #0x1, R15
+   \   000044   824F....     MOV.W   R15, &usb_rx_ring_wr0
+   \   000048   3F901000     CMP.W   #0x10, R15
+   \   00004C   0228         JNC     ??USCI_A0_ISR_3
+     44                          usb_rx_ring_wr0 = BEGINNING; // Circular buffer back to beginning
+   \   00004E   8243....     MOV.W   #0x0, &usb_rx_ring_wr0
+     45                      }
+     46                      
+     47                      if(passed_value >= 0){
+   \                     ??USCI_A0_ISR_3:
+   \   000052   8293....     CMP.W   #0x0, &passed_value
+   \   000056   0238         JL      ??USCI_A0_ISR_2
+     48                        pass_flag=TRUE;
+   \   000058   9243....     MOV.W   #0x1, &pass_flag
+     49                      }
+     50                      
+     51                      break;
+     52                  case 4: // Vector 4 – TXIFG
+     53                      break;
+     54                  default: break;
+     55              }
+     56          }
+   \                     ??USCI_A0_ISR_2:
+   \   00005C   5A17         POPM.W  #0x6, R15
+   \   00005E   0013         RETI
+   \   000060                REQUIRE _A_UCA0RXBUF_L
+   \   000060                REQUIRE UCA0IV
+     57          
+     58          #pragma vector=USCI_A1_VECTOR
+
+   \                                 In  segment ISR_CODE, align 2
+     59          __interrupt void USCI_A1_ISR(void){
+   \                     USCI_A1_ISR:
+   \   000000   5F15         PUSHM.W #0x6, R15
+     60              unsigned int temp;
+     61              switch(__even_in_range(UCA1IV,0x08)){
+   \   000002   1F42FE05     MOV.W   &0x5fe, R15
+   \   000006   E00F         ADDA    R15, PC
+   \                     `?<Jumptable for USCI_A1_ISR>_0`:
+   \   000008   293C         JMP     ??USCI_A1_ISR_2
+   \   00000A   033C         JMP     ??USCI_A1_ISR_4
+   \   00000C   273C         JMP     ??USCI_A1_ISR_2
+   \   00000E   263C         JMP     ??USCI_A1_ISR_2
+   \   000010   253C         JMP     ??USCI_A1_ISR_2
+     62                  case 0: // Vector 0 - no interrupt
+     63                      break;
+     64                  case 2: // Vector 2 - RXIFG
+     65                      temp = usb_rx_ring_wr1;
+   \                     ??USCI_A1_ISR_4:
+   \   000012   1A42....     MOV.W   &usb_rx_ring_wr1, R10
+     66                      USB_Char_Rx1[temp] = UCA1RXBUF; // RX -> USB_Char_Rx character
+   \   000016   1E42EC05     MOV.W   &0x5ec, R14
+   \   00001A   CA4E....     MOV.B   R14, USB_Char_Rx1(R10)
+     67                      
+     68                      passed_value = USB_Char_Rx0[temp];
+   \   00001E   5F4A....     MOV.B   USB_Char_Rx0(R10), R15
+   \   000022   4F4F         MOV.B   R15, R15
+   \   000024   824F....     MOV.W   R15, &passed_value
+     69                      passed_value++;
+   \   000028   9253....     ADD.W   #0x1, &passed_value
+     70                      HEXtoBCD(passed_value);
+   \   00002C   1C42....     MOV.W   &passed_value, R12
+   \   000030   ........     CALLA   #HEXtoBCD
+     71                      display_1 = adc_char;
+   \   000034   B240........ MOV.W   #adc_char, &display_1
+     72                      Display_Process();
+   \   00003A   ........     CALLA   #Display_Process
+     73                      
+     74                      if (++usb_rx_ring_wr1 >= (SMALL_RING_SIZE)){
+   \   00003E   1F42....     MOV.W   &usb_rx_ring_wr1, R15
+   \   000042   1F53         ADD.W   #0x1, R15
+   \   000044   824F....     MOV.W   R15, &usb_rx_ring_wr1
+   \   000048   3F901000     CMP.W   #0x10, R15
+   \   00004C   0228         JNC     ??USCI_A1_ISR_3
+     75                          usb_rx_ring_wr1 = BEGINNING; // Circular buffer back to beginning
+   \   00004E   8243....     MOV.W   #0x0, &usb_rx_ring_wr1
+     76                      }
+     77                      
+     78                      if(passed_value >= 0){
+   \                     ??USCI_A1_ISR_3:
+   \   000052   8293....     CMP.W   #0x0, &passed_value
+   \   000056   0238         JL      ??USCI_A1_ISR_2
+     79                        pass_flag=TRUE;
+   \   000058   9243....     MOV.W   #0x1, &pass_flag
+     80                      }
+     81                      
+     82                      break;
+     83                  case 4: // Vector 4 – TXIFG
+     84                      //temp = usb_tx_ring_wr1;
+     85                      //UCA1TXBUF= USB_Char_Tx1[temp]; // TX -> USB_Char_Tx character
+     86                      //if (++usb_tx_ring_wr1 >= (LARGE_RING_SIZE)){
+     87                     //     usb_tx_ring_wr1 = BEGINNING; // Circular buffer back to beginning
+     88                     // }
+     89                      break;
+     90                  default: break;
+     91              }
+     92          }
+   \                     ??USCI_A1_ISR_2:
+   \   00005C   5A17         POPM.W  #0x6, R15
+   \   00005E   0013         RETI
+   \   000060                REQUIRE _A_UCA1RXBUF_L
+   \   000060                REQUIRE UCA1IV
+
+   \                                 In  segment INTVEC, offset 0x56, root
+   \                     `??USCI_A1_ISR::??INTVEC 86`:
+   \   000056   ....         DC16    USCI_A1_ISR
+
+   \                                 In  segment INTVEC, offset 0x60, root
+   \                     `??USCI_A0_ISR::??INTVEC 96`:
+   \   000060   ....         DC16    USCI_A0_ISR
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+     16   USCI_A0_ISR
+       16   -> Display_Process
+       16   -> HEXtoBCD
+     16   USCI_A1_ISR
+       16   -> Display_Process
+       16   -> HEXtoBCD
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       2  UCA0IV
+       2  UCA1IV
+      16  USB_Char_Rx0
+      16  USB_Char_Rx1
+      16  USB_Char_Tx0
+      16  USB_Char_Tx1
+      96  USCI_A0_ISR
+       2  USCI_A0_ISR::??INTVEC 96
+      96  USCI_A1_ISR
+       2  USCI_A1_ISR::??INTVEC 86
+       2  _A_UCA0RXBUF_L
+       2  _A_UCA1RXBUF_L
+       2  usb_rx_ring_rd0
+       2  usb_rx_ring_rd1
+       2  usb_rx_ring_wr0
+       2  usb_rx_ring_wr1
+       2  usb_tx_ring_rd0
+       2  usb_tx_ring_rd1
+       2  usb_tx_ring_wr0
+       2  usb_tx_ring_wr1
+
+ 
+   8 bytes in segment DATA16_AN
+  80 bytes in segment DATA16_Z
+   4 bytes in segment INTVEC
+ 192 bytes in segment ISR_CODE
+ 
+ 192 bytes of CODE  memory
+   0 bytes of CONST memory (+ 4 bytes shared)
+  80 bytes of DATA  memory (+ 8 bytes shared)
+
+Errors: none
+Warnings: none

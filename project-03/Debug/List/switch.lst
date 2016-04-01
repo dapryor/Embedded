@@ -1,0 +1,432 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           18/Feb/2016  16:18:32
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\SkyDrive\ECE 306\project-03\switch.c
+#    Command line  =  
+#        "C:\Users\David\SkyDrive\ECE 306\project-03\switch.c" -lC
+#        "C:\Users\David\SkyDrive\ECE 306\project-03\Debug\List" -o
+#        "C:\Users\David\SkyDrive\ECE 306\project-03\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\SkyDrive\ECE 306\project-03\Debug\List\switch.lst
+#    Object file   =  
+#        C:\Users\David\SkyDrive\ECE 306\project-03\Debug\Obj\switch.r43
+#
+###############################################################################
+
+C:\Users\David\SkyDrive\ECE 306\project-03\switch.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : switch.c
+      3          //
+      4          //  Description: This file contains the Switches_Process function
+      5          //
+      6          //
+      7          //  David Pryor
+      8          //  Jan 2016
+      9          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+     10          //------------------------------------------------------------------------------
+     11          #include "macros.h"
+     12          #include "functions.h"
+     13          #include "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x220
+   \   union <unnamed> _A_PBIN_L
+   \                     _A_PBIN_L:
+   \   000000                DS8 2
+     14          //------------------------------------------------------------------------------
+     15          // Required defines
+     16          // FOR_ONE_SECOND                       (200)  // for use with 5msec sleep
+     17          // SW1                  	        (0x01) // Switch 1
+     18          // SW2                  	        (0x02) // Switch 2
+     19          // LINE_POS_1                              (0x01) // starting postion on lcd
+     20          // LINE_POS_2                              (0x02) // starting postion on lcd
+     21          // LINE_POS_3                              (0x03) // starting postion on lcd
+     22          //------------------------------------------------------------------------------
+     23          //GLOBALS
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     24          int menu_count = MENU_ITEM_ONE;
+   \                     menu_count:
+   \   000000                DS8 2
+     25          extern char *display_1;
+     26          extern char *display_2;
+     27          extern char *display_3;
+     28          extern char *display_4;
+     29          extern char posL1;
+     30          extern char posL2;
+     31          extern char posL3;
+     32          extern char posL4;
+     33          //------------------------------------------------------------------------------
+     34          
+
+   \                                 In  segment CODE, align 2
+     35          void Switches_Process(void){
+   \                     Switches_Process:
+     36          //==============================================================================
+     37          // Switch Process
+     38          // 
+     39          // Description: This function takes an input from the push button and switches which lines
+     40          //  are display on the LCD
+     41          //
+     42          // Passed : no variables passed
+     43          // Locals: no variables declared
+     44          // Returned: no values returned
+     45          // Globals:     char *display_1
+     46          //              char *display_2
+     47          //              char *display_3
+     48          //              char *display_4
+     49          //              char posL1
+     50          //              char posL2
+     51          //              char posL3
+     52          //              char posL4
+     53          //              int menu_count
+     54          //
+     55          // Author: David Pryor
+     56          // Date: Feb 2016
+     57          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     58          //==============================================================================
+     59            if (!(P4IN & SW1)){
+   \   000000   D2B32102     BIT.B   #0x1, &0x221
+   \   000004   C12C         JC      ??Switches_Process_0
+     60              five_msec_sleep(FOR_TENTH_SECOND); //prevent double detection of switch
+   \   000006   3C401400     MOV.W   #0x14, R12
+   \   00000A   ........     CALLA   #five_msec_sleep
+     61              switch(menu_count){
+   \   00000E   1F42....     MOV.W   &menu_count, R15
+   \   000012   0F83         SUB.W   #0x0, R15
+   \   000014   0B24         JEQ     ??Switches_Process_2
+   \   000016   1F83         SUB.W   #0x1, R15
+   \   000018   2724         JEQ     ??Switches_Process_3
+   \   00001A   1F83         SUB.W   #0x1, R15
+   \   00001C   4324         JEQ     ??Switches_Process_4
+   \   00001E   1F83         SUB.W   #0x1, R15
+   \   000020   5D24         JEQ     ??Switches_Process_5
+   \   000022   1F83         SUB.W   #0x1, R15
+   \   000024   7824         JEQ     ??Switches_Process_6
+   \   000026   1F83         SUB.W   #0x1, R15
+   \   000028   9324         JEQ     ??Switches_Process_7
+   \   00002A   AE3C         JMP     ??Switches_Process_0
+     62                  case MENU_ITEM_ONE:            // First menu item
+     63                    five_msec_sleep(FOR_TWOHUNDRED_MSEC);
+   \                     ??Switches_Process_2:
+   \   00002C   3C402800     MOV.W   #0x28, R12
+   \   000030   ........     CALLA   #five_msec_sleep
+     64                    display_1 = "";
+   \   000034   B240........ MOV.W   #`?<Constant "">`, &display_1
+     65                    posL1 = LINE_POS_1;
+   \   00003A   D243....     MOV.B   #0x1, &posL1
+     66                    display_2 = "Line";
+   \   00003E   B240........ MOV.W   #`?<Constant "Line">`, &display_2
+     67                    posL2 = LINE_POS_3;
+   \   000044   F2400300.... MOV.B   #0x3, &posL2
+     68                    display_3 = "";
+   \   00004A   B240........ MOV.W   #`?<Constant "">`, &display_3
+     69                    posL3 = LINE_POS_3;
+   \   000050   F2400300.... MOV.B   #0x3, &posL3
+     70                    display_4 = "";
+   \   000056   B240........ MOV.W   #`?<Constant "">`, &display_4
+     71                    posL4 = LINE_POS_3;
+   \   00005C   F2400300.... MOV.B   #0x3, &posL4
+     72                    menu_count++;
+   \   000062   9253....     ADD.W   #0x1, &menu_count
+     73                    break;
+   \   000066   903C         JMP     ??Switches_Process_0
+     74                  case MENU_ITEM_TWO:            // Second menu item  
+     75                    five_msec_sleep(FOR_TWOHUNDRED_MSEC);
+   \                     ??Switches_Process_3:
+   \   000068   3C402800     MOV.W   #0x28, R12
+   \   00006C   ........     CALLA   #five_msec_sleep
+     76                    display_1 = "";
+   \   000070   B240........ MOV.W   #`?<Constant "">`, &display_1
+     77                    posL1 = LINE_POS_1;
+   \   000076   D243....     MOV.B   #0x1, &posL1
+     78                    display_2 = "Curve";
+   \   00007A   B240........ MOV.W   #`?<Constant "Curve">`, &display_2
+     79                    posL2 = LINE_POS_3;
+   \   000080   F2400300.... MOV.B   #0x3, &posL2
+     80                    display_3 = "";
+   \   000086   B240........ MOV.W   #`?<Constant "">`, &display_3
+     81                    posL3 = LINE_POS_3;
+   \   00008C   F2400300.... MOV.B   #0x3, &posL3
+     82                    display_4 = "";
+   \   000092   B240........ MOV.W   #`?<Constant "">`, &display_4
+     83                    posL4 = LINE_POS_3;
+   \   000098   F2400300.... MOV.B   #0x3, &posL4
+     84                    menu_count++;
+   \   00009E   9253....     ADD.W   #0x1, &menu_count
+     85                    break;
+   \   0000A2   723C         JMP     ??Switches_Process_0
+     86                  case MENU_ITEM_THREE:             // Third menu item
+     87                    five_msec_sleep(FOR_TWOHUNDRED_MSEC);
+   \                     ??Switches_Process_4:
+   \   0000A4   3C402800     MOV.W   #0x28, R12
+   \   0000A8   ........     CALLA   #five_msec_sleep
+     88                    display_1 = "";
+   \   0000AC   B240........ MOV.W   #`?<Constant "">`, &display_1
+     89                    posL1 = LINE_POS_1;
+   \   0000B2   D243....     MOV.B   #0x1, &posL1
+     90                    display_2 = "Right";
+   \   0000B6   B240........ MOV.W   #`?<Constant "Right">`, &display_2
+     91                    posL2 = LINE_POS_2;
+   \   0000BC   E243....     MOV.B   #0x2, &posL2
+     92                    display_3 = "Circle";
+   \   0000C0   B240........ MOV.W   #`?<Constant "Circle">`, &display_3
+     93                    posL3 = LINE_POS_2;
+   \   0000C6   E243....     MOV.B   #0x2, &posL3
+     94                    display_4 = "";
+   \   0000CA   B240........ MOV.W   #`?<Constant "">`, &display_4
+     95                    posL4 = LINE_POS_3;
+   \   0000D0   F2400300.... MOV.B   #0x3, &posL4
+     96                    menu_count++;
+   \   0000D6   9253....     ADD.W   #0x1, &menu_count
+     97                    break;
+   \   0000DA   563C         JMP     ??Switches_Process_0
+     98                  case MENU_ITEM_FOUR:             // Third menu item
+     99                    five_msec_sleep(FOR_TWOHUNDRED_MSEC);
+   \                     ??Switches_Process_5:
+   \   0000DC   3C402800     MOV.W   #0x28, R12
+   \   0000E0   ........     CALLA   #five_msec_sleep
+    100                    display_1 = "";
+   \   0000E4   B240........ MOV.W   #`?<Constant "">`, &display_1
+    101                    posL1 = LINE_POS_1;
+   \   0000EA   D243....     MOV.B   #0x1, &posL1
+    102                    display_2 = "Left";
+   \   0000EE   B240........ MOV.W   #`?<Constant "Left">`, &display_2
+    103                    posL2 = LINE_POS_3;
+   \   0000F4   F2400300.... MOV.B   #0x3, &posL2
+    104                    display_3 = "Circle";
+   \   0000FA   B240........ MOV.W   #`?<Constant "Circle">`, &display_3
+    105                    posL3 = LINE_POS_2;
+   \   000100   E243....     MOV.B   #0x2, &posL3
+    106                    display_4 = "";
+   \   000104   B240........ MOV.W   #`?<Constant "">`, &display_4
+    107                    posL4 = LINE_POS_3;
+   \   00010A   F2400300.... MOV.B   #0x3, &posL4
+    108                    menu_count++;
+   \   000110   9253....     ADD.W   #0x1, &menu_count
+    109                    break;
+   \   000114   393C         JMP     ??Switches_Process_0
+    110                  case MENU_ITEM_FIVE:             // Fourth menu item
+    111                    five_msec_sleep(FOR_TWOHUNDRED_MSEC);
+   \                     ??Switches_Process_6:
+   \   000116   3C402800     MOV.W   #0x28, R12
+   \   00011A   ........     CALLA   #five_msec_sleep
+    112                    display_1 = "";
+   \   00011E   B240........ MOV.W   #`?<Constant "">`, &display_1
+    113                    posL1 = LINE_POS_1;
+   \   000124   D243....     MOV.B   #0x1, &posL1
+    114                    display_2 = "Triangle";
+   \   000128   B240........ MOV.W   #`?<Constant "Triangle">`, &display_2
+    115                    posL2 = LINE_POS_1;
+   \   00012E   D243....     MOV.B   #0x1, &posL2
+    116                    display_3 = "";
+   \   000132   B240........ MOV.W   #`?<Constant "">`, &display_3
+    117                    posL3 = LINE_POS_3;
+   \   000138   F2400300.... MOV.B   #0x3, &posL3
+    118                    display_4 = "";
+   \   00013E   B240........ MOV.W   #`?<Constant "">`, &display_4
+    119                    posL4 = LINE_POS_3;
+   \   000144   F2400300.... MOV.B   #0x3, &posL4
+    120                    menu_count++;
+   \   00014A   9253....     ADD.W   #0x1, &menu_count
+    121                    break;
+   \   00014E   1C3C         JMP     ??Switches_Process_0
+    122                  case MENU_ITEM_SIX:  	    // Fifth Menu item
+    123                    five_msec_sleep(FOR_TWOHUNDRED_MSEC);
+   \                     ??Switches_Process_7:
+   \   000150   3C402800     MOV.W   #0x28, R12
+   \   000154   ........     CALLA   #five_msec_sleep
+    124                    display_1 = "";
+   \   000158   B240........ MOV.W   #`?<Constant "">`, &display_1
+    125                    posL1 = LINE_POS_1;
+   \   00015E   D243....     MOV.B   #0x1, &posL1
+    126                    display_2 = "Figure-8";
+   \   000162   B240........ MOV.W   #`?<Constant "Figure-8">`, &display_2
+    127                    posL2 = LINE_POS_1;
+   \   000168   D243....     MOV.B   #0x1, &posL2
+    128                    display_3 = "";
+   \   00016C   B240........ MOV.W   #`?<Constant "">`, &display_3
+    129                    posL3 = LINE_POS_3;
+   \   000172   F2400300.... MOV.B   #0x3, &posL3
+    130                    display_4 = "";
+   \   000178   B240........ MOV.W   #`?<Constant "">`, &display_4
+    131                    posL4 = LINE_POS_3;
+   \   00017E   F2400300.... MOV.B   #0x3, &posL4
+    132                    menu_count = MENU_ITEM_ONE;
+   \   000184   8243....     MOV.W   #0x0, &menu_count
+    133                    break;                                // 
+    134                  default: break; 
+    135                }
+    136            }
+    137            if (!(P4IN & SW2)) {
+   \                     ??Switches_Process_0:
+   \   000188   E2B32102     BIT.B   #0x2, &0x221
+   \   00018C   372C         JC      ??Switches_Process_1
+    138              five_msec_sleep(FOR_THREETWENTYFIVE_MSEC); //prevent double detection of switch
+   \   00018E   3C404100     MOV.W   #0x41, R12
+   \   000192   ........     CALLA   #five_msec_sleep
+    139              switch(menu_count){
+   \   000196   1F42....     MOV.W   &menu_count, R15
+   \   00019A   0F83         SUB.W   #0x0, R15
+   \   00019C   2924         JEQ     ??Switches_Process_8
+   \   00019E   1F83         SUB.W   #0x1, R15
+   \   0001A0   0924         JEQ     ??Switches_Process_9
+   \   0001A2   1F83         SUB.W   #0x1, R15
+   \   0001A4   0D24         JEQ     ??Switches_Process_10
+   \   0001A6   1F83         SUB.W   #0x1, R15
+   \   0001A8   1124         JEQ     ??Switches_Process_11
+   \   0001AA   1F83         SUB.W   #0x1, R15
+   \   0001AC   1524         JEQ     ??Switches_Process_12
+   \   0001AE   1F83         SUB.W   #0x1, R15
+   \   0001B0   1924         JEQ     ??Switches_Process_13
+   \   0001B2   1001         RETA
+    140                  case MENU_PICK_ONE:            // First menu item
+    141                    five_msec_sleep(FOR_THREETWENTYFIVE_MSEC );
+   \                     ??Switches_Process_9:
+   \   0001B4   3C404100     MOV.W   #0x41, R12
+   \   0001B8   ........     CALLA   #five_msec_sleep
+    142                    straight_line();
+   \   0001BC   ........     BRA     #straight_line
+    143                    break;
+    144                  case MENU_PICK_TWO:            // Second menu item
+    145                    five_msec_sleep(FOR_THREETWENTYFIVE_MSEC );
+   \                     ??Switches_Process_10:
+   \   0001C0   3C404100     MOV.W   #0x41, R12
+   \   0001C4   ........     CALLA   #five_msec_sleep
+    146                    curved_left180_line();
+   \   0001C8   ........     BRA     #curved_left180_line
+    147                    break;
+    148                  case MENU_PICK_THREE:             // Third menu item
+    149                    five_msec_sleep(FOR_THREETWENTYFIVE_MSEC );
+   \                     ??Switches_Process_11:
+   \   0001CC   3C404100     MOV.W   #0x41, R12
+   \   0001D0   ........     CALLA   #five_msec_sleep
+    150                    right_circle_routine();
+   \   0001D4   ........     BRA     #right_circle_routine
+    151                    break;
+    152                  case MENU_PICK_FOUR:             // Fourth menu item
+    153                    five_msec_sleep(FOR_THREETWENTYFIVE_MSEC );
+   \                     ??Switches_Process_12:
+   \   0001D8   3C404100     MOV.W   #0x41, R12
+   \   0001DC   ........     CALLA   #five_msec_sleep
+    154                    left_circle_routine();
+   \   0001E0   ........     BRA     #left_circle_routine
+    155                    break;
+    156                  case MENU_PICK_FIVE:             // Fifth menu item
+    157                    five_msec_sleep(FOR_THREETWENTYFIVE_MSEC );
+   \                     ??Switches_Process_13:
+   \   0001E4   3C404100     MOV.W   #0x41, R12
+   \   0001E8   ........     CALLA   #five_msec_sleep
+    158                    triangle_routine();
+   \   0001EC   ........     BRA     #triangle_routine
+    159                    break;
+    160                  case MENU_PICK_SIX:  	    // Sixth Menu item
+    161                    five_msec_sleep(FOR_THREETWENTYFIVE_MSEC );
+   \                     ??Switches_Process_8:
+   \   0001F0   3C404100     MOV.W   #0x41, R12
+   \   0001F4   ........     CALLA   #five_msec_sleep
+    162                    figure_eight_routine();
+   \   0001F8   ........     CALLA   #figure_eight_routine
+    163                    break;                                // 
+    164                  default: break; 
+    165                }
+    166            }
+    167          //------------------------------------------------------------------------------
+    168          }
+   \                     ??Switches_Process_1:
+   \   0001FC   1001         RETA
+   \   0001FE                REQUIRE _A_PBIN_L
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "">`:
+   \   000000   00           DC8 ""
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Line">`:
+   \   000000   4C696E6500   DC8 "Line"
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Curve">`:
+   \   000000   437572766500 DC8 "Curve"
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Right">`:
+   \   000000   526967687400 DC8 "Right"
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Circle">`:
+   \   000000   436972636C65 DC8 "Circle"
+   \            00          
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Left">`:
+   \   000000   4C65667400   DC8 "Left"
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Triangle">`:
+   \   000000   547269616E67 DC8 "Triangle"
+   \            6C6500      
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Figure-8">`:
+   \   000000   466967757265 DC8 "Figure-8"
+   \            2D3800      
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   Switches_Process
+        0   -> curved_left180_line
+        4   -> figure_eight_routine
+        4   -> five_msec_sleep
+        0   -> left_circle_routine
+        0   -> right_circle_routine
+        0   -> straight_line
+        0   -> triangle_routine
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       1  ?<Constant "">
+       7  ?<Constant "Circle">
+       6  ?<Constant "Curve">
+       9  ?<Constant "Figure-8">
+       5  ?<Constant "Left">
+       5  ?<Constant "Line">
+       6  ?<Constant "Right">
+       9  ?<Constant "Triangle">
+     510  Switches_Process
+       2  _A_PBIN_L
+       2  menu_count
+
+ 
+ 510 bytes in segment CODE
+   2 bytes in segment DATA16_AN
+  48 bytes in segment DATA16_C
+   2 bytes in segment DATA16_Z
+ 
+ 510 bytes of CODE  memory
+  48 bytes of CONST memory
+   2 bytes of DATA  memory (+ 2 bytes shared)
+
+Errors: none
+Warnings: none

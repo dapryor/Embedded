@@ -1,0 +1,223 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           21/Mar/2016  02:10:25
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  
+#        C:\Users\David\SkyDrive\ECE 306\Project-05\interrupt_ports.c
+#    Command line  =  
+#        "C:\Users\David\SkyDrive\ECE 306\Project-05\interrupt_ports.c" -lC
+#        "C:\Users\David\SkyDrive\ECE 306\Project-05\Debug\List" -o
+#        "C:\Users\David\SkyDrive\ECE 306\Project-05\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\SkyDrive\ECE
+#        306\Project-05\Debug\List\interrupt_ports.lst
+#    Object file   =  
+#        C:\Users\David\SkyDrive\ECE
+#        306\Project-05\Debug\Obj\interrupt_ports.r43
+#
+###############################################################################
+
+C:\Users\David\SkyDrive\ECE 306\Project-05\interrupt_ports.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : interrupts_ports.c
+      3          //
+      4          //  Description: This file contains the interrupts used for switches
+      5          //
+      6          //
+      7          //  David Pryor
+      8          //  Feb 2016
+      9          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+     10          //------------------------------------------------------------------------------
+     11          #include "macros.h"
+     12          #include "functions.h"
+     13          #include "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x23a
+   \   union <unnamed> _A_PBIE_L
+   \                     _A_PBIE_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x23c
+   \   union <unnamed> _A_PBIFG_L
+   \                     _A_PBIFG_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x322
+   \   union <unnamed> _A_PJOUT_L
+   \                     _A_PJOUT_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x342
+   \   unsigned short volatile TA0CCTL0
+   \                     TA0CCTL0:
+   \   000000                DS8 2
+     14          
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     15           volatile unsigned int switch_one_pressed;
+   \                     switch_one_pressed:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     16           volatile unsigned int switch_two_pressed;
+   \                     switch_two_pressed:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     17           volatile unsigned int switch_one_debounce;
+   \                     switch_one_debounce:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     18           volatile unsigned int switch_two_debounce;
+   \                     switch_two_debounce:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     19           volatile unsigned int debounce_count_one = SWITCH_OFF;
+   \                     debounce_count_one:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     20           volatile unsigned int debounce_count_two = SWITCH_OFF;
+   \                     debounce_count_two:
+   \   000000                DS8 2
+     21           extern volatile unsigned int do_this;
+     22          
+     23          
+     24          #pragma vector=PORT4_VECTOR
+
+   \                                 In  segment ISR_CODE, align 2
+     25          __interrupt void switch_interrupt(void){
+   \                     switch_interrupt:
+     26            //==============================================================================
+     27            // Creates interrupts for sw1 and sw2
+     28            // 
+     29            // Description: creates the interrupt for the timer sw1 and sw2
+     30            //
+     31            // Passed : no variables passed
+     32            // Locals: no variables declared
+     33            // Returned: no values returned
+     34            // Globals:     extern volatile unsigned int switch_one_pressed
+     35            //              extern volatile unsigned int switch_two_pressed
+     36            //              extern volatile unsigned int switch_one_debounce
+     37            //              extern volatile unsigned int switch_two_debounce
+     38            //              volatile unsigned int debounce_count_one
+     39            //              volatile unsigned int debounce_count_two
+     40            //
+     41            // Author: David Pryor
+     42            // Date: Feb 2016
+     43            // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     44            //============================================================================
+     45           // Switch 1
+     46           if ((P4IFG & SW1) && !switch_one_debounce) {
+   \   000000   D2B33D02     BIT.B   #0x1, &0x23d
+   \   000004   0F28         JNC     ??switch_interrupt_0
+   \   000006   8293....     CMP.W   #0x0, &switch_one_debounce
+   \   00000A   0C20         JNE     ??switch_interrupt_0
+     47           switch_one_pressed = SWITCH_ON;        // Set a variable to identify the switch has been pressed.
+   \   00000C   9243....     MOV.W   #0x1, &switch_one_pressed
+     48           switch_one_debounce = SWITCH_ON;       // Set a variable to identify the switch is being debounced.
+   \   000010   9243....     MOV.W   #0x1, &switch_one_debounce
+     49           debounce_count_one = SWITCH_OFF;       // Reset the count required of the debounce.
+   \   000014   8243....     MOV.W   #0x0, &debounce_count_one
+     50           P4IE &= ~SW1;                         // Disable the Switch Interrupt.
+   \   000018   D2C33B02     BIC.B   #0x1, &0x23b
+     51           TA0CCTL0 &= ~CCIFG;                       // Clear any current timer interrupt.
+   \   00001C   92C34203     BIC.W   #0x1, &0x342
+     52           do_this = TRUE;
+   \   000020   9243....     MOV.W   #0x1, &do_this
+     53           }
+     54           
+     55           // Switch 2
+     56           if ((P4IFG & SW2) && !switch_two_debounce) {
+   \                     ??switch_interrupt_0:
+   \   000024   E2B33D02     BIT.B   #0x2, &0x23d
+   \   000028   0F28         JNC     ??switch_interrupt_1
+   \   00002A   8293....     CMP.W   #0x0, &switch_two_debounce
+   \   00002E   0C20         JNE     ??switch_interrupt_1
+     57           switch_two_pressed = SWITCH_ON;        // Set a variable to identify the switch has been pressed.
+   \   000030   9243....     MOV.W   #0x1, &switch_two_pressed
+     58           switch_two_debounce = SWITCH_ON ;      // Set a variable to identify the switch is being debounced.
+   \   000034   9243....     MOV.W   #0x1, &switch_two_debounce
+     59           debounce_count_two = SWITCH_OFF;       // Reset the count required of the debounce.
+   \   000038   8243....     MOV.W   #0x0, &debounce_count_two
+     60           P4IE &= ~SW2;                         // Disable the Switch Interrupt.
+   \   00003C   E2C33B02     BIC.B   #0x2, &0x23b
+     61           TA0CCTL0 &= ~CCIFG;                       // Clear any current timer interrupt.   
+   \   000040   92C34203     BIC.W   #0x1, &0x342
+     62           PJOUT ^= IOT_FACTORY;
+   \   000044   A2E32203     XOR.W   #0x2, &0x322
+     63           }
+     64           TA0CCTL0 |= CCIE;  
+   \                     ??switch_interrupt_1:
+   \   000048   B2D010004203 BIS.W   #0x10, &0x342
+     65           
+     66          }
+   \   00004E   0013         RETI
+   \   000050                REQUIRE _A_PBIFG_L
+   \   000050                REQUIRE _A_PBIE_L
+   \   000050                REQUIRE TA0CCTL0
+   \   000050                REQUIRE _A_PJOUT_L
+
+   \                                 In  segment INTVEC, offset 0x40, root
+   \                     `??switch_interrupt::??INTVEC 64`:
+   \   000040   ....         DC16    switch_interrupt
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   switch_interrupt
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       2  TA0CCTL0
+       2  _A_PBIE_L
+       2  _A_PBIFG_L
+       2  _A_PJOUT_L
+       2  debounce_count_one
+       2  debounce_count_two
+      80  switch_interrupt
+       2  switch_interrupt::??INTVEC 64
+       2  switch_one_debounce
+       2  switch_one_pressed
+       2  switch_two_debounce
+       2  switch_two_pressed
+
+ 
+  8 bytes in segment DATA16_AN
+ 12 bytes in segment DATA16_Z
+  2 bytes in segment INTVEC
+ 80 bytes in segment ISR_CODE
+ 
+ 80 bytes of CODE  memory
+  0 bytes of CONST memory (+ 2 bytes shared)
+ 12 bytes of DATA  memory (+ 8 bytes shared)
+
+Errors: none
+Warnings: none
