@@ -1991,13 +1991,13 @@
     <name>$PROJ_DIR$\main.c</name>
   </file>
   <file>
+    <name>$PROJ_DIR$\menus.c</name>
+  </file>
+  <file>
     <name>$PROJ_DIR$\motors.c</name>
   </file>
   <file>
     <name>$PROJ_DIR$\ports.c</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\shapes.c</name>
   </file>
   <file>
     <name>$PROJ_DIR$\system.c</name>

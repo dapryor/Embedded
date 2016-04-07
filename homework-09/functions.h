@@ -108,6 +108,9 @@ void Project5(void);
 
 //Menu
 void Menu_Process(void);
+void Resistor_Menu(void);
+void Shapes_Menu(void);
+void Song_Menu(void);
 
 //Serial
 void Init_Serial_UCA0(int baud_choice);

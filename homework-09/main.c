@@ -131,41 +131,33 @@ void main(void){
   Init_ADC();                               // Initialize ADC
   Init_Serial_UCA1(1);                      // BAUD rate 9600
   Init_Serial_UCA0(1);                      // BAUD rate 9600
-  display_1 = " David  P";
-  display_2 = "  ECE306";  
-  display_3 = "   HW08";
-  display_4 = "9600  Baud";
-  Display_Process();
-  Five_msec_Delay(FOR_FIVE_SECONDS);
-  display_1 = "";
-  display_2 = "";
-  display_3 = "";
+  
+  
+  lcd_BIG_mid();
+  display_1 = "  David   ";
+  display_2 = "Homework 9";  
+  display_3 = "  Pryor   ";
   display_4 = "";
   Display_Process();
+
 
 
 //------------------------------------------------------------------------------
 // Begining of the "While" Operating System
 //------------------------------------------------------------------------------
   while(ALWAYS) {                            // Can the Operating system run
-    Menu_Process();
+    
     ADC_Process();              // call sampling function
+    
     if(display_count >= FOR_FOURTH_SECOND){    // update screen every 250 msec
       Display_Process();
       display_count = SWITCH_OFF;
     }
-    if(menu_items == FALSE){  //start menu
-      display_4 = "SW2: Menu";
-    }
-    if(switch_two_pressed){ //enter selection menu
-      menu_items = TRUE;
-      switch_two_pressed = SWITCH_OFF;
-    }
-    if(pass_flag==TRUE){
-      Five_msec_Delay(200);
-      USB_Char_Tx0[0] = passed_value;
-      UCA0TXBUF = USB_Char_Tx0[0];
-      pass_flag=FALSE;
+    
+    if(menu_items){  //start menu
+      switch_one_pressed = FALSE;
+      switch_two_pressed = FALSE;
+      Menu_Process();
     }
     
   }
@@ -173,142 +165,7 @@ void main(void){
 }
 
 
-void Menu_Process(void){
-  int i;
-  //---------------------UNUSED-----------------------------------------
-  if(menu_items && ADC_Thumb <= SECTION_SIX_START){
-    display_1 = "Option 4";
-    display_2 = "";  
-    display_3 = "";
-    display_4 = "SW1 Select";
-    if(switch_one_pressed){
-      switch_one_pressed = FALSE;
-    } 
-  }
-  //---------------------UNUSED-----------------------------------------
-  else if(menu_items && ADC_Thumb <= SECTION_FIVE_START && ADC_Thumb > SECTION_SIX_START){
-    display_1 = "Count";
-    display_2 = "";  
-    display_3 = "";
-    display_4 = "SW1 Select";
-    if(switch_one_pressed){
-      UCA0TXBUF = 0;
-      menu_items = FALSE;
-      switch_one_pressed = FALSE;
-    }    
-  }
-  //---------------------UNUSED-------------------------------------------------
-  else if(menu_items && ADC_Thumb <= SECTION_FOUR_START && ADC_Thumb > SECTION_FIVE_START){
-    HEXtoBCD(right_calibration_black);
-    display_1 = "Black";
-    display_2 = adc_char;  
-    display_3 = "";
-    display_4 = "";
-  }
-  //---------------------9600 BAUD RATE-----------------------------------------
-  else if(menu_items && ADC_Thumb <= SECTION_THREE_START && ADC_Thumb > SECTION_FOUR_START){
-    display_1 = "";
-    display_2 = "9600";  
-    display_3 = "";
-    display_4 = "";
-    if(switch_one_pressed){
-      Init_Serial_UCA1(1);                      // BAUD rate 9600
-      Init_Serial_UCA0(1);                      // BAUD rate 9600
-      
-      display_1 = "";
-      display_2 = "";
-      display_3 = "   9600";
-      display_4 = "   Baud";
-      Display_Process();
-      Five_msec_Delay(FOR_TWO_SECOND);
 
-      
-      for(i=0; i<=9; i++){
-        UCA0TXBUF = transmission[i];
-        UCA1TXBUF = transmission[i];
-        Five_msec_Delay(1);
-        received0[i] = UCA0RXBUF;
-        received1[i] = UCA1RXBUF;
-      }
-      
-      if(received1[0] == '\0'){
-        received0[i] = '\0';
-        display_1 = received0;
-      }
-      else{
-        received1[i] = '\0';
-        display_1 = received1;
-      }
-      
-      
-      Display_Process();
-      
-      Five_msec_Delay(FOR_TWO_SECOND);
-      
-      switch_one_pressed = FALSE;
-    }  
-  }
-  //---------------------115200 BAUD RATE-----------------------------------------
-  else if(menu_items && ADC_Thumb <= SECTION_TWO_START && ADC_Thumb > SECTION_THREE_START){
-    display_1 = "";
-    display_2 = "115200";  
-    display_3 = "";
-    display_4 = "";
-    if(switch_one_pressed){
-      Init_Serial_UCA1(0);                      // BAUD rate 125200
-      Init_Serial_UCA0(0);                      // BAUD rate 125200
-      
-      display_1 = "";
-      display_2 = "";
-      display_3 = "  115200";
-      display_4 = "   Baud";
-      Display_Process();
-      Five_msec_Delay(FOR_TWO_SECOND);
-      
-
-      for(i=0; i<=9; i++){
-        UCA0TXBUF = transmission[i];
-        UCA1TXBUF = transmission[i];
-        Five_msec_Delay(1);
-        received0[i] = UCA0RXBUF;
-        received1[i] = UCA1RXBUF;
-      }
-      
-      if(received1[0] == '\0'){
-        received0[i] = '\0';
-        display_1 = received0;
-      }
-      else{
-        received1[i] = '\0';
-        display_1 = received1;
-      }
-      
-      Display_Process();
-      
-      Five_msec_Delay(FOR_TWO_SECOND);
-      
-      switch_one_pressed = FALSE;
-    }  
-  }
-  //---------------------BAUD RATE TEST-----------------------------------------
-  else if(menu_items  && ADC_Thumb > SECTION_TWO_START){
-    display_1 = "Test  Baud";
-    display_2 = "";  
-    display_3 = "";
-    display_4 = "SW1 Select";
-    if(switch_one_pressed){
-      switch_one_pressed = FALSE;
-      while(1){
-        UCA0TXBUF = 'N';
-        UCA1TXBUF = 'N';
-        if(switch_one_pressed){
-          break;
-        }
-      }
-    switch_one_pressed = FALSE;
-    }  
-  }
-}
 
 
 

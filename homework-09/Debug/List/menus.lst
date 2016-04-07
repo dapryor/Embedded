@@ -1,0 +1,836 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           07/Apr/2016  00:25:29
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\Documents\ECE 306\homework-09\menus.c
+#    Command line  =  
+#        "C:\Users\David\Documents\ECE 306\homework-09\menus.c" -lC
+#        "C:\Users\David\Documents\ECE 306\homework-09\Debug\List" -o
+#        "C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\Documents\ECE 306\homework-09\Debug\List\menus.lst
+#    Object file   =  
+#        C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\menus.r43
+#
+###############################################################################
+
+C:\Users\David\Documents\ECE 306\homework-09\menus.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : menus.c
+      3          //
+      4          //  Description: This file contains the menus Routines 
+      5          //
+      6          //  David Pryor
+      7          //  April 2016
+      8          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+      9          //------------------------------------------------------------------------------
+     10          #include  "macros.h"
+     11          #include  "msp430.h"
+     12          #include  "functions.h"
+     13          
+     14          extern unsigned int menu_items;
+     15          extern char *display_1;
+     16          extern char *display_2;
+     17          extern char *display_3;
+     18          extern char *display_4;
+     19          extern volatile unsigned int switch_one_pressed;
+     20          extern volatile unsigned int switch_two_pressed;
+     21          extern volatile unsigned int ADC_Thumb;
+     22          
+
+   \                                 In  segment CODE, align 2
+     23          void Menu_Process(void){
+   \                     Menu_Process:
+     24            lcd_4line();
+   \   000000   ........     CALLA   #lcd_4line
+     25            //---------------------9600 BAUD RATE-----------------------------------------
+     26            if(menu_items && ((ADC_Thumb>>7) == 2 || (ADC_Thumb>>7) == 1 || (ADC_Thumb>>7) == 0 )){
+   \   000004   8293....     CMP.W   #0x0, &menu_items
+   \   000008   2524         JEQ     ??Menu_Process_0
+   \   00000A   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00000E   3FF080FF     AND.W   #0xff80, R15
+   \   000012   3F900001     CMP.W   #0x100, R15
+   \   000016   0B24         JEQ     ??Menu_Process_1
+   \   000018   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00001C   3FF080FF     AND.W   #0xff80, R15
+   \   000020   3F908000     CMP.W   #0x80, R15
+   \   000024   0424         JEQ     ??Menu_Process_1
+   \   000026   B2B080FF.... BIT.W   #0xff80, &ADC_Thumb
+   \   00002C   1320         JNE     ??Menu_Process_0
+     27              display_1 = " Resistor ";
+   \                     ??Menu_Process_1:
+   \   00002E   B240........ MOV.W   #`?<Constant " Resistor ">`, &display_1
+     28              display_2 = "   Menu   ";  
+   \   000034   B240........ MOV.W   #`?<Constant "   Menu   ">`, &display_2
+     29              display_3 = "";
+   \   00003A   B240........ MOV.W   #`?<Constant "">`, &display_3
+     30              display_4 = "";
+   \   000040   B240........ MOV.W   #`?<Constant "">`, &display_4
+     31              if(switch_one_pressed){
+   \   000046   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   00004A   5024         JEQ     ??Menu_Process_2
+     32                switch_two_pressed = FALSE;
+   \   00004C   8243....     MOV.W   #0x0, &switch_two_pressed
+     33                Resistor_Menu();
+   \   000050   ........     BRA     #Resistor_Menu
+     34              }  
+     35            }
+     36            //---------------------115200 BAUD RATE-----------------------------------------
+     37            else if(menu_items && ((ADC_Thumb>>7) == 5 || (ADC_Thumb>>7) == 4 || (ADC_Thumb>>7) == 3 )){
+   \                     ??Menu_Process_0:
+   \   000054   8293....     CMP.W   #0x0, &menu_items
+   \   000058   2724         JEQ     ??Menu_Process_3
+   \   00005A   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00005E   3FF080FF     AND.W   #0xff80, R15
+   \   000062   3F908002     CMP.W   #0x280, R15
+   \   000066   0E24         JEQ     ??Menu_Process_4
+   \   000068   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00006C   3FF080FF     AND.W   #0xff80, R15
+   \   000070   3F900002     CMP.W   #0x200, R15
+   \   000074   0724         JEQ     ??Menu_Process_4
+   \   000076   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00007A   3FF080FF     AND.W   #0xff80, R15
+   \   00007E   3F908001     CMP.W   #0x180, R15
+   \   000082   1220         JNE     ??Menu_Process_3
+     38              display_1 = "  Shapes  ";
+   \                     ??Menu_Process_4:
+   \   000084   B240........ MOV.W   #`?<Constant "  Shapes  ">`, &display_1
+     39              display_2 = "   Menu   ";  
+   \   00008A   B240........ MOV.W   #`?<Constant "   Menu   ">`, &display_2
+     40              display_3 = "";
+   \   000090   B240........ MOV.W   #`?<Constant "">`, &display_3
+     41              display_4 = "";
+   \   000096   B240........ MOV.W   #`?<Constant "">`, &display_4
+     42              if(switch_one_pressed){
+   \   00009C   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   0000A0   2524         JEQ     ??Menu_Process_2
+     43                switch_one_pressed = FALSE;
+   \   0000A2   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   0000A6   1001         RETA
+     44              }  
+     45            }
+     46            //---------------------BAUD RATE TEST-----------------------------------------
+     47            else if(menu_items  && ((ADC_Thumb>>7) == 7 || (ADC_Thumb>>7) == 6)){
+   \                     ??Menu_Process_3:
+   \   0000A8   8293....     CMP.W   #0x0, &menu_items
+   \   0000AC   1F24         JEQ     ??Menu_Process_2
+   \   0000AE   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000B2   3FF080FF     AND.W   #0xff80, R15
+   \   0000B6   3F908003     CMP.W   #0x380, R15
+   \   0000BA   0724         JEQ     ??Menu_Process_5
+   \   0000BC   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000C0   3FF080FF     AND.W   #0xff80, R15
+   \   0000C4   3F900003     CMP.W   #0x300, R15
+   \   0000C8   1120         JNE     ??Menu_Process_2
+     48              display_1 = "   Song   ";
+   \                     ??Menu_Process_5:
+   \   0000CA   B240........ MOV.W   #`?<Constant "   Song   ">`, &display_1
+     49              display_2 = "   Menu   ";  
+   \   0000D0   B240........ MOV.W   #`?<Constant "   Menu   ">`, &display_2
+     50              display_3 = "";
+   \   0000D6   B240........ MOV.W   #`?<Constant "">`, &display_3
+     51              display_4 = "";
+   \   0000DC   B240........ MOV.W   #`?<Constant "">`, &display_4
+     52              if(switch_one_pressed){
+   \   0000E2   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   0000E6   0224         JEQ     ??Menu_Process_2
+     53                switch_one_pressed = FALSE;
+   \   0000E8   8243....     MOV.W   #0x0, &switch_one_pressed
+     54              }  
+     55            }
+     56          }
+   \                     ??Menu_Process_2:
+   \   0000EC   1001         RETA
+     57          
+
+   \                                 In  segment CODE, align 2
+     58          void Resistor_Menu(void){
+   \                     Resistor_Menu:
+     59            if((ADC_Thumb>>6 == 0) || (ADC_Thumb>>6 == 1)){
+   \   000000   B2B0C0FF.... BIT.W   #0xffc0, &ADC_Thumb
+   \   000006   0724         JEQ     ??Resistor_Menu_0
+   \   000008   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00000C   3FF0C0FF     AND.W   #0xffc0, R15
+   \   000010   3F904000     CMP.W   #0x40, R15
+   \   000014   0D20         JNE     ??Resistor_Menu_1
+     60              display_1 = "   Color  ";
+   \                     ??Resistor_Menu_0:
+   \   000016   B240........ MOV.W   #`?<Constant "   Color  ">`, &display_1
+     61              display_2 = "   Black  ";  
+   \   00001C   B240........ MOV.W   #`?<Constant "   Black  ">`, &display_2
+     62              display_3 = "   Value  ";
+   \   000022   B240........ MOV.W   #`?<Constant "   Value  ">`, &display_3
+     63              display_4 = "    00    ";
+   \   000028   B240........ MOV.W   #`?<Constant "    00    ">`, &display_4
+   \   00002E   D63C         JMP     ??Resistor_Menu_2
+     64            }
+     65            else if((ADC_Thumb>>6 == 2) || (ADC_Thumb>>6 == 3)){
+   \                     ??Resistor_Menu_1:
+   \   000030   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000034   3FF0C0FF     AND.W   #0xffc0, R15
+   \   000038   3F908000     CMP.W   #0x80, R15
+   \   00003C   0724         JEQ     ??Resistor_Menu_3
+   \   00003E   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000042   3FF0C0FF     AND.W   #0xffc0, R15
+   \   000046   3F90C000     CMP.W   #0xc0, R15
+   \   00004A   0D20         JNE     ??Resistor_Menu_4
+     66              display_1 = "   Color  ";
+   \                     ??Resistor_Menu_3:
+   \   00004C   B240........ MOV.W   #`?<Constant "   Color  ">`, &display_1
+     67              display_2 = "   Brown  ";  
+   \   000052   B240........ MOV.W   #`?<Constant "   Brown  ">`, &display_2
+     68              display_3 = "   Value  ";
+   \   000058   B240........ MOV.W   #`?<Constant "   Value  ">`, &display_3
+     69              display_4 = "    01    ";
+   \   00005E   B240........ MOV.W   #`?<Constant "    01    ">`, &display_4
+   \   000064   BB3C         JMP     ??Resistor_Menu_2
+     70            }
+     71            else if((ADC_Thumb>>6 == 4) || (ADC_Thumb>>6 == 5)){
+   \                     ??Resistor_Menu_4:
+   \   000066   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00006A   3FF0C0FF     AND.W   #0xffc0, R15
+   \   00006E   3F900001     CMP.W   #0x100, R15
+   \   000072   0724         JEQ     ??Resistor_Menu_5
+   \   000074   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000078   3FF0C0FF     AND.W   #0xffc0, R15
+   \   00007C   3F904001     CMP.W   #0x140, R15
+   \   000080   0D20         JNE     ??Resistor_Menu_6
+     72              display_1 = "   Color  ";
+   \                     ??Resistor_Menu_5:
+   \   000082   B240........ MOV.W   #`?<Constant "   Color  ">`, &display_1
+     73              display_2 = "    Red   ";  
+   \   000088   B240........ MOV.W   #`?<Constant "    Red   ">`, &display_2
+     74              display_3 = "   Value  ";
+   \   00008E   B240........ MOV.W   #`?<Constant "   Value  ">`, &display_3
+     75              display_4 = "    02    ";
+   \   000094   B240........ MOV.W   #`?<Constant "    02    ">`, &display_4
+   \   00009A   A03C         JMP     ??Resistor_Menu_2
+     76            }
+     77            else if((ADC_Thumb>>6 == 6) || (ADC_Thumb>>6 == 7)){
+   \                     ??Resistor_Menu_6:
+   \   00009C   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000A0   3FF0C0FF     AND.W   #0xffc0, R15
+   \   0000A4   3F908001     CMP.W   #0x180, R15
+   \   0000A8   0724         JEQ     ??Resistor_Menu_7
+   \   0000AA   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000AE   3FF0C0FF     AND.W   #0xffc0, R15
+   \   0000B2   3F90C001     CMP.W   #0x1c0, R15
+   \   0000B6   0D20         JNE     ??Resistor_Menu_8
+     78              display_1 = "   Color  ";
+   \                     ??Resistor_Menu_7:
+   \   0000B8   B240........ MOV.W   #`?<Constant "   Color  ">`, &display_1
+     79              display_2 = "  Orange  ";  
+   \   0000BE   B240........ MOV.W   #`?<Constant "  Orange  ">`, &display_2
+     80              display_3 = "   Value  ";
+   \   0000C4   B240........ MOV.W   #`?<Constant "   Value  ">`, &display_3
+     81              display_4 = "    03    ";
+   \   0000CA   B240........ MOV.W   #`?<Constant "    03    ">`, &display_4
+   \   0000D0   853C         JMP     ??Resistor_Menu_2
+     82            }
+     83            else if((ADC_Thumb>>6 == 8) || (ADC_Thumb>>6 == 9)){
+   \                     ??Resistor_Menu_8:
+   \   0000D2   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000D6   3FF0C0FF     AND.W   #0xffc0, R15
+   \   0000DA   3F900002     CMP.W   #0x200, R15
+   \   0000DE   0724         JEQ     ??Resistor_Menu_9
+   \   0000E0   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000E4   3FF0C0FF     AND.W   #0xffc0, R15
+   \   0000E8   3F904002     CMP.W   #0x240, R15
+   \   0000EC   0D20         JNE     ??Resistor_Menu_10
+     84              display_1 = "   Color  ";
+   \                     ??Resistor_Menu_9:
+   \   0000EE   B240........ MOV.W   #`?<Constant "   Color  ">`, &display_1
+     85              display_2 = "  Yellow  ";  
+   \   0000F4   B240........ MOV.W   #`?<Constant "  Yellow  ">`, &display_2
+     86              display_3 = "   Value  ";
+   \   0000FA   B240........ MOV.W   #`?<Constant "   Value  ">`, &display_3
+     87              display_4 = "    04    ";
+   \   000100   B240........ MOV.W   #`?<Constant "    04    ">`, &display_4
+   \   000106   6A3C         JMP     ??Resistor_Menu_2
+     88            }
+     89            else if((ADC_Thumb>>6 == 10) || (ADC_Thumb>>6 == 11)){
+   \                     ??Resistor_Menu_10:
+   \   000108   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00010C   3FF0C0FF     AND.W   #0xffc0, R15
+   \   000110   3F908002     CMP.W   #0x280, R15
+   \   000114   0724         JEQ     ??Resistor_Menu_11
+   \   000116   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00011A   3FF0C0FF     AND.W   #0xffc0, R15
+   \   00011E   3F90C002     CMP.W   #0x2c0, R15
+   \   000122   0D20         JNE     ??Resistor_Menu_12
+     90              display_1 = "   Color  ";
+   \                     ??Resistor_Menu_11:
+   \   000124   B240........ MOV.W   #`?<Constant "   Color  ">`, &display_1
+     91              display_2 = "   Green  ";  
+   \   00012A   B240........ MOV.W   #`?<Constant "   Green  ">`, &display_2
+     92              display_3 = "   Value  ";
+   \   000130   B240........ MOV.W   #`?<Constant "   Value  ">`, &display_3
+     93              display_4 = "    05    ";
+   \   000136   B240........ MOV.W   #`?<Constant "    05    ">`, &display_4
+   \   00013C   4F3C         JMP     ??Resistor_Menu_2
+     94            }
+     95            else if((ADC_Thumb>>6 == 12)){
+   \                     ??Resistor_Menu_12:
+   \   00013E   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000142   3FF0C0FF     AND.W   #0xffc0, R15
+   \   000146   3F900003     CMP.W   #0x300, R15
+   \   00014A   0D20         JNE     ??Resistor_Menu_13
+     96              display_1 = "   Color  ";
+   \   00014C   B240........ MOV.W   #`?<Constant "   Color  ">`, &display_1
+     97              display_2 = "   Blue   ";  
+   \   000152   B240........ MOV.W   #`?<Constant "   Blue   ">`, &display_2
+     98              display_3 = "   Value  ";
+   \   000158   B240........ MOV.W   #`?<Constant "   Value  ">`, &display_3
+     99              display_4 = "    06    ";
+   \   00015E   B240........ MOV.W   #`?<Constant "    06    ">`, &display_4
+   \   000164   3B3C         JMP     ??Resistor_Menu_2
+    100            }
+    101            else if((ADC_Thumb>>6 == 13)){
+   \                     ??Resistor_Menu_13:
+   \   000166   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00016A   3FF0C0FF     AND.W   #0xffc0, R15
+   \   00016E   3F904003     CMP.W   #0x340, R15
+   \   000172   0D20         JNE     ??Resistor_Menu_14
+    102              display_1 = "   Color  ";
+   \   000174   B240........ MOV.W   #`?<Constant "   Color  ">`, &display_1
+    103              display_2 = "  Violet  ";  
+   \   00017A   B240........ MOV.W   #`?<Constant "  Violet  ">`, &display_2
+    104              display_3 = "   Value  ";
+   \   000180   B240........ MOV.W   #`?<Constant "   Value  ">`, &display_3
+    105              display_4 = "    07    ";
+   \   000186   B240........ MOV.W   #`?<Constant "    07    ">`, &display_4
+   \   00018C   273C         JMP     ??Resistor_Menu_2
+    106            }
+    107            else if((ADC_Thumb>>6 == 14)){
+   \                     ??Resistor_Menu_14:
+   \   00018E   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000192   3FF0C0FF     AND.W   #0xffc0, R15
+   \   000196   3F908003     CMP.W   #0x380, R15
+   \   00019A   0D20         JNE     ??Resistor_Menu_15
+    108              display_1 = "   Color  ";
+   \   00019C   B240........ MOV.W   #`?<Constant "   Color  ">`, &display_1
+    109              display_2 = "   Gray   ";  
+   \   0001A2   B240........ MOV.W   #`?<Constant "   Gray   ">`, &display_2
+    110              display_3 = "   Value  ";
+   \   0001A8   B240........ MOV.W   #`?<Constant "   Value  ">`, &display_3
+    111              display_4 = "    08    ";
+   \   0001AE   B240........ MOV.W   #`?<Constant "    08    ">`, &display_4
+   \   0001B4   133C         JMP     ??Resistor_Menu_2
+    112            }
+    113            else if((ADC_Thumb>>6 == 15)){
+   \                     ??Resistor_Menu_15:
+   \   0001B6   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0001BA   3FF0C0FF     AND.W   #0xffc0, R15
+   \   0001BE   3F90C003     CMP.W   #0x3c0, R15
+   \   0001C2   0C20         JNE     ??Resistor_Menu_2
+    114              display_1 = "   Color  ";
+   \   0001C4   B240........ MOV.W   #`?<Constant "   Color  ">`, &display_1
+    115              display_2 = "   White  ";  
+   \   0001CA   B240........ MOV.W   #`?<Constant "   White  ">`, &display_2
+    116              display_3 = "   Value  ";
+   \   0001D0   B240........ MOV.W   #`?<Constant "   Value  ">`, &display_3
+    117              display_4 = "    09    ";
+   \   0001D6   B240........ MOV.W   #`?<Constant "    09    ">`, &display_4
+    118            }
+    119            Display_Process();
+   \                     ??Resistor_Menu_2:
+   \   0001DC   ........     CALLA   #Display_Process
+    120            if(switch_two_pressed){
+   \   0001E0   8293....     CMP.W   #0x0, &switch_two_pressed
+   \   0001E4   0424         JEQ     ??Resistor_Menu_16
+    121              switch_one_pressed = FALSE;
+   \   0001E6   8243....     MOV.W   #0x0, &switch_one_pressed
+    122              switch_two_pressed = FALSE;
+   \   0001EA   8243....     MOV.W   #0x0, &switch_two_pressed
+    123            }
+    124          }
+   \                     ??Resistor_Menu_16:
+   \   0001EE   1001         RETA
+    125          
+
+   \                                 In  segment CODE, align 2
+    126          void Shapes_Menu(void){
+   \                     Shapes_Menu:
+    127            if((ADC_Thumb>>6 == 0) || (ADC_Thumb>>6 == 1)){
+   \   000000   B2B0C0FF.... BIT.W   #0xffc0, &ADC_Thumb
+   \   000006   0724         JEQ     ??Shapes_Menu_0
+   \   000008   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00000C   3FF0C0FF     AND.W   #0xffc0, R15
+   \   000010   3F904000     CMP.W   #0x40, R15
+   \   000014   0D20         JNE     ??Shapes_Menu_1
+    128              display_1 = "          ";
+   \                     ??Shapes_Menu_0:
+   \   000016   B240........ MOV.W   #`?<Constant "          ">`, &display_1
+    129              display_2 = "  Circle  ";  
+   \   00001C   B240........ MOV.W   #`?<Constant "  Circle  ">`, &display_2
+    130              display_3 = "  Square  ";
+   \   000022   B240........ MOV.W   #`?<Constant "  Square  ">`, &display_3
+    131              display_4 = "";
+   \   000028   B240........ MOV.W   #`?<Constant "">`, &display_4
+   \   00002E   D63C         JMP     ??Shapes_Menu_2
+    132            }
+    133            else if((ADC_Thumb>>6 == 2) || (ADC_Thumb>>6 == 3)){
+   \                     ??Shapes_Menu_1:
+   \   000030   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000034   3FF0C0FF     AND.W   #0xffc0, R15
+   \   000038   3F908000     CMP.W   #0x80, R15
+   \   00003C   0724         JEQ     ??Shapes_Menu_3
+   \   00003E   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000042   3FF0C0FF     AND.W   #0xffc0, R15
+   \   000046   3F90C000     CMP.W   #0xc0, R15
+   \   00004A   0D20         JNE     ??Shapes_Menu_4
+    134              display_1 = "  Circle  ";
+   \                     ??Shapes_Menu_3:
+   \   00004C   B240........ MOV.W   #`?<Constant "  Circle  ">`, &display_1
+    135              display_2 = "  Square  ";  
+   \   000052   B240........ MOV.W   #`?<Constant "  Square  ">`, &display_2
+    136              display_3 = " Triangle ";
+   \   000058   B240........ MOV.W   #`?<Constant " Triangle ">`, &display_3
+    137              display_4 = "";
+   \   00005E   B240........ MOV.W   #`?<Constant "">`, &display_4
+   \   000064   BB3C         JMP     ??Shapes_Menu_2
+    138            }
+    139            else if((ADC_Thumb>>6 == 4) || (ADC_Thumb>>6 == 5)){
+   \                     ??Shapes_Menu_4:
+   \   000066   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00006A   3FF0C0FF     AND.W   #0xffc0, R15
+   \   00006E   3F900001     CMP.W   #0x100, R15
+   \   000072   0724         JEQ     ??Shapes_Menu_5
+   \   000074   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000078   3FF0C0FF     AND.W   #0xffc0, R15
+   \   00007C   3F904001     CMP.W   #0x140, R15
+   \   000080   0D20         JNE     ??Shapes_Menu_6
+    140              display_1 = "  Square  ";
+   \                     ??Shapes_Menu_5:
+   \   000082   B240........ MOV.W   #`?<Constant "  Square  ">`, &display_1
+    141              display_2 = " Triangle ";  
+   \   000088   B240........ MOV.W   #`?<Constant " Triangle ">`, &display_2
+    142              display_3 = "  Octagon ";
+   \   00008E   B240........ MOV.W   #`?<Constant "  Octagon ">`, &display_3
+    143              display_4 = "";
+   \   000094   B240........ MOV.W   #`?<Constant "">`, &display_4
+   \   00009A   A03C         JMP     ??Shapes_Menu_2
+    144            }
+    145            else if((ADC_Thumb>>6 == 6) || (ADC_Thumb>>6 == 7)){
+   \                     ??Shapes_Menu_6:
+   \   00009C   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000A0   3FF0C0FF     AND.W   #0xffc0, R15
+   \   0000A4   3F908001     CMP.W   #0x180, R15
+   \   0000A8   0724         JEQ     ??Shapes_Menu_7
+   \   0000AA   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000AE   3FF0C0FF     AND.W   #0xffc0, R15
+   \   0000B2   3F90C001     CMP.W   #0x1c0, R15
+   \   0000B6   0D20         JNE     ??Shapes_Menu_8
+    146              display_1 = " Triangle ";
+   \                     ??Shapes_Menu_7:
+   \   0000B8   B240........ MOV.W   #`?<Constant " Triangle ">`, &display_1
+    147              display_2 = "  Octagon ";  
+   \   0000BE   B240........ MOV.W   #`?<Constant "  Octagon ">`, &display_2
+    148              display_3 = " Pentagon ";
+   \   0000C4   B240........ MOV.W   #`?<Constant " Pentagon ">`, &display_3
+    149              display_4 = "";
+   \   0000CA   B240........ MOV.W   #`?<Constant "">`, &display_4
+   \   0000D0   853C         JMP     ??Shapes_Menu_2
+    150            }
+    151            else if((ADC_Thumb>>6 == 8) || (ADC_Thumb>>6 == 9)){
+   \                     ??Shapes_Menu_8:
+   \   0000D2   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000D6   3FF0C0FF     AND.W   #0xffc0, R15
+   \   0000DA   3F900002     CMP.W   #0x200, R15
+   \   0000DE   0724         JEQ     ??Shapes_Menu_9
+   \   0000E0   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000E4   3FF0C0FF     AND.W   #0xffc0, R15
+   \   0000E8   3F904002     CMP.W   #0x240, R15
+   \   0000EC   0D20         JNE     ??Shapes_Menu_10
+    152              display_1 = "  Octagon ";
+   \                     ??Shapes_Menu_9:
+   \   0000EE   B240........ MOV.W   #`?<Constant "  Octagon ">`, &display_1
+    153              display_2 = " Pentagon ";  
+   \   0000F4   B240........ MOV.W   #`?<Constant " Pentagon ">`, &display_2
+    154              display_3 = "  Hexagon ";
+   \   0000FA   B240........ MOV.W   #`?<Constant "  Hexagon ">`, &display_3
+    155              display_4 = "";
+   \   000100   B240........ MOV.W   #`?<Constant "">`, &display_4
+   \   000106   6A3C         JMP     ??Shapes_Menu_2
+    156            }
+    157            else if((ADC_Thumb>>6 == 10) || (ADC_Thumb>>6 == 11)){
+   \                     ??Shapes_Menu_10:
+   \   000108   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00010C   3FF0C0FF     AND.W   #0xffc0, R15
+   \   000110   3F908002     CMP.W   #0x280, R15
+   \   000114   0724         JEQ     ??Shapes_Menu_11
+   \   000116   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00011A   3FF0C0FF     AND.W   #0xffc0, R15
+   \   00011E   3F90C002     CMP.W   #0x2c0, R15
+   \   000122   0D20         JNE     ??Shapes_Menu_12
+    158              display_1 = " Pentagon ";
+   \                     ??Shapes_Menu_11:
+   \   000124   B240........ MOV.W   #`?<Constant " Pentagon ">`, &display_1
+    159              display_2 = "  Hexagon ";  
+   \   00012A   B240........ MOV.W   #`?<Constant "  Hexagon ">`, &display_2
+    160              display_3 = "   Cube   ";
+   \   000130   B240........ MOV.W   #`?<Constant "   Cube   ">`, &display_3
+    161              display_4 = "";
+   \   000136   B240........ MOV.W   #`?<Constant "">`, &display_4
+   \   00013C   4F3C         JMP     ??Shapes_Menu_2
+    162            }
+    163            else if((ADC_Thumb>>6 == 12)){
+   \                     ??Shapes_Menu_12:
+   \   00013E   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000142   3FF0C0FF     AND.W   #0xffc0, R15
+   \   000146   3F900003     CMP.W   #0x300, R15
+   \   00014A   0D20         JNE     ??Shapes_Menu_13
+    164              display_1 = "  Hexagon ";
+   \   00014C   B240........ MOV.W   #`?<Constant "  Hexagon ">`, &display_1
+    165              display_2 = "   Cube   ";  
+   \   000152   B240........ MOV.W   #`?<Constant "   Cube   ">`, &display_2
+    166              display_3 = "   Oval   ";
+   \   000158   B240........ MOV.W   #`?<Constant "   Oval   ">`, &display_3
+    167              display_4 = "";
+   \   00015E   B240........ MOV.W   #`?<Constant "">`, &display_4
+   \   000164   3B3C         JMP     ??Shapes_Menu_2
+    168            }
+    169            else if((ADC_Thumb>>6 == 13)){
+   \                     ??Shapes_Menu_13:
+   \   000166   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00016A   3FF0C0FF     AND.W   #0xffc0, R15
+   \   00016E   3F904003     CMP.W   #0x340, R15
+   \   000172   0D20         JNE     ??Shapes_Menu_14
+    170              display_1 = "   Cube   ";
+   \   000174   B240........ MOV.W   #`?<Constant "   Cube   ">`, &display_1
+    171              display_2 = "   Oval   ";  
+   \   00017A   B240........ MOV.W   #`?<Constant "   Oval   ">`, &display_2
+    172              display_3 = "  Sphere  ";
+   \   000180   B240........ MOV.W   #`?<Constant "  Sphere  ">`, &display_3
+    173              display_4 = "";
+   \   000186   B240........ MOV.W   #`?<Constant "">`, &display_4
+   \   00018C   273C         JMP     ??Shapes_Menu_2
+    174            }
+    175            else if((ADC_Thumb>>6 == 14)){
+   \                     ??Shapes_Menu_14:
+   \   00018E   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000192   3FF0C0FF     AND.W   #0xffc0, R15
+   \   000196   3F908003     CMP.W   #0x380, R15
+   \   00019A   0D20         JNE     ??Shapes_Menu_15
+    176              display_1 = "   Oval   ";
+   \   00019C   B240........ MOV.W   #`?<Constant "   Oval   ">`, &display_1
+    177              display_2 = "  Sphere  ";  
+   \   0001A2   B240........ MOV.W   #`?<Constant "  Sphere  ">`, &display_2
+    178              display_3 = " Cylinder ";
+   \   0001A8   B240........ MOV.W   #`?<Constant " Cylinder ">`, &display_3
+    179              display_4 = "";
+   \   0001AE   B240........ MOV.W   #`?<Constant "">`, &display_4
+   \   0001B4   133C         JMP     ??Shapes_Menu_2
+    180            }
+    181            else if((ADC_Thumb>>6 == 15)){
+   \                     ??Shapes_Menu_15:
+   \   0001B6   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0001BA   3FF0C0FF     AND.W   #0xffc0, R15
+   \   0001BE   3F90C003     CMP.W   #0x3c0, R15
+   \   0001C2   0C20         JNE     ??Shapes_Menu_2
+    182              display_1 = "  Sphere  ";
+   \   0001C4   B240........ MOV.W   #`?<Constant "  Sphere  ">`, &display_1
+    183              display_2 = " Cylinder ";  
+   \   0001CA   B240........ MOV.W   #`?<Constant " Cylinder ">`, &display_2
+    184              display_3 = "          ";
+   \   0001D0   B240........ MOV.W   #`?<Constant "          ">`, &display_3
+    185              display_4 = "";
+   \   0001D6   B240........ MOV.W   #`?<Constant "">`, &display_4
+    186            }
+    187            lcd_BIG_mid();
+   \                     ??Shapes_Menu_2:
+   \   0001DC   ........     CALLA   #lcd_BIG_mid
+    188            Display_Process();
+   \   0001E0   ........     CALLA   #Display_Process
+    189            if(switch_two_pressed){
+   \   0001E4   8293....     CMP.W   #0x0, &switch_two_pressed
+   \   0001E8   0424         JEQ     ??Shapes_Menu_16
+    190              switch_one_pressed = FALSE;
+   \   0001EA   8243....     MOV.W   #0x0, &switch_one_pressed
+    191              switch_two_pressed = FALSE;
+   \   0001EE   8243....     MOV.W   #0x0, &switch_two_pressed
+    192            }
+    193          }
+   \                     ??Shapes_Menu_16:
+   \   0001F2   1001         RETA
+
+   \                                 In  segment CODE, align 2
+    194          void Song_Menu(void){}
+   \                     Song_Menu:
+   \   000000   1001         RETA
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Resistor ">`:
+   \   000000   205265736973 DC8 " Resistor "
+   \            746F722000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Menu   ">`:
+   \   000000   2020204D656E DC8 "   Menu   "
+   \            7520202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "">`:
+   \   000000   00           DC8 ""
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  Shapes  ">`:
+   \   000000   202053686170 DC8 "  Shapes  "
+   \            6573202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Song   ">`:
+   \   000000   202020536F6E DC8 "   Song   "
+   \            6720202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Color  ">`:
+   \   000000   202020436F6C DC8 "   Color  "
+   \            6F72202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Black  ">`:
+   \   000000   202020426C61 DC8 "   Black  "
+   \            636B202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Value  ">`:
+   \   000000   20202056616C DC8 "   Value  "
+   \            7565202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "    00    ">`:
+   \   000000   202020203030 DC8 "    00    "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Brown  ">`:
+   \   000000   20202042726F DC8 "   Brown  "
+   \            776E202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "    01    ">`:
+   \   000000   202020203031 DC8 "    01    "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "    Red   ">`:
+   \   000000   202020205265 DC8 "    Red   "
+   \            6420202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "    02    ">`:
+   \   000000   202020203032 DC8 "    02    "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  Orange  ">`:
+   \   000000   20204F72616E DC8 "  Orange  "
+   \            6765202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "    03    ">`:
+   \   000000   202020203033 DC8 "    03    "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  Yellow  ">`:
+   \   000000   202059656C6C DC8 "  Yellow  "
+   \            6F77202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "    04    ">`:
+   \   000000   202020203034 DC8 "    04    "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Green  ">`:
+   \   000000   202020477265 DC8 "   Green  "
+   \            656E202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "    05    ">`:
+   \   000000   202020203035 DC8 "    05    "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Blue   ">`:
+   \   000000   202020426C75 DC8 "   Blue   "
+   \            6520202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "    06    ">`:
+   \   000000   202020203036 DC8 "    06    "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  Violet  ">`:
+   \   000000   202056696F6C DC8 "  Violet  "
+   \            6574202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "    07    ">`:
+   \   000000   202020203037 DC8 "    07    "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Gray   ">`:
+   \   000000   202020477261 DC8 "   Gray   "
+   \            7920202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "    08    ">`:
+   \   000000   202020203038 DC8 "    08    "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   White  ">`:
+   \   000000   202020576869 DC8 "   White  "
+   \            7465202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "    09    ">`:
+   \   000000   202020203039 DC8 "    09    "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "          ">`:
+   \   000000   202020202020 DC8 "          "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  Circle  ">`:
+   \   000000   202043697263 DC8 "  Circle  "
+   \            6C65202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  Square  ">`:
+   \   000000   202053717561 DC8 "  Square  "
+   \            7265202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Triangle ">`:
+   \   000000   20547269616E DC8 " Triangle "
+   \            676C652000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  Octagon ">`:
+   \   000000   20204F637461 DC8 "  Octagon "
+   \            676F6E2000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Pentagon ">`:
+   \   000000   2050656E7461 DC8 " Pentagon "
+   \            676F6E2000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  Hexagon ">`:
+   \   000000   202048657861 DC8 "  Hexagon "
+   \            676F6E2000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Cube   ">`:
+   \   000000   202020437562 DC8 "   Cube   "
+   \            6520202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Oval   ">`:
+   \   000000   2020204F7661 DC8 "   Oval   "
+   \            6C20202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  Sphere  ">`:
+   \   000000   202053706865 DC8 "  Sphere  "
+   \            7265202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Cylinder ">`:
+   \   000000   2043796C696E DC8 " Cylinder "
+   \            6465722000  
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   Menu_Process
+        0   -> Resistor_Menu
+        4   -> lcd_4line
+      4   Resistor_Menu
+        4   -> Display_Process
+      4   Shapes_Menu
+        4   -> Display_Process
+        4   -> lcd_BIG_mid
+      4   Song_Menu
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      11  ?<Constant "          ">
+      11  ?<Constant "    00    ">
+      11  ?<Constant "    01    ">
+      11  ?<Constant "    02    ">
+      11  ?<Constant "    03    ">
+      11  ?<Constant "    04    ">
+      11  ?<Constant "    05    ">
+      11  ?<Constant "    06    ">
+      11  ?<Constant "    07    ">
+      11  ?<Constant "    08    ">
+      11  ?<Constant "    09    ">
+      11  ?<Constant "    Red   ">
+      11  ?<Constant "   Black  ">
+      11  ?<Constant "   Blue   ">
+      11  ?<Constant "   Brown  ">
+      11  ?<Constant "   Color  ">
+      11  ?<Constant "   Cube   ">
+      11  ?<Constant "   Gray   ">
+      11  ?<Constant "   Green  ">
+      11  ?<Constant "   Menu   ">
+      11  ?<Constant "   Oval   ">
+      11  ?<Constant "   Song   ">
+      11  ?<Constant "   Value  ">
+      11  ?<Constant "   White  ">
+      11  ?<Constant "  Circle  ">
+      11  ?<Constant "  Hexagon ">
+      11  ?<Constant "  Octagon ">
+      11  ?<Constant "  Orange  ">
+      11  ?<Constant "  Shapes  ">
+      11  ?<Constant "  Sphere  ">
+      11  ?<Constant "  Square  ">
+      11  ?<Constant "  Violet  ">
+      11  ?<Constant "  Yellow  ">
+      11  ?<Constant " Cylinder ">
+      11  ?<Constant " Pentagon ">
+      11  ?<Constant " Resistor ">
+      11  ?<Constant " Triangle ">
+       1  ?<Constant "">
+     238  Menu_Process
+     496  Resistor_Menu
+     500  Shapes_Menu
+       2  Song_Menu
+
+ 
+ 1 236 bytes in segment CODE
+   408 bytes in segment DATA16_C
+ 
+ 1 236 bytes of CODE  memory
+   408 bytes of CONST memory
+
+Errors: none
+Warnings: none

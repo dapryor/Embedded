@@ -19,7 +19,7 @@
  volatile unsigned int debounce_count_one = SWITCH_OFF;
  volatile unsigned int debounce_count_two = SWITCH_OFF;
  extern volatile unsigned int do_this;
-
+ extern unsigned int menu_items;
 
 #pragma vector=PORT4_VECTOR
 __interrupt void switch_interrupt(void){
@@ -49,7 +49,7 @@ __interrupt void switch_interrupt(void){
  debounce_count_one = SWITCH_OFF;       // Reset the count required of the debounce.
  P4IE &= ~SW1;                         // Disable the Switch Interrupt.
  TA0CCTL0 &= ~CCIFG;                       // Clear any current timer interrupt.
- do_this = TRUE;
+ menu_items = TRUE;
  }
  
  // Switch 2
@@ -58,8 +58,10 @@ __interrupt void switch_interrupt(void){
  switch_two_debounce = SWITCH_ON ;      // Set a variable to identify the switch is being debounced.
  debounce_count_two = SWITCH_OFF;       // Reset the count required of the debounce.
  P4IE &= ~SW2;                         // Disable the Switch Interrupt.
- TA0CCTL0 &= ~CCIFG;                       // Clear any current timer interrupt.   
+ TA0CCTL0 &= ~CCIFG;                       // Clear any current timer interrupt.
+ menu_items = TRUE;
  }
+ 
  TA0CCTL0 |= CCIE;  
  
 }
