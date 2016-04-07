@@ -22,9 +22,14 @@
         <ColumnWidth2>295</ColumnWidth2>
         <ColumnWidth3>73</ColumnWidth3>
       </Build>
+      <Debug-Log>
+        <ColumnWidth0>20</ColumnWidth0>
+        <ColumnWidth1>1477</ColumnWidth1>
+      </Debug-Log>
+      <TerminalIO/>
     </Static>
     <Windows>
-      <Wnd0>
+      <Wnd2>
         <Tabs>
           <Tab>
             <Identity>TabID-32730-2178</Identity>
@@ -39,8 +44,8 @@
           </Tab>
         </Tabs>
         <SelectedTab>0</SelectedTab>
-      </Wnd0>
-      <Wnd1>
+      </Wnd2>
+      <Wnd3>
         <Tabs>
           <Tab>
             <Identity>TabID-18429-11452</Identity>
@@ -48,9 +53,15 @@
             <Factory>Build</Factory>
             <Session/>
           </Tab>
+          <Tab>
+            <Identity>TabID-8509-459</Identity>
+            <TabName>Debug Log</TabName>
+            <Factory>Debug-Log</Factory>
+            <Session/>
+          </Tab>
         </Tabs>
-        <SelectedTab>0</SelectedTab>
-      </Wnd1>
+        <SelectedTab>1</SelectedTab>
+      </Wnd3>
     </Windows>
     <Editor>
       <Pane>
@@ -62,10 +73,11 @@
           <SelStart>0</SelStart>
           <SelEnd>0</SelEnd>
           <XPos2>0</XPos2>
-          <YPos2>0</YPos2>
-          <SelStart2>427</SelStart2>
-          <SelEnd2>458</SelEnd2>
+          <YPos2>179</YPos2>
+          <SelStart2>6011</SelStart2>
+          <SelEnd2>6011</SelEnd2>
         </Tab>
+        <ActiveTab>0</ActiveTab>
         <Tab>
           <Factory>TextEditor</Factory>
           <Filename>$WS_DIR$\main.c</Filename>
@@ -74,9 +86,9 @@
           <SelStart>0</SelStart>
           <SelEnd>0</SelEnd>
           <XPos2>0</XPos2>
-          <YPos2>57</YPos2>
-          <SelStart2>2819</SelStart2>
-          <SelEnd2>2851</SelEnd2>
+          <YPos2>110</YPos2>
+          <SelStart2>4702</SelStart2>
+          <SelEnd2>4702</SelEnd2>
         </Tab>
         <Tab>
           <Factory>TextEditor</Factory>
@@ -86,11 +98,10 @@
           <SelStart>0</SelStart>
           <SelEnd>0</SelEnd>
           <XPos2>0</XPos2>
-          <YPos2>0</YPos2>
+          <YPos2>38</YPos2>
           <SelStart2>814</SelStart2>
           <SelEnd2>814</SelEnd2>
         </Tab>
-        <ActiveTab>2</ActiveTab>
         <Tab>
           <Factory>TextEditor</Factory>
           <Filename>$WS_DIR$\functions.h</Filename>
@@ -102,6 +113,66 @@
           <YPos2>71</YPos2>
           <SelStart2>2850</SelStart2>
           <SelEnd2>2850</SelEnd2>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\interrupts_timers.c</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>0</SelStart>
+          <SelEnd>0</SelEnd>
+          <XPos2>0</XPos2>
+          <YPos2>77</YPos2>
+          <SelStart2>4178</SelStart2>
+          <SelEnd2>4178</SelEnd2>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\adc.c</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>0</SelStart>
+          <SelEnd>0</SelEnd>
+          <XPos2>0</XPos2>
+          <YPos2>38</YPos2>
+          <SelStart2>2007</SelStart2>
+          <SelEnd2>2007</SelEnd2>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\interrupt_adc.c</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>0</SelStart>
+          <SelEnd>0</SelEnd>
+          <XPos2>0</XPos2>
+          <YPos2>34</YPos2>
+          <SelStart2>1531</SelStart2>
+          <SelEnd2>1531</SelEnd2>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\timers.c</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>0</SelStart>
+          <SelEnd>0</SelEnd>
+          <XPos2>0</XPos2>
+          <YPos2>129</YPos2>
+          <SelStart2>5396</SelStart2>
+          <SelEnd2>5413</SelEnd2>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\macros.h</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>0</SelStart>
+          <SelEnd>0</SelEnd>
+          <XPos2>0</XPos2>
+          <YPos2>84</YPos2>
+          <SelStart2>4717</SelStart2>
+          <SelEnd2>4729</SelEnd2>
         </Tab>
       </Pane>
       <ActivePane>0</ActivePane>
@@ -122,11 +193,179 @@
             </Toolbar-0139C5B0>
           </Sizes>
         </Row0>
+        <Row1>
+          <Sizes/>
+        </Row1>
+        <Row2>
+          <Sizes/>
+        </Row2>
+        <Row3>
+          <Sizes/>
+        </Row3>
+        <Row4>
+          <Sizes/>
+        </Row4>
+        <Row5>
+          <Sizes/>
+        </Row5>
+        <Row6>
+          <Sizes/>
+        </Row6>
+        <Row7>
+          <Sizes/>
+        </Row7>
+        <Row8>
+          <Sizes/>
+        </Row8>
+        <Row9>
+          <Sizes/>
+        </Row9>
+        <Row10>
+          <Sizes/>
+        </Row10>
+        <Row11>
+          <Sizes/>
+        </Row11>
+        <Row12>
+          <Sizes/>
+        </Row12>
+        <Row13>
+          <Sizes/>
+        </Row13>
+        <Row14>
+          <Sizes/>
+        </Row14>
+        <Row15>
+          <Sizes/>
+        </Row15>
+        <Row16>
+          <Sizes/>
+        </Row16>
+        <Row17>
+          <Sizes/>
+        </Row17>
+        <Row18>
+          <Sizes/>
+        </Row18>
+        <Row19>
+          <Sizes/>
+        </Row19>
+        <Row20>
+          <Sizes/>
+        </Row20>
+        <Row21>
+          <Sizes/>
+        </Row21>
+        <Row22>
+          <Sizes/>
+        </Row22>
+        <Row23>
+          <Sizes/>
+        </Row23>
+        <Row24>
+          <Sizes/>
+        </Row24>
+        <Row25>
+          <Sizes/>
+        </Row25>
+        <Row26>
+          <Sizes/>
+        </Row26>
+        <Row27>
+          <Sizes/>
+        </Row27>
+        <Row28>
+          <Sizes/>
+        </Row28>
+        <Row29>
+          <Sizes/>
+        </Row29>
+        <Row30>
+          <Sizes/>
+        </Row30>
+        <Row31>
+          <Sizes/>
+        </Row31>
+        <Row32>
+          <Sizes/>
+        </Row32>
+        <Row33>
+          <Sizes/>
+        </Row33>
+        <Row34>
+          <Sizes/>
+        </Row34>
+        <Row35>
+          <Sizes/>
+        </Row35>
+        <Row36>
+          <Sizes/>
+        </Row36>
+        <Row37>
+          <Sizes/>
+        </Row37>
+        <Row38>
+          <Sizes/>
+        </Row38>
+        <Row39>
+          <Sizes/>
+        </Row39>
+        <Row40>
+          <Sizes/>
+        </Row40>
+        <Row41>
+          <Sizes/>
+        </Row41>
+        <Row42>
+          <Sizes/>
+        </Row42>
+        <Row43>
+          <Sizes/>
+        </Row43>
+        <Row44>
+          <Sizes/>
+        </Row44>
+        <Row45>
+          <Sizes/>
+        </Row45>
+        <Row46>
+          <Sizes/>
+        </Row46>
+        <Row47>
+          <Sizes/>
+        </Row47>
+        <Row48>
+          <Sizes/>
+        </Row48>
+        <Row49>
+          <Sizes/>
+        </Row49>
+        <Row50>
+          <Sizes/>
+        </Row50>
+        <Row51>
+          <Sizes/>
+        </Row51>
+        <Row52>
+          <Sizes/>
+        </Row52>
+        <Row53>
+          <Sizes/>
+        </Row53>
+        <Row54>
+          <Sizes/>
+        </Row54>
+        <Row55>
+          <Sizes/>
+        </Row55>
+        <Row56>
+          <Sizes/>
+        </Row56>
       </Top>
       <Left>
         <Row0>
           <Sizes>
-            <Wnd0>
+            <Wnd2>
               <Rect>
                 <Top>-2</Top>
                 <Left>-2</Left>
@@ -141,7 +380,7 @@
                 <sizeVertCX>130208</sizeVertCX>
                 <sizeVertCY>692209</sizeVertCY>
               </Rect>
-            </Wnd0>
+            </Wnd2>
           </Sizes>
         </Row0>
       </Left>
@@ -153,7 +392,7 @@
       <Bottom>
         <Row0>
           <Sizes>
-            <Wnd1>
+            <Wnd3>
               <Rect>
                 <Top>-2</Top>
                 <Left>-2</Left>
@@ -168,7 +407,7 @@
                 <sizeVertCX>130208</sizeVertCX>
                 <sizeVertCY>255428</sizeVertCY>
               </Rect>
-            </Wnd1>
+            </Wnd3>
           </Sizes>
         </Row0>
       </Bottom>

@@ -19,6 +19,8 @@ extern char *display_4;
 extern volatile unsigned int switch_one_pressed;
 extern volatile unsigned int switch_two_pressed;
 extern volatile unsigned int ADC_Thumb;
+char song[] = "We're the Red and White from State And we know we are the best. A hand behind our back, We can take on all the rest. Come over the hill, Carolina. Devils and Deacs stand in line. The Red and White from N.C. State. Go State!";
+char lcdBuff[10] = "         ";
 
 void Menu_Process(void){
   lcd_4line();
@@ -28,7 +30,7 @@ void Menu_Process(void){
     display_2 = "   Menu   ";  
     display_3 = "";
     display_4 = "";
-    if(switch_one_pressed){
+    while(switch_one_pressed){
       switch_two_pressed = FALSE;
       Resistor_Menu();
     }  
@@ -40,7 +42,9 @@ void Menu_Process(void){
     display_3 = "";
     display_4 = "";
     if(switch_one_pressed){
-      switch_one_pressed = FALSE;
+      
+      switch_two_pressed = FALSE;
+      Shapes_Menu();
     }  
   }
   //---------------------BAUD RATE TEST-----------------------------------------
@@ -49,9 +53,11 @@ void Menu_Process(void){
     display_2 = "   Menu   ";  
     display_3 = "";
     display_4 = "";
-    if(switch_one_pressed){
-      switch_one_pressed = FALSE;
+    while(switch_one_pressed){
+      switch_two_pressed = FALSE;
+      Song_Menu();
     }  
+    TA0CCTL1 |= CCIE;
   }
 }
 
@@ -116,7 +122,7 @@ void Resistor_Menu(void){
     display_3 = "   Value  ";
     display_4 = "    09    ";
   }
-  Display_Process();
+  
   if(switch_two_pressed){
     switch_one_pressed = FALSE;
     switch_two_pressed = FALSE;
@@ -124,71 +130,106 @@ void Resistor_Menu(void){
 }
 
 void Shapes_Menu(void){
-  if((ADC_Thumb>>6 == 0) || (ADC_Thumb>>6 == 1)){
-    display_1 = "          ";
-    display_2 = "  Circle  ";  
-    display_3 = "  Square  ";
-    display_4 = "";
-  }
-  else if((ADC_Thumb>>6 == 2) || (ADC_Thumb>>6 == 3)){
-    display_1 = "  Circle  ";
-    display_2 = "  Square  ";  
-    display_3 = " Triangle ";
-    display_4 = "";
-  }
-  else if((ADC_Thumb>>6 == 4) || (ADC_Thumb>>6 == 5)){
-    display_1 = "  Square  ";
-    display_2 = " Triangle ";  
-    display_3 = "  Octagon ";
-    display_4 = "";
-  }
-  else if((ADC_Thumb>>6 == 6) || (ADC_Thumb>>6 == 7)){
-    display_1 = " Triangle ";
-    display_2 = "  Octagon ";  
-    display_3 = " Pentagon ";
-    display_4 = "";
-  }
-  else if((ADC_Thumb>>6 == 8) || (ADC_Thumb>>6 == 9)){
-    display_1 = "  Octagon ";
-    display_2 = " Pentagon ";  
-    display_3 = "  Hexagon ";
-    display_4 = "";
-  }
-  else if((ADC_Thumb>>6 == 10) || (ADC_Thumb>>6 == 11)){
-    display_1 = " Pentagon ";
-    display_2 = "  Hexagon ";  
-    display_3 = "   Cube   ";
-    display_4 = "";
-  }
-  else if((ADC_Thumb>>6 == 12)){
-    display_1 = "  Hexagon ";
-    display_2 = "   Cube   ";  
-    display_3 = "   Oval   ";
-    display_4 = "";
-  }
-  else if((ADC_Thumb>>6 == 13)){
-    display_1 = "   Cube   ";
-    display_2 = "   Oval   ";  
-    display_3 = "  Sphere  ";
-    display_4 = "";
-  }
-  else if((ADC_Thumb>>6 == 14)){
-    display_1 = "   Oval   ";
-    display_2 = "  Sphere  ";  
-    display_3 = " Cylinder ";
-    display_4 = "";
-  }
-  else if((ADC_Thumb>>6 == 15)){
-    display_1 = "  Sphere  ";
-    display_2 = " Cylinder ";  
-    display_3 = "          ";
-    display_4 = "";
-  }
   lcd_BIG_mid();
-  Display_Process();
+  
+  while(!switch_two_pressed){
+    if((ADC_Thumb < 102)){
+      display_1 = "          ";
+      display_2 = "  Circle  ";  
+      display_3 = "  Square  ";
+      //display_4 = "";
+    }
+    else if((ADC_Thumb >= 102) && (ADC_Thumb < 204)){
+      display_1 = "  Circle  ";
+      display_2 = "  Square  ";  
+      display_3 = " Triangle ";
+      //display_4 = "";
+    }
+    else if((ADC_Thumb >= 204) && (ADC_Thumb < 306)){
+      display_1 = "  Square  ";
+      display_2 = " Triangle ";  
+      display_3 = "  Octagon ";
+      //display_4 = "";
+    }
+    else if((ADC_Thumb >= 306) && (ADC_Thumb < 408)){
+      display_1 = " Triangle ";
+      display_2 = "  Octagon ";  
+      display_3 = " Pentagon ";
+      //display_4 = "";
+    }
+    else if((ADC_Thumb >= 408) && (ADC_Thumb < 510)){
+      display_1 = "  Octagon ";
+      display_2 = " Pentagon ";  
+      display_3 = "  Hexagon ";
+      //display_4 = "";
+    }
+    else if((ADC_Thumb >= 510) && (ADC_Thumb < 612)){
+      display_1 = " Pentagon ";
+      display_2 = "  Hexagon ";  
+      display_3 = "   Cube   ";
+      //display_4 = "";
+    }
+    else if((ADC_Thumb >= 612) && (ADC_Thumb < 714)){
+      display_1 = "  Hexagon ";
+      display_2 = "   Cube   ";  
+      display_3 = "   Oval   ";
+      //display_4 = "";
+    }
+    else if((ADC_Thumb >= 714) && (ADC_Thumb < 816)){
+      display_1 = "   Cube   ";
+      display_2 = "   Oval   ";  
+      display_3 = "  Sphere  ";
+      //display_4 = "";
+    }
+    else if((ADC_Thumb >= 816) && (ADC_Thumb < 918)){
+      display_1 = "   Oval   ";
+      display_2 = "  Sphere  ";  
+      display_3 = " Cylinder ";
+      //display_4 = "";
+    }
+    else if((ADC_Thumb >= 918)){
+      display_1 = "  Sphere  ";
+      display_2 = " Cylinder ";  
+      display_3 = "          ";
+      //display_4 = "";
+    }
+
+  } 
+    /*if(switch_two_pressed){
+      switch_one_pressed = FALSE;
+      switch_two_pressed = FALSE;
+    }*/
+}
+
+void Song_Menu(void){
+  int i;
+  int counter = 0;
+  int thumbPrev = ADC_Thumb;
+  int deltaThumb = 0;
+  
+  char* stringDisplay = lcdBuff;
+  TA0CCTL1 &= ~CCIE;
+  
+  while((song[counter] != '\0') && switch_two_pressed == FALSE){
+    deltaThumb = ADC_Thumb - thumbPrev;
+    if(deltaThumb < -30){
+      thumbPrev = ADC_Thumb;
+      lcdBuff[9] = song[counter++];
+      display_1 = stringDisplay;
+      Display_Process();
+      for(i=1; i<=9; i++){
+        lcdBuff[i-1] = lcdBuff[i];
+      }
+      
+    }
+    if(deltaThumb>0){
+        thumbPrev = ADC_Thumb;
+    }
+  }
+  
   if(switch_two_pressed){
     switch_one_pressed = FALSE;
     switch_two_pressed = FALSE;
   }
+  counter = FALSE;
 }
-void Song_Menu(void){}

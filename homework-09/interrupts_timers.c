@@ -98,6 +98,11 @@ __interrupt void TIMER0_A1_ISR(void){
  five_msec_delay++;
  display_count++;
  P5_counter++;
+ 
+ if(display_count >= FOR_150_MSEC){    // update screen every 250 msec
+      Display_Process();
+      display_count = SWITCH_OFF;
+ }
  TA0CCR1 += TA0CCR1_INTERVAL;   // Add Offset to TACCR1
  break;
  

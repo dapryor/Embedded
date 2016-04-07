@@ -149,10 +149,7 @@ void main(void){
     
     ADC_Process();              // call sampling function
     
-    if(display_count >= FOR_FOURTH_SECOND){    // update screen every 250 msec
-      Display_Process();
-      display_count = SWITCH_OFF;
-    }
+    
     
     if(menu_items){  //start menu
       switch_one_pressed = FALSE;
