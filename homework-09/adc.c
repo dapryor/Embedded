@@ -257,15 +257,15 @@ void Project5(void){
 }
 
 void IR_Calibration(void){
-  int proceed = 0;
+  int proceed = FALSE;
   display_1 = "Ambient Test";
   display_2 = "Press SW2";
   display_3 = "";  
   display_4 = "";
   Display_Process();
-  while(proceed == 0){
+  while(proceed == FALSE){
     if(switch_two_pressed){
-      proceed = 1;
+      proceed = TRUE;
       switch_two_pressed = FALSE;
     }
   }
@@ -273,34 +273,34 @@ void IR_Calibration(void){
   ADC_Process();              // call sampling function
   right_calibration_ambient = ADC_Right_Detector;
   left_calibration_ambient = ADC_Left_Detector;
-  proceed = 0;
+  proceed = FALSE;
   
   toggle_IR_LED();
-  Five_msec_Delay(30);
+  Five_msec_Delay(FOR_150_MSEC);
   display_1 = "White Test";
   display_2 = "Press SW2";
   display_3 = "";  
   display_4 = "";
   Display_Process();
-  while(proceed == 0){
+  while(proceed == FALSE){
     if(switch_two_pressed){
-      proceed = 1;
+      proceed = TRUE;
       switch_two_pressed = FALSE;
     }
   }
   ADC_Process();              // call sampling function
   right_calibration_white = ADC_Right_Detector;
   left_calibration_white = ADC_Left_Detector;
-  proceed = 0;
+  proceed = FALSE;
   
   display_1 = "Black Test";
   display_2 = "Press SW2";
   display_3 = "";  
   display_4 = "";
   Display_Process();
-  while(proceed == 0){
+  while(proceed == FALSE){
     if(switch_two_pressed){
-      proceed = 1;
+      proceed = TRUE;
       switch_two_pressed = FALSE;
     }
   }

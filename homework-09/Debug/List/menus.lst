@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           07/Apr/2016  19:56:24
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           08/Apr/2016  08:02:06
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -66,7 +66,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
 
    \                                 In  segment DATA16_I, align 1, align-sorted
    \   000000                REQUIRE ?cstart_init_copy
-     23          char lcdBuff[10] = "         ";
+     23          char lcdBuff[DEBOUNCE_MAX] = "         ";
    \                     lcdBuff:
    \   000000                DS8 10
    \   00000A                REQUIRE `?<Initializer for lcdBuff>`
@@ -78,7 +78,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
      26            lcd_4line();
    \   000000   ........     CALLA   #lcd_4line
      27            //---------------------9600 BAUD RATE-----------------------------------------
-     28            if(menu_items && ((ADC_Thumb>>7) == 2 || (ADC_Thumb>>7) == 1 || (ADC_Thumb>>7) == 0 )){
+     28            if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_THREE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_TWO || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_ONE )){
    \   000004   8293....     CMP.W   #0x0, &menu_items
    \   000008   2624         JEQ     ??Menu_Process_2
    \   00000A   1F42....     MOV.W   &ADC_Thumb, R15
@@ -112,7 +112,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
      36              }  
      37            }
      38            //---------------------115200 BAUD RATE-----------------------------------------
-     39            else if(menu_items && ((ADC_Thumb>>7) == 5 || (ADC_Thumb>>7) == 4 || (ADC_Thumb>>7) == 3 )){
+     39            else if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SIX || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FIVE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FOUR )){
    \                     ??Menu_Process_2:
    \   000056   8293....     CMP.W   #0x0, &menu_items
    \   00005A   2824         JEQ     ??Menu_Process_5
@@ -148,7 +148,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
      48              }  
      49            }
      50            //---------------------BAUD RATE TEST-----------------------------------------
-     51            else if(menu_items  && ((ADC_Thumb>>7) == 7 || (ADC_Thumb>>7) == 6)){
+     51            else if(menu_items  && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_EIGHT || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SEVEN)){
    \                     ??Menu_Process_5:
    \   0000AC   8293....     CMP.W   #0x0, &menu_items
    \   0000B0   2524         JEQ     ??Menu_Process_4
@@ -192,7 +192,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \                                 In  segment CODE, align 2
      64          void Resistor_Menu(void){
    \                     Resistor_Menu:
-     65            if((ADC_Thumb>>6 == 0) || (ADC_Thumb>>6 == 1)){
+     65            if((BITSHIFT_R_SIX(ADC_Thumb)  == MENU_ITEM_ONE) || (BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_TWO)){
    \   000000   B2B0C0FF.... BIT.W   #0xffc0, &ADC_Thumb
    \   000006   0724         JEQ     ??Resistor_Menu_0
    \   000008   1F42....     MOV.W   &ADC_Thumb, R15
@@ -210,7 +210,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   000028   B240........ MOV.W   #`?<Constant "    00    ">`, &display_4
    \   00002E   D63C         JMP     ??Resistor_Menu_2
      70            }
-     71            else if((ADC_Thumb>>6 == 2) || (ADC_Thumb>>6 == 3)){
+     71            else if((BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_THREE) || (BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_FOUR)){
    \                     ??Resistor_Menu_1:
    \   000030   1F42....     MOV.W   &ADC_Thumb, R15
    \   000034   3FF0C0FF     AND.W   #0xffc0, R15
@@ -231,7 +231,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   00005E   B240........ MOV.W   #`?<Constant "    01    ">`, &display_4
    \   000064   BB3C         JMP     ??Resistor_Menu_2
      76            }
-     77            else if((ADC_Thumb>>6 == 4) || (ADC_Thumb>>6 == 5)){
+     77            else if((BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_FIVE) || (BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_SIX)){
    \                     ??Resistor_Menu_4:
    \   000066   1F42....     MOV.W   &ADC_Thumb, R15
    \   00006A   3FF0C0FF     AND.W   #0xffc0, R15
@@ -252,7 +252,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   000094   B240........ MOV.W   #`?<Constant "    02    ">`, &display_4
    \   00009A   A03C         JMP     ??Resistor_Menu_2
      82            }
-     83            else if((ADC_Thumb>>6 == 6) || (ADC_Thumb>>6 == 7)){
+     83            else if((BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_SEVEN) || (BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_EIGHT)){
    \                     ??Resistor_Menu_6:
    \   00009C   1F42....     MOV.W   &ADC_Thumb, R15
    \   0000A0   3FF0C0FF     AND.W   #0xffc0, R15
@@ -273,7 +273,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   0000CA   B240........ MOV.W   #`?<Constant "    03    ">`, &display_4
    \   0000D0   853C         JMP     ??Resistor_Menu_2
      88            }
-     89            else if((ADC_Thumb>>6 == 8) || (ADC_Thumb>>6 == 9)){
+     89            else if((BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_NINE) || (BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_TEN)){
    \                     ??Resistor_Menu_8:
    \   0000D2   1F42....     MOV.W   &ADC_Thumb, R15
    \   0000D6   3FF0C0FF     AND.W   #0xffc0, R15
@@ -294,7 +294,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   000100   B240........ MOV.W   #`?<Constant "    04    ">`, &display_4
    \   000106   6A3C         JMP     ??Resistor_Menu_2
      94            }
-     95            else if((ADC_Thumb>>6 == 10) || (ADC_Thumb>>6 == 11)){
+     95            else if((BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_ELEVEN) || (BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_TWELVE)){
    \                     ??Resistor_Menu_10:
    \   000108   1F42....     MOV.W   &ADC_Thumb, R15
    \   00010C   3FF0C0FF     AND.W   #0xffc0, R15
@@ -315,7 +315,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   000136   B240........ MOV.W   #`?<Constant "    05    ">`, &display_4
    \   00013C   4F3C         JMP     ??Resistor_Menu_2
     100            }
-    101            else if((ADC_Thumb>>6 == 12)){
+    101            else if((BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_THIRTEEN)){
    \                     ??Resistor_Menu_12:
    \   00013E   1F42....     MOV.W   &ADC_Thumb, R15
    \   000142   3FF0C0FF     AND.W   #0xffc0, R15
@@ -331,7 +331,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   00015E   B240........ MOV.W   #`?<Constant "    06    ">`, &display_4
    \   000164   3B3C         JMP     ??Resistor_Menu_2
     106            }
-    107            else if((ADC_Thumb>>6 == 13)){
+    107            else if((BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_FOURTEEN)){
    \                     ??Resistor_Menu_13:
    \   000166   1F42....     MOV.W   &ADC_Thumb, R15
    \   00016A   3FF0C0FF     AND.W   #0xffc0, R15
@@ -347,7 +347,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   000186   B240........ MOV.W   #`?<Constant "    07    ">`, &display_4
    \   00018C   273C         JMP     ??Resistor_Menu_2
     112            }
-    113            else if((ADC_Thumb>>6 == 14)){
+    113            else if((BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_FIFTEEN)){
    \                     ??Resistor_Menu_14:
    \   00018E   1F42....     MOV.W   &ADC_Thumb, R15
    \   000192   3FF0C0FF     AND.W   #0xffc0, R15
@@ -363,7 +363,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   0001AE   B240........ MOV.W   #`?<Constant "    08    ">`, &display_4
    \   0001B4   133C         JMP     ??Resistor_Menu_2
     118            }
-    119            else if((ADC_Thumb>>6 == 15)){
+    119            else if((BITSHIFT_R_SIX(ADC_Thumb) == MENU_ITEM_SIXTEEN)){
    \                     ??Resistor_Menu_15:
    \   0001B6   1F42....     MOV.W   &ADC_Thumb, R15
    \   0001BA   3FF0C0FF     AND.W   #0xffc0, R15
@@ -403,7 +403,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \                     ??Shapes_Menu_0:
    \   000004   8293....     CMP.W   #0x0, &switch_two_pressed
    \   000008   AC20         JNE     ??Shapes_Menu_1
-    136              if((ADC_Thumb < 102)){
+    136              if((ADC_Thumb < SECTION_NINE_START)){
    \   00000A   B2906600.... CMP.W   #0x66, &ADC_Thumb
    \   000010   0A2C         JC      ??Shapes_Menu_2
     137                display_1 = "          ";
@@ -415,7 +415,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   000024   EF3F         JMP     ??Shapes_Menu_0
     140                //display_4 = "";
     141              }
-    142              else if((ADC_Thumb >= 102) && (ADC_Thumb < 204)){
+    142              else if((ADC_Thumb >= SECTION_NINE_START) && (ADC_Thumb < SECTION_EIGHT_START)){
    \                     ??Shapes_Menu_2:
    \   000026   B2906600.... CMP.W   #0x66, &ADC_Thumb
    \   00002C   0E28         JNC     ??Shapes_Menu_3
@@ -430,7 +430,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   000048   DD3F         JMP     ??Shapes_Menu_0
     146                //display_4 = "";
     147              }
-    148              else if((ADC_Thumb >= 204) && (ADC_Thumb < 306)){
+    148              else if((ADC_Thumb >= SECTION_EIGHT_START) && (ADC_Thumb < SECTION_SEVEN_START)){
    \                     ??Shapes_Menu_3:
    \   00004A   B290CC00.... CMP.W   #0xcc, &ADC_Thumb
    \   000050   0E28         JNC     ??Shapes_Menu_4
@@ -445,7 +445,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   00006C   CB3F         JMP     ??Shapes_Menu_0
     152                //display_4 = "";
     153              }
-    154              else if((ADC_Thumb >= 306) && (ADC_Thumb < 408)){
+    154              else if((ADC_Thumb >= SECTION_SEVEN_START) && (ADC_Thumb < SECTION_SIX_START)){
    \                     ??Shapes_Menu_4:
    \   00006E   B2903201.... CMP.W   #0x132, &ADC_Thumb
    \   000074   0E28         JNC     ??Shapes_Menu_5
@@ -460,7 +460,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   000090   B93F         JMP     ??Shapes_Menu_0
     158                //display_4 = "";
     159              }
-    160              else if((ADC_Thumb >= 408) && (ADC_Thumb < 510)){
+    160              else if((ADC_Thumb >= SECTION_SIX_START) && (ADC_Thumb < SECTION_FIVE_START)){
    \                     ??Shapes_Menu_5:
    \   000092   B2909801.... CMP.W   #0x198, &ADC_Thumb
    \   000098   0E28         JNC     ??Shapes_Menu_6
@@ -475,7 +475,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   0000B4   A73F         JMP     ??Shapes_Menu_0
     164                //display_4 = "";
     165              }
-    166              else if((ADC_Thumb >= 510) && (ADC_Thumb < 612)){
+    166              else if((ADC_Thumb >= SECTION_FIVE_START) && (ADC_Thumb < SECTION_FOUR_START)){
    \                     ??Shapes_Menu_6:
    \   0000B6   B290FE01.... CMP.W   #0x1fe, &ADC_Thumb
    \   0000BC   0E28         JNC     ??Shapes_Menu_7
@@ -490,7 +490,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   0000D8   953F         JMP     ??Shapes_Menu_0
     170                //display_4 = "";
     171              }
-    172              else if((ADC_Thumb >= 612) && (ADC_Thumb < 714)){
+    172              else if((ADC_Thumb >= SECTION_FOUR_START) && (ADC_Thumb < SECTION_THREE_START)){
    \                     ??Shapes_Menu_7:
    \   0000DA   B2906402.... CMP.W   #0x264, &ADC_Thumb
    \   0000E0   0E28         JNC     ??Shapes_Menu_8
@@ -505,7 +505,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   0000FC   833F         JMP     ??Shapes_Menu_0
     176                //display_4 = "";
     177              }
-    178              else if((ADC_Thumb >= 714) && (ADC_Thumb < 816)){
+    178              else if((ADC_Thumb >= SECTION_THREE_START) && (ADC_Thumb < SECTION_TWO_START)){
    \                     ??Shapes_Menu_8:
    \   0000FE   B290CA02.... CMP.W   #0x2ca, &ADC_Thumb
    \   000104   0E28         JNC     ??Shapes_Menu_9
@@ -520,7 +520,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   000120   713F         JMP     ??Shapes_Menu_0
     182                //display_4 = "";
     183              }
-    184              else if((ADC_Thumb >= 816) && (ADC_Thumb < 918)){
+    184              else if((ADC_Thumb >= SECTION_TWO_START) && (ADC_Thumb < SECTION_ONE_START)){
    \                     ??Shapes_Menu_9:
    \   000122   B2903003.... CMP.W   #0x330, &ADC_Thumb
    \   000128   0E28         JNC     ??Shapes_Menu_10
@@ -535,7 +535,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   000144   5F3F         JMP     ??Shapes_Menu_0
     188                //display_4 = "";
     189              }
-    190              else if((ADC_Thumb >= 918)){
+    190              else if((ADC_Thumb >= SECTION_ONE_START)){
    \                     ??Shapes_Menu_10:
    \   000146   B2909603.... CMP.W   #0x396, &ADC_Thumb
    \   00014C   5B2B         JNC     ??Shapes_Menu_0
@@ -564,78 +564,130 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \                     Song_Menu:
    \   000000   5B15         PUSHM.W #0x6, R11
     205            int i;
-    206            int counter = 0;
+    206            int counter = FALSE;
    \   000002   0B43         MOV.W   #0x0, R11
     207            int thumbPrev = ADC_Thumb;
    \   000004   1842....     MOV.W   &ADC_Thumb, R8
-    208            int deltaThumb = 0;
+    208            int deltaThumb = FALSE;
    \   000008   0943         MOV.W   #0x0, R9
-    209            
-    210            char* stringDisplay = lcdBuff;
-   \   00000A   3640....     MOV.W   #lcdBuff, R6
-    211            TA0CCTL1 &= ~CCIE;
-   \   00000E   B2C010004403 BIC.W   #0x10, &0x344
-    212            
-    213            while((song[counter] != '\0') && switch_two_pressed == FALSE){
+    209            int colorSwitch = FALSE;
+   \   00000A   0643         MOV.W   #0x0, R6
+    210            
+    211            char* stringDisplay = lcdBuff;
+   \   00000C   3740....     MOV.W   #lcdBuff, R7
+    212            TA0CCTL1 &= ~CCIE;
+   \   000010   B2C010004403 BIC.W   #0x10, &0x344
+    213            lcd_BIG_mid();
+   \   000016   ........     CALLA   #lcd_BIG_mid
+    214            while((song[counter] != '\0') && switch_two_pressed == FALSE){
    \                     ??Song_Menu_1:
-   \   000014   CB93....     CMP.B   #0x0, song(R11)
-   \   000018   2224         JEQ     ??Song_Menu_2
-   \   00001A   8293....     CMP.W   #0x0, &switch_two_pressed
-   \   00001E   1F20         JNE     ??Song_Menu_2
-    214              deltaThumb = ADC_Thumb - thumbPrev;
-   \   000020   1F42....     MOV.W   &ADC_Thumb, R15
-   \   000024   0F88         SUB.W   R8, R15
-   \   000026   094F         MOV.W   R15, R9
-    215              if(deltaThumb < -30){
-   \   000028   3990E2FF     CMP.W   #0xffe2, R9
-   \   00002C   1334         JGE     ??Song_Menu_3
-    216                thumbPrev = ADC_Thumb;
-   \   00002E   1842....     MOV.W   &ADC_Thumb, R8
-    217                lcdBuff[9] = song[counter++];
-   \   000032   D24B........ MOV.B   song(R11), &lcdBuff + 9
-   \   000038   1B53         ADD.W   #0x1, R11
-    218                display_1 = stringDisplay;
-   \   00003A   8246....     MOV.W   R6, &display_1
-    219                Display_Process();
-   \   00003E   ........     CALLA   #Display_Process
-    220                for(i=1; i<=9; i++){
-   \   000042   1A43         MOV.W   #0x1, R10
-   \                     ??Song_Menu_0:
-   \   000044   3A900A00     CMP.W   #0xa, R10
-   \   000048   0534         JGE     ??Song_Menu_3
-    221                  lcdBuff[i-1] = lcdBuff[i];
-   \   00004A   DA4A........ MOV.B   lcdBuff(R10), LWRD(lcdBuff + 65535)(R10)
-    222                }
-   \   000050   1A53         ADD.W   #0x1, R10
-   \   000052   F83F         JMP     ??Song_Menu_0
-    223                
-    224              }
-    225              if(deltaThumb>0){
-   \                     ??Song_Menu_3:
-   \   000054   1993         CMP.W   #0x1, R9
-   \   000056   DE3B         JL      ??Song_Menu_1
-    226                  thumbPrev = ADC_Thumb;
-   \   000058   1842....     MOV.W   &ADC_Thumb, R8
-   \   00005C   DB3F         JMP     ??Song_Menu_1
-    227              }
-    228            }
-    229            
-    230            if(switch_two_pressed){
-   \                     ??Song_Menu_2:
-   \   00005E   8293....     CMP.W   #0x0, &switch_two_pressed
-   \   000062   0424         JEQ     ??Song_Menu_4
-    231              switch_one_pressed = FALSE;
-   \   000064   8243....     MOV.W   #0x0, &switch_one_pressed
-    232              switch_two_pressed = FALSE;
-   \   000068   8243....     MOV.W   #0x0, &switch_two_pressed
-    233            }
-    234            counter = FALSE;
+   \   00001A   CB93....     CMP.B   #0x0, song(R11)
+   \   00001E   4824         JEQ     ??Song_Menu_2
+   \   000020   8293....     CMP.W   #0x0, &switch_two_pressed
+   \   000024   4520         JNE     ??Song_Menu_2
+    215              deltaThumb = ADC_Thumb - thumbPrev;
+   \   000026   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00002A   0F88         SUB.W   R8, R15
+   \   00002C   094F         MOV.W   R15, R9
+    216              if(deltaThumb < POSITIVE){
+   \   00002E   0993         CMP.W   #0x0, R9
+   \   000030   1334         JGE     ??Song_Menu_3
+    217                if((deltaThumb % 2) == FALSE){
+   \   000032   0C49         MOV.W   R9, R12
+   \   000034   2E43         MOV.W   #0x2, R14
+   \   000036   ........     CALLA   #?DivMod16s
+   \   00003A   0E93         CMP.W   #0x0, R14
+   \   00003C   0720         JNE     ??Song_Menu_4
+    218                  display_1 = "   Red    ";
+   \   00003E   B240........ MOV.W   #`?<Constant "   Red    ">`, &display_1
+    219                  display_3 = "  White   ";
+   \   000044   B240........ MOV.W   #`?<Constant "  White   ">`, &display_3
+   \   00004A   063C         JMP     ??Song_Menu_3
+    220                }
+    221                else
+    222                {
+    223                  display_1 = "  White   ";
    \                     ??Song_Menu_4:
-   \   00006C   0B43         MOV.W   #0x0, R11
-    235          }
-   \   00006E   5617         POPM.W  #0x6, R11
-   \   000070   1001         RETA
-   \   000072                REQUIRE TA0CCTL1
+   \   00004C   B240........ MOV.W   #`?<Constant "  White   ">`, &display_1
+    224                  display_3 = "   Red    ";
+   \   000052   B240........ MOV.W   #`?<Constant "   Red    ">`, &display_3
+    225                }
+    226              }
+    227              if(deltaThumb < THRESHOLD){
+   \                     ??Song_Menu_3:
+   \   000058   3990E2FF     CMP.W   #0xffe2, R9
+   \   00005C   2434         JGE     ??Song_Menu_5
+    228                thumbPrev = ADC_Thumb;
+   \   00005E   1842....     MOV.W   &ADC_Thumb, R8
+    229                
+    230                if(!colorSwitch){
+   \   000062   0693         CMP.W   #0x0, R6
+   \   000064   0820         JNE     ??Song_Menu_6
+    231                  display_1 = "   Red    ";
+   \   000066   B240........ MOV.W   #`?<Constant "   Red    ">`, &display_1
+    232                  display_3 = "  White   ";
+   \   00006C   B240........ MOV.W   #`?<Constant "  White   ">`, &display_3
+    233                  colorSwitch = TRUE;
+   \   000072   1643         MOV.W   #0x1, R6
+   \   000074   073C         JMP     ??Song_Menu_7
+    234                }
+    235                else
+    236                {
+    237                  display_1 = "  White   ";
+   \                     ??Song_Menu_6:
+   \   000076   B240........ MOV.W   #`?<Constant "  White   ">`, &display_1
+    238                  display_3 = "   Red    ";
+   \   00007C   B240........ MOV.W   #`?<Constant "   Red    ">`, &display_3
+    239                  colorSwitch = FALSE;
+   \   000082   0643         MOV.W   #0x0, R6
+    240                }
+    241                
+    242                lcdBuff[WRITING_INDEX] = song[counter++];
+   \                     ??Song_Menu_7:
+   \   000084   D24B........ MOV.B   song(R11), &lcdBuff + 9
+   \   00008A   1B53         ADD.W   #0x1, R11
+    243                display_2 = stringDisplay;
+   \   00008C   8247....     MOV.W   R7, &display_2
+    244                Display_Process();
+   \   000090   ........     CALLA   #Display_Process
+    245                for(i=1; i<=WRITING_INDEX; i++){
+   \   000094   1A43         MOV.W   #0x1, R10
+   \                     ??Song_Menu_0:
+   \   000096   3A900A00     CMP.W   #0xa, R10
+   \   00009A   0534         JGE     ??Song_Menu_5
+    246                  lcdBuff[i-PREVIOUS] = lcdBuff[i];
+   \   00009C   DA4A........ MOV.B   lcdBuff(R10), LWRD(lcdBuff + 65535)(R10)
+    247                }
+   \   0000A2   1A53         ADD.W   #0x1, R10
+   \   0000A4   F83F         JMP     ??Song_Menu_0
+    248                
+    249              }
+    250              if(deltaThumb>POSITIVE){
+   \                     ??Song_Menu_5:
+   \   0000A6   1993         CMP.W   #0x1, R9
+   \   0000A8   B83B         JL      ??Song_Menu_1
+    251                  thumbPrev = ADC_Thumb;
+   \   0000AA   1842....     MOV.W   &ADC_Thumb, R8
+   \   0000AE   B53F         JMP     ??Song_Menu_1
+    252              }
+    253            }
+    254            
+    255            if(switch_two_pressed){
+   \                     ??Song_Menu_2:
+   \   0000B0   8293....     CMP.W   #0x0, &switch_two_pressed
+   \   0000B4   0424         JEQ     ??Song_Menu_8
+    256              switch_one_pressed = FALSE;
+   \   0000B6   8243....     MOV.W   #0x0, &switch_one_pressed
+    257              switch_two_pressed = FALSE;
+   \   0000BA   8243....     MOV.W   #0x0, &switch_two_pressed
+    258            }
+    259            counter = FALSE;
+   \                     ??Song_Menu_8:
+   \   0000BE   0B43         MOV.W   #0x0, R11
+    260          }
+   \   0000C0   5617         POPM.W  #0x6, R11
+   \   0000C2   1001         RETA
+   \   0000C4                REQUIRE TA0CCTL1
 
    \                                 In  segment DATA16_ID, align 1, align-sorted
    \                     `?<Initializer for song>`:
@@ -890,6 +942,16 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
    \   000000   2043796C696E DC8 " Cylinder "
    \            6465722000  
 
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Red    ">`:
+   \   000000   202020526564 DC8 "   Red    "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  White   ">`:
+   \   000000   202057686974 DC8 "  White   "
+   \            6520202000  
+
    Maximum stack usage in bytes:
 
    CSTACK Function
@@ -904,6 +966,8 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
         4   -> lcd_BIG_mid
      16   Song_Menu
        16   -> Display_Process
+       16   -> lcd_BIG_mid
+       16 ?DivMod16s
 
 
    Segment part sizes:
@@ -931,6 +995,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
       11  ?<Constant "   Green  ">
       11  ?<Constant "   Menu   ">
       11  ?<Constant "   Oval   ">
+      11  ?<Constant "   Red    ">
       11  ?<Constant "   Song   ">
       11  ?<Constant "   Value  ">
       11  ?<Constant "   White  ">
@@ -942,6 +1007,7 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
       11  ?<Constant "  Sphere  ">
       11  ?<Constant "  Square  ">
       11  ?<Constant "  Violet  ">
+      11  ?<Constant "  White   ">
       11  ?<Constant "  Yellow  ">
       11  ?<Constant " Cylinder ">
       11  ?<Constant " Pentagon ">
@@ -953,20 +1019,20 @@ C:\Users\David\Documents\ECE 306\homework-09\menus.c
      254  Menu_Process
      492  Resistor_Menu
      356  Shapes_Menu
-     114  Song_Menu
+     196  Song_Menu
        2  TA0CCTL1
       10  lcdBuff
      224  song
 
  
- 1 216 bytes in segment CODE
+ 1 298 bytes in segment CODE
      2 bytes in segment DATA16_AN
-   408 bytes in segment DATA16_C
+   430 bytes in segment DATA16_C
    234 bytes in segment DATA16_I
    234 bytes in segment DATA16_ID
  
- 1 216 bytes of CODE  memory
-   642 bytes of CONST memory
+ 1 298 bytes of CODE  memory
+   664 bytes of CONST memory
    234 bytes of DATA  memory (+ 2 bytes shared)
 
 Errors: none

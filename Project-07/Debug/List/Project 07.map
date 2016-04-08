@@ -2,49 +2,49 @@
 #                                                                              #
 #      IAR Universal Linker V6.3.4.78                                          #
 #                                                                              #
-#           Link time     =  08/Apr/2016  08:02:06                             #
+#           Link time     =  08/Apr/2016  00:04:02                             #
 #           Target CPU    =  MSP430                                            #
-#           List file     =  "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\List\Homework 09.map"                          #
-#           Output file 1 =  "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Exe\Homework 09.d43"                           #
+#           List file     =  "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\List\Project 07.map"                            #
+#           Output file 1 =  "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Exe\Project 07.d43"                             #
 #                            Format: ubrof10                                   #
 #                            UBROF version 10.0.6                              #
 #                            Using library modules for C-SPY (-rt)             #
-#           Command line  =  "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Obj\adc.r43"                                   #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Obj\clocks.r43"                                #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Obj\init.r43"                                  #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Obj\interrupt_adc.r43"                         #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Obj\interrupt_ports.r43"                       #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Obj\interrupts_serial.r43"                     #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Obj\interrupts_timers.r43"                     #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\LCD #
-#                            .r43"                                             #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Obj\main.r43"                                  #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Obj\menus.r43"                                 #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Obj\motors.r43"                                #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Obj\ports.r43"                                 #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Obj\system.r43"                                #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Obj\timers.r43"                                #
+#           Command line  =  "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Obj\adc.r43"                                    #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Obj\clocks.r43"                                 #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Obj\init.r43"                                   #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Obj\interrupt_adc.r43"                          #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Obj\interrupt_ports.r43"                        #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Obj\interrupts_serial.r43"                      #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Obj\interrupts_timers.r43"                      #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\LCD. #
+#                            r43"                                              #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Obj\main.r43"                                   #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Obj\menus.r43"                                  #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Obj\motors.r43"                                 #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Obj\ports.r43"                                  #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Obj\system.r43"                                 #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Obj\timers.r43"                                 #
 #                            -o                                                #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\Exe\Homework 09.d43"                           #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\Exe\Project 07.d43"                             #
 #                            -l                                                #
-#                            "C:\Users\David\Documents\ECE 306\homework-09\Deb #
-#                            ug\List\Homework 09.map"                          #
+#                            "C:\Users\David\Documents\ECE 306\Project-07\Debu #
+#                            g\List\Project 07.map"                            #
 #                            -xesni                                            #
 #                            "-IC:\Program Files (x86)\IAR Systems\Embedded Wo #
 #                            rkbench 7.3\430\LIB\"                             #
@@ -101,7 +101,7 @@
                 *                                      *
                 ****************************************
 
-       Program entry at :           C4BA  Relocatable, from module : ?cstart
+       Program entry at :           C222  Relocatable, from module : ?cstart
 
 
 
@@ -147,15 +147,15 @@ Module  Entry                              Address
         _DATA16_HEAP_SIZE                   00A0
         _STACK_SIZE                         00A0
         __iar_HWMUL                         04C0
-adc ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\adc.r43 )
+adc ( C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\adc.r43 )
         _A_ADC10CTL0_L                      0700
         _A_ADC10CTL1_L                      0702
         _A_ADC10CTL2_L                      0704
         _A_ADC10MCTL0_L                     070A
         _A_ADC10IE_L                        071A
-        P5_counter                          1CEA
-        ADC_Process                         D2BE
-        Init_ADC                            CF06
+        P5_counter                          1C00
+        ADC_Process                         CAEC
+        Init_ADC                            C7C2
         HEXtoBCD                            NOT NEEDED
         Project5                            NOT NEEDED
         IR_Calibration                      NOT NEEDED
@@ -176,14 +176,14 @@ adc ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\adc.r43 )
         ADC10IE                             071A
         ADC10IE_H                           071B
         ADC10IE_L                           071A
-clocks ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\clocks.r43 )
+clocks ( C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\clocks.r43 )
         _A_CSCTL0_L                         0160
         _A_CSCTL1_L                         0162
         _A_CSCTL2_L                         0164
         _A_CSCTL3_L                         0166
         _A_CSCTL4_L                         0168
         _A_WDTCTL_L                         015C
-        Init_Clocks                         CE28
+        Init_Clocks                         C678
         ?setjmp_save_r4                     NOT NEEDED
         ?setjmp_save_r5                     NOT NEEDED
         CSCTL0                              0160
@@ -204,7 +204,7 @@ clocks ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\clocks.r43 )
         WDTCTL                              015C
         WDTCTL_H                            015D
         WDTCTL_L                            015C
-init ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\init.r43 )
+init ( C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\init.r43 )
         _A_PJOUT_L                          0322
         _A_UCA0CTLW0_L                      05C0
         _A_UCA0BRW_L                        05C6
@@ -214,11 +214,11 @@ init ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\init.r43 )
         _A_UCA1BRW_L                        05E6
         _A_UCA1MCTLW_L                      05E8
         _A_UCA1IE_L                         05FA
-        Init_Conditions                     D2A0
-        Init_Timers                         D3B6
-        Init_LEDs                           D39C
-        Init_Serial_UCA0                    CF72
-        Init_Serial_UCA1                    CE9A
+        Init_Conditions                     CACE
+        Init_Timers                         CBAE
+        Init_LEDs                           CBA0
+        Init_Serial_UCA0                    C6EA
+        Init_Serial_UCA1                    C756
         ?setjmp_save_r4                     NOT NEEDED
         ?setjmp_save_r5                     NOT NEEDED
         PJOUT                               0322
@@ -248,13 +248,13 @@ init ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\init.r43 )
         UCA1IE                              05FA
         UCA1IE_H                            05FB
         UCA1IE_L                            05FA
-interrupt_adc ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\interrupt_adc.r43 )
+interrupt_adc ( C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\interrupt_adc.r43 )
         _A_ADC10CTL0_L                      NOT NEEDED
         _A_ADC10MCTL0_L                     NOT NEEDED
         _A_ADC10MEM0_L                      0712
         _A_ADC10IV_L                        071E
-        channel                             1CEC
-        ADC10_ISR                           C4E2
+        channel                             1C02
+        ADC10_ISR                           C23A
         ADC10_ISR::??INTVEC 92              FFEC
         ?setjmp_save_r4                     NOT NEEDED
         ?setjmp_save_r5                     NOT NEEDED
@@ -270,17 +270,17 @@ interrupt_adc ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\interrupt
         ADC10IV                             071E
         ADC10IV_H                           071F
         ADC10IV_L                           071E
-interrupt_ports ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\interrupt_ports.r43 )
+interrupt_ports ( C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\interrupt_ports.r43 )
         _A_PBIE_L                           023A
         _A_PBIFG_L                          023C
         TA0CCTL0                            0342
-        switch_one_pressed                  1CEE
-        switch_two_pressed                  1CF0
-        switch_one_debounce                 1CF2
-        switch_two_debounce                 1CF4
-        debounce_count_one                  1CF6
-        debounce_count_two                  1CF8
-        switch_interrupt                    C54A
+        switch_one_pressed                  1C04
+        switch_two_pressed                  1C06
+        switch_one_debounce                 1C08
+        switch_two_debounce                 1C0A
+        debounce_count_one                  1C0C
+        debounce_count_two                  1C0E
+        switch_interrupt                    C2A2
         switch_interrupt::??INTVEC 64       FFD0
         ?setjmp_save_r4                     NOT NEEDED
         ?setjmp_save_r5                     NOT NEEDED
@@ -290,25 +290,26 @@ interrupt_ports ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\interru
         PBIFG                               023C
         PBIFG_H                             023D
         PBIFG_L                             023C
-interrupts_serial ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\interrupts_serial.r43 )
+interrupts_serial ( C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\interrupts_serial.r43 )
         _A_UCA0RXBUF_L                      05CC
         UCA0IV                              05DE
         _A_UCA1RXBUF_L                      05EC
         UCA1IV                              05FE
-        usb_rx_ring_wr0                     1CFA
-        usb_rx_ring_rd0                     1CFC
-        usb_tx_ring_wr0                     1CFE
-        usb_tx_ring_rd0                     1D00
-        usb_rx_ring_wr1                     1D02
-        usb_rx_ring_rd1                     1D04
-        usb_tx_ring_wr1                     1D06
-        usb_tx_ring_rd1                     1D08
-        USB_Char_Rx0                        1D28
-        USB_Char_Tx0                        1D38
-        USB_Char_Rx1                        1D48
-        USB_Char_Tx1                        1D58
-        USCI_A0_ISR                         C59A
-        USCI_A1_ISR                         C5D0
+        usb_rx_ring_wr0                     1C10
+        usb_rx_ring_rd0                     1C12
+        usb_tx_ring_wr0                     1C14
+        usb_tx_ring_rd0                     1C16
+        usb_rx_ring_wr1                     1C18
+        usb_rx_ring_rd1                     1C1A
+        usb_tx_ring_wr1                     1C1C
+        usb_tx_ring_rd1                     1C1E
+        USB_Char_Rx0                        1C40
+        USB_Char_Tx0                        1C50
+        USB_Char_Rx1                        1C60
+        USB_Char_Tx1                        1C70
+        portReady                           1C20
+        USCI_A0_ISR                         C2F2
+        USCI_A1_ISR                         C332
         USCI_A1_ISR::??INTVEC 86            FFE6
         USCI_A0_ISR::??INTVEC 96            FFF0
         ?setjmp_save_r4                     NOT NEEDED
@@ -319,15 +320,15 @@ interrupts_serial ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\inter
         UCA1RXBUF                           05EC
         UCA1RXBUF_H                         05ED
         UCA1RXBUF_L                         05EC
-interrupts_timers ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\interrupts_timers.r43 )
+interrupts_timers ( C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\interrupts_timers.r43 )
         _A_PBIE_L                           NOT NEEDED
         _A_PBIFG_L                          NOT NEEDED
         TA0CCTL0                            NOT NEEDED
         TA0CCR0                             0352
         TA0CCR1                             0354
         TA0IV                               036E
-        Timer0_A0_ISR                       C606
-        TIMER0_A1_ISR                       C660
+        Timer0_A0_ISR                       C368
+        TIMER0_A1_ISR                       C3C2
         TIMER0_A1_ISR::??INTVEC 88          FFE8
         Timer0_A0_ISR::??INTVEC 90          FFEA
         ?setjmp_save_r4                     NOT NEEDED
@@ -338,7 +339,7 @@ interrupts_timers ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\inter
         PBIFG                               023C
         PBIFG_H                             023D
         PBIFG_L                             023C
-LCD ( C:\Users\David\Documents\ECE 306\homework-09\LCD.r43 )
+LCD ( C:\Users\David\Documents\ECE 306\Project-07\LCD.r43 )
         _A_PAOUT_L                          0202
         _A_PBOUT_L                          0222
         _A_UCB0CTLW0_L                      0640
@@ -347,35 +348,35 @@ LCD ( C:\Users\David\Documents\ECE 306\homework-09\LCD.r43 )
         _A_UCB0IFG_L                        066C
         SPI_Char                            NOT NEEDED
         lcd_control                         NOT NEEDED
-        display_line_1                      1D68
-        display_line_2                      1D73
-        display_line_3                      1D7E
-        display_line_4                      1D89
-        display_1                           1D0A
-        display_2                           1D0C
-        display_3                           1D0E
-        display_4                           1D10
+        display_line_1                      1C80
+        display_line_2                      1C8B
+        display_line_3                      1C96
+        display_line_4                      1CA1
+        display_1                           1C22
+        display_2                           1C24
+        display_3                           1C26
+        display_4                           1C28
         char_count                          NOT NEEDED
         current_line                        NOT NEEDED
         update_display_count                NOT NEEDED
         display_update_time                 NOT NEEDED
-        spi_chipselect_idle                 D36A
-        spi_chipselect_active               D3AA
-        spi_reset_idle                      D3D6
-        spi_reset_active                    D3DE
-        Init_LCD                            CC5E
-        lcd_4line                           D3CE
-        lcd_BIG_mid                         D2D8
-        lcd_out                             D27C
+        spi_chipselect_idle                 CB6E
+        spi_chipselect_active               CBBA
+        spi_reset_idle                      CBD2
+        spi_reset_active                    CBDA
+        Init_LCD                            C4AE
+        lcd_4line                           NOT NEEDED
+        lcd_BIG_mid                         CB06
+        lcd_out                             CAAA
         lcd_puts                            NOT NEEDED
-        WriteIns                            D230
-        WriteData                           D256
+        WriteIns                            CA84
+        WriteData                           CA5E
         CheckBusy                           NOT NEEDED
-        ClrDisplay                          D3C2
-        SetPostion                          D346
-        DisplayOnOff                        D38C
-        Init_SPI_B0                         D0D6
-        SPI_B0_write                        D332
+        ClrDisplay                          CBC6
+        SetPostion                          CB5C
+        DisplayOnOff                        CB80
+        Init_SPI_B0                         C9B0
+        SPI_B0_write                        CB48
         ?setjmp_save_r4                     NOT NEEDED
         ?setjmp_save_r5                     NOT NEEDED
         PAOUT                               0202
@@ -396,51 +397,57 @@ LCD ( C:\Users\David\Documents\ECE 306\homework-09\LCD.r43 )
         UCB0IFG                             066C
         UCB0IFG_H                           066D
         UCB0IFG_L                           066C
-main ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\main.r43 )
+main ( C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\main.r43 )
+        _A_UCA0RXBUF_L                      NOT NEEDED
+        _A_UCA0TXBUF_L                      05CE
         control_state                       NOT NEEDED
-        Time_Sequence                       1D12
+        Time_Sequence                       1C2A
         led_smclk                           NOT NEEDED
         one_time                            NOT NEEDED
-        five_msec_delay                     1D14
-        posL1                               1D94
-        posL2                               1D95
-        posL3                               1D96
-        posL4                               1D97
+        five_msec_delay                     1C2C
+        posL1                               1CAC
+        posL2                               1CAD
+        posL3                               1CAE
+        posL4                               1CAF
         size_count                          NOT NEEDED
         big                                 NOT NEEDED
         do_this                             NOT NEEDED
-        display_count                       1D16
+        display_count                       1C2E
         adc_char                            NOT NEEDED
-        ADC_Left_Detector                   1D18
-        ADC_Right_Detector                  1D1A
-        ADC_Thumb                           1D1C
+        ADC_Left_Detector                   1C30
+        ADC_Right_Detector                  1C32
+        ADC_Thumb                           1C34
         left_calibration_black              NOT NEEDED
         right_calibration_black             NOT NEEDED
         left_calibration_white              NOT NEEDED
         right_calibration_white             NOT NEEDED
         left_calibration_ambient            NOT NEEDED
         right_calibration_ambient           NOT NEEDED
-        menu_items                          1D1E
+        menu_items                          1C36
         threshold                           NOT NEEDED
         transmission                        NOT NEEDED
         received0                           NOT NEEDED
         received1                           NOT NEEDED
-        passed_value                        NOT NEEDED
-        pass_flag                           NOT NEEDED
-        main                                CFDE
+        main                                C82E
         ?setjmp_save_r4                     NOT NEEDED
         ?setjmp_save_r5                     NOT NEEDED
-menus ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\menus.r43 )
+        UCA0RXBUF                           05CC
+        UCA0RXBUF_H                         05CD
+        UCA0RXBUF_L                         05CC
+        UCA0TXBUF                           05CE
+        UCA0TXBUF_H                         05CF
+        UCA0TXBUF_L                         05CE
+menus ( C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\menus.r43 )
         TA0CCTL1                            0344
-        song                                1C00
-        lcdBuff                             1CE0
-        Menu_Process                        C9EE
-        Resistor_Menu                       C69E
-        Shapes_Menu                         C88A
-        Song_Menu                           CAEC
+        song                                NOT NEEDED
+        lcdBuff                             NOT NEEDED
+        Menu_Process                        NOT NEEDED
+        Resistor_Menu                       NOT NEEDED
+        Shapes_Menu                         NOT NEEDED
+        Song_Menu                           NOT NEEDED
         ?setjmp_save_r4                     NOT NEEDED
         ?setjmp_save_r5                     NOT NEEDED
-motors ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\motors.r43 )
+motors ( C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\motors.r43 )
         _A_PAOUT_L                          NOT NEEDED
         _A_PBSEL0_L                         022A
         _A_PBSEL1_L                         022C
@@ -468,7 +475,7 @@ motors ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\motors.r43 )
         PBSEL1                              022C
         PBSEL1_H                            022D
         PBSEL1_L                            022C
-ports ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\ports.r43 )
+ports ( C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\ports.r43 )
         _A_PAOUT_L                          NOT NEEDED
         _A_PADIR_L                          0204
         _A_PAREN_L                          0206
@@ -486,12 +493,12 @@ ports ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\ports.r43 )
         _A_PJDIR_L                          0324
         _A_PJSEL0_L                         032A
         _A_PJSEL1_L                         032C
-        Init_Ports                          D308
-        Init_Port1                          CD98
-        Init_Port2                          CCFE
-        Init_Port3                          CBB0
-        Init_Port4                          D044
-        Init_PortJ                          D152
+        Init_Ports                          CB1E
+        Init_Port1                          C5E8
+        Init_Port2                          C54E
+        Init_Port3                          C400
+        Init_Port4                          C8E0
+        Init_PortJ                          C892
         ?setjmp_save_r4                     NOT NEEDED
         ?setjmp_save_r5                     NOT NEEDED
         PAOUT                               0202
@@ -545,11 +552,11 @@ ports ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\ports.r43 )
         PJSEL1                              032C
         PJSEL1_H                            032D
         PJSEL1_L                            032C
-system ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\system.r43 )
-        enable_interrupts                   D3E6
+system ( C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\system.r43 )
+        enable_interrupts                   CBE2
         ?setjmp_save_r4                     NOT NEEDED
         ?setjmp_save_r5                     NOT NEEDED
-timers ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\timers.r43 )
+timers ( C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\timers.r43 )
         TA0CTL                              0340
         TA0CCTL0                            NOT NEEDED
         TA0CCTL1                            NOT NEEDED
@@ -568,30 +575,30 @@ timers ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\timers.r43 )
         TB2CCR0                             0452
         TB2CCR1                             NOT NEEDED
         TB2CCR2                             NOT NEEDED
-        right_forward_rate                  1D20
-        right_reverse_rate                  1D22
-        left_forward_rate                   1D24
-        left_reverse_rate                   1D26
+        right_forward_rate                  1C38
+        right_reverse_rate                  1C3A
+        left_forward_rate                   1C3C
+        left_reverse_rate                   1C3E
         Five_msec_Delay                     NOT NEEDED
         Timer_code                          NOT NEEDED
-        Display_Process                     D092
-        Init_Timer_A0                       D114
-        Init_Timer_B1                       D190
-        Init_Timer_B2                       D1C8
+        Display_Process                     C92E
+        Init_Timer_A0                       C972
+        Init_Timer_B1                       CA26
+        Init_Timer_B2                       C9EE
         ?setjmp_save_r4                     NOT NEEDED
         ?setjmp_save_r5                     NOT NEEDED
 ?abort ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
         abort                               NOT NEEDED
 ?__dbg_break ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
-        __DebugBreak                        D3F8
+        __DebugBreak                        CBF0
 ?__dwrite ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
         __dwrite                            NOT NEEDED
 ?__exit ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
-        __exit                              D31E
+        __exit                              CB34
 ?__write ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
         __write                             NOT NEEDED
 ?_exit ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
-        _exit                               D3EC
+        _exit                               CBEC
         __cstart_call_dtors                 NOT NEEDED
         __cstart_closeall                   NOT NEEDED
         __cstart_clearlocks                 NOT NEEDED
@@ -602,40 +609,34 @@ timers ( C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\timers.r43 )
         __call_dtors                        NOT NEEDED
         __data16_vec_cctor                  NOT NEEDED
 ?cstart ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
-        __program_start                     C4BA
-        ?cstart_begin                       C4BA
+        __program_start                     C222
+        ?cstart_begin                       C222
         ?cstart_call_mpu_init               NOT NEEDED
         ?cstart_call_low_level_init         NOT NEEDED
         ?cstart_init_copy_ramfunc           NOT NEEDED
-        ?cstart_init_zero                   C4BE
-        ?cstart_init_copy                   C4CA
+        ?cstart_init_zero                   C226
+        ?cstart_init_copy                   NOT NEEDED
         ?cstart_init_zero20                 NOT NEEDED
         ?cstart_init_copy20                 NOT NEEDED
         __cstart_init_tls                   NOT NEEDED
         ?cstart_call_ctors                  NOT NEEDED
-        ?cstart_call_main                   C4DA
-        ?cstart_end                         C4E2
+        ?cstart_call_main                   C232
+        ?cstart_end                         C23A
 lowinit ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
         __low_level_init                    NOT NEEDED
 ?reset_vector ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
         ?reset_vector                       FFFE
 ?exit ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
-        exit                                D3F0
+        exit                                CBE8
 ?malloc ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
         malloc                              NOT NEEDED
-?DivMod816u ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
-        ?DivMod8u                           NOT NEEDED
-        ?DivMod16u                          D2F0
-?DivMod816s ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
-        ?DivMod8s                           NOT NEEDED
-        ?DivMod16s                          D200
 ?memcpy ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
-        memcpy                              D358
+        memcpy                              NOT NEEDED
 ?memmove ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
         memmove                             NOT NEEDED
 ?memzero ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
-        __data16_memzero                    D37C
-        __data16_memcpy                     D3F4
+        __data16_memzero                    CB90
+        __data16_memcpy                     NOT NEEDED
         __data16_memmove                    NOT NEEDED
 ?MpuInit ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.r43 )
         __iar_430_mpu_init                  NOT NEEDED
@@ -678,17 +679,14 @@ lowinit ( C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib
 Module               CODE      DATA      CONST
 ------               ----      ----      -----
                     (Rel)  (Rel)  (Abs)  (Rel)
-?DivMod816s            48
-?DivMod816u            24
 ?__dbg_break            2
 ?__exit                20
 ?_exit                  4
-?cstart                40
+?cstart                24
 ?exit                   4
-?memcpy                18
-?memzero               20
+?memzero               16
 ?reset_vector           2
-LCD                   478     52      8
+LCD                   470     52      8
   + shared                            4
 adc                   134      2      6
   + shared                            4
@@ -700,23 +698,24 @@ interrupt_adc         104      2      4
 interrupt_ports        80     12
   + shared             66             6
   + common
-interrupts_serial     108     80      8
-  + common             98
+interrupts_serial     118     82      6
+  + shared             98             2
+  + common
 interrupts_timers     152             2
   + shared             92             4
   + common
-main                  102     18            34
-menus               1 298    234           664
+main                  100     18      2     34
+menus
   + shared                            2
 motors
   + shared                           12
-ports                 634            20
+ports                 650            20
 system                  6
 timers                242      8     20
 N/A (command line)           160
 N/A (alignment)
-----------          -----    ---    ---    ---
-Total:              3 906    568    130    698
+----------          -----    ---    ---     --
+Total:              2 514    336    132     34
   + common             98
 
 
@@ -750,7 +749,7 @@ DATA16_AN                              015C - 015D               2   rel    0
                                        0452 - 0457               6 
                                        05C0 - 05C1               2 
                                        05C6 - 05C9               4 
-                                       05CC - 05CD               2 
+                                       05CC - 05CF               4 
                                        05DA - 05DB               2 
                                        05DE - 05E1               4 
                                        05E6 - 05E9               4 
@@ -766,21 +765,20 @@ DATA16_AN                              015C - 015D               2   rel    0
                                        0712 - 0713               2 
                                        071A - 071B               2 
                                        071E - 071F               2 
-DATA16_I                               1C00 - 1CE9              EA   rel    1
-DATA16_Z                               1CEA - 1D97              AE   rel    1
-DATA20_I                                  1D98                       rel    1
-DATA20_Z                                  1D98                       rel    1
-DATA20_N                                  1D98                       rel    1
-CODE_I                                    1D98                       rel    1
+DATA16_I                                  1C00                       dse    0
+DATA16_Z                               1C00 - 1CAF              B0   rel    1
+CODE_I                                    1CB0                       rel    1
+DATA20_I                                  1CB0                       rel    1
+DATA20_Z                                  1CB0                       rel    1
+DATA20_N                                  1CB0                       rel    1
 CSTACK                                 1F60 - 1FFF              A0   rel    1
-DATA16_C                               C200 - C3CF             1D0   rel    0
-DATA16_ID                              C3D0 - C4B9              EA   rel    1
-DATA20_ID                                 C4BA                       rel    1
-DATA20_C                                  C4BA                       rel    1
-CSTART                                 C4BA - C4E1              28   rel    1
-ISR_CODE                               C4E2 - C69D             1BC   rel    1
-CODE_ID                                   C69E                       rel    1
-<CODE> 1                               C69E - D3F9             D5C   rel    1
+DATA16_C                               C200 - C221              22   rel    0
+DATA20_C                                  C222                       rel    1
+DATA20_ID                                 C222                       rel    1
+CSTART                                 C222 - C239              18   rel    1
+ISR_CODE                               C23A - C3FF             1C6   rel    1
+CODE_ID                                   C400                       rel    1
+<CODE> 1                               C400 - CBF1             7F2   rel    1
 INTVEC                                 FF90 - FFF1              62   com    1
 RESET                                  FFFE - FFFF               2   rel    1
 
@@ -790,9 +788,9 @@ RESET                                  FFFE - FFFF               2   rel    1
                 *                                      *
                 ****************************************
 
- 4 004 bytes of CODE  memory
-   568 bytes of DATA  memory (+ 130 absolute )
-   698 bytes of CONST memory
+ 2 612 bytes of CODE  memory
+   336 bytes of DATA  memory (+ 132 absolute )
+    34 bytes of CONST memory
 
 Errors: none
 Warnings: none

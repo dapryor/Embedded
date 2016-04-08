@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           07/Apr/2016  19:55:33
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           08/Apr/2016  00:04:02
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -12,24 +12,24 @@
 #    __core        =  430X
 #    __data_model  =  small
 #    __code_model  =  large
-#    Source file   =  C:\Users\David\Documents\ECE 306\homework-09\main.c
+#    Source file   =  C:\Users\David\Documents\ECE 306\Project-07\main.c
 #    Command line  =  
-#        "C:\Users\David\Documents\ECE 306\homework-09\main.c" -lC
-#        "C:\Users\David\Documents\ECE 306\homework-09\Debug\List" -o
-#        "C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj" --no_cse
+#        "C:\Users\David\Documents\ECE 306\Project-07\main.c" -lC
+#        "C:\Users\David\Documents\ECE 306\Project-07\Debug\List" -o
+#        "C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj" --no_cse
 #        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
 #        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
 #        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
 #        --core=430X --data_model=small -On --multiplier=32
 #        --hw_workaround=CPU40 --code_model=large
 #    List file     =  
-#        C:\Users\David\Documents\ECE 306\homework-09\Debug\List\main.lst
+#        C:\Users\David\Documents\ECE 306\Project-07\Debug\List\main.lst
 #    Object file   =  
-#        C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\main.r43
+#        C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\main.r43
 #
 ###############################################################################
 
-C:\Users\David\Documents\ECE 306\homework-09\main.c
+C:\Users\David\Documents\ECE 306\Project-07\main.c
       1          //------------------------------------------------------------------------------
       2          //  File Name : main.c
       3          //
@@ -44,6 +44,16 @@ C:\Users\David\Documents\ECE 306\homework-09\main.c
      12          //------------------------------------------------------------------------------
      13          #include  "macros.h"
      14          #include  "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x5cc
+   \   union <unnamed> _A_UCA0RXBUF_L
+   \                     _A_UCA0RXBUF_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5ce
+   \   union <unnamed> _A_UCA0TXBUF_L
+   \                     _A_UCA0TXBUF_L:
+   \   000000                DS8 2
      15          #include  "functions.h"
      16          
      17          // Required defines
@@ -260,119 +270,112 @@ C:\Users\David\Documents\ECE 306\homework-09\main.c
      89          char received1[16];
    \                     received1:
    \   000000                DS8 16
-
-   \                                 In  segment DATA16_Z, align 2, align-sorted
-   \   000000                REQUIRE ?cstart_init_zero
-     90          volatile int passed_value = FALSE;
-   \                     passed_value:
-   \   000000                DS8 2
-
-   \                                 In  segment DATA16_Z, align 2, align-sorted
-   \   000000                REQUIRE ?cstart_init_zero
-     91          volatile int pass_flag=FALSE;
-   \                     pass_flag:
-   \   000000                DS8 2
+     90          extern volatile unsigned int portReady;
+     91          
      92          
-     93          
 
    \                                 In  segment CODE, align 2
-     94          void main(void){
+     93          void main(void){
    \                     main:
-     95          //==============================================================================
-     96          // Main Program
-     97          // 
-     98          // Description: This function contains the while loop that runs continuously
-     99          // to act for the operating system. It also calls all the functions to
-    100          // initialize the system.
-    101          //
-    102          // Passed : no variables passed
-    103          // Locals: no variables declared
-    104          // Returned: no values returned
-    105          // Globals:     volatile unsigned int Time_Sequence;
-    106          //              volatile char one_time;
-    107          //              char* display_1
-    108          //              char* display_2
-    109          //              char* display_3
-    110          //              char* display_4
-    111          //              slow_input_down
-    112          //              control_state[CNTL_STATE_INDEX]
-    113          //              char big
-    114          //              char size_count;
-    115          //              char posL1
-    116          //              char posL2
-    117          //              char posL3
-    118          //              char posL4
-    119          //
-    120          // Author: David Pryor
-    121          // Date: Feb 2016
-    122          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
-    123          //==============================================================================
-    124            Init_Ports();                             // Initialize Ports
+     94          //==============================================================================
+     95          // Main Program
+     96          // 
+     97          // Description: This function contains the while loop that runs continuously
+     98          // to act for the operating system. It also calls all the functions to
+     99          // initialize the system.
+    100          //
+    101          // Passed : no variables passed
+    102          // Locals: no variables declared
+    103          // Returned: no values returned
+    104          // Globals:     volatile unsigned int Time_Sequence;
+    105          //              volatile char one_time;
+    106          //              char* display_1
+    107          //              char* display_2
+    108          //              char* display_3
+    109          //              char* display_4
+    110          //              slow_input_down
+    111          //              control_state[CNTL_STATE_INDEX]
+    112          //              char big
+    113          //              char size_count;
+    114          //              char posL1
+    115          //              char posL2
+    116          //              char posL3
+    117          //              char posL4
+    118          //
+    119          // Author: David Pryor
+    120          // Date: Feb 2016
+    121          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    122          //==============================================================================
+    123            Init_Ports();                             // Initialize Ports
    \   000000   ........     CALLA   #Init_Ports
-    125            Init_Clocks();                            // Initialize Clock System 
+    124            Init_Clocks();                            // Initialize Clock System 
    \   000004   ........     CALLA   #Init_Clocks
-    126            Init_Conditions();
+    125            Init_Conditions();
    \   000008   ........     CALLA   #Init_Conditions
-    127            Time_Sequence = SWITCH_OFF;               // 
+    126            Time_Sequence = SWITCH_OFF;               // 
    \   00000C   8243....     MOV.W   #0x0, &Time_Sequence
-    128            Init_Timers();                            // Initialize Timers
+    127            Init_Timers();                            // Initialize Timers
    \   000010   ........     CALLA   #Init_Timers
-    129            Init_LEDs();                              // Initialize LEDs
+    128            Init_LEDs();                              // Initialize LEDs
    \   000014   ........     CALLA   #Init_LEDs
-    130            Init_LCD();                               // Initialize LCD
+    129            Init_LCD();                               // Initialize LCD
    \   000018   ........     CALLA   #Init_LCD
-    131            Init_ADC();                               // Initialize ADC
+    130            Init_ADC();                               // Initialize ADC
    \   00001C   ........     CALLA   #Init_ADC
-    132            Init_Serial_UCA1(1);                      // BAUD rate 9600
+    131            Init_Serial_UCA1(1);                      // BAUD rate 9600
    \   000020   1C43         MOV.W   #0x1, R12
    \   000022   ........     CALLA   #Init_Serial_UCA1
-    133            Init_Serial_UCA0(1);                      // BAUD rate 9600
+    132            Init_Serial_UCA0(1);                      // BAUD rate 9600
    \   000026   1C43         MOV.W   #0x1, R12
    \   000028   ........     CALLA   #Init_Serial_UCA0
+    133            
     134            
-    135            
-    136            lcd_BIG_mid();
+    135            lcd_BIG_mid();
    \   00002C   ........     CALLA   #lcd_BIG_mid
-    137            display_1 = "  David   ";
+    136            display_1 = "  David   ";
    \   000030   B240........ MOV.W   #`?<Constant "  David   ">`, &display_1
-    138            display_2 = "Homework 9";  
+    137            display_2 = "Homework 9";  
    \   000036   B240........ MOV.W   #`?<Constant "Homework 9">`, &display_2
-    139            display_3 = "  Pryor   ";
+    138            display_3 = "  Pryor   ";
    \   00003C   B240........ MOV.W   #`?<Constant "  Pryor   ">`, &display_3
-    140            display_4 = "";
+    139            display_4 = "";
    \   000042   B240........ MOV.W   #`?<Constant "">`, &display_4
-    141            Display_Process();
+    140            Display_Process();
    \   000048   ........     CALLA   #Display_Process
+    141          
     142          
     143          
-    144          
-    145          //------------------------------------------------------------------------------
-    146          // Begining of the "While" Operating System
-    147          //------------------------------------------------------------------------------
-    148            while(ALWAYS) {                            // Can the Operating system run
-    149              
-    150              ADC_Process();              // call sampling function
+    144          //------------------------------------------------------------------------------
+    145          // Begining of the "While" Operating System
+    146          //------------------------------------------------------------------------------
+    147            while(ALWAYS) {                            // Can the Operating system run
+    148              
+    149              ADC_Process();              // call sampling function
    \                     ??main_0:
    \   00004C   ........     CALLA   #ADC_Process
+    150              
     151              
-    152              
-    153              
-    154              if(menu_items){  //start menu
-   \   000050   8293....     CMP.W   #0x0, &menu_items
+    152              if(portReady){
+   \   000050   8293....     CMP.W   #0x0, &portReady
    \   000054   FB27         JEQ     ??main_0
-    155                switch_one_pressed = FALSE;
-   \   000056   8243....     MOV.W   #0x0, &switch_one_pressed
-    156                switch_two_pressed = FALSE;
-   \   00005A   8243....     MOV.W   #0x0, &switch_two_pressed
-    157                Menu_Process();
-   \   00005E   ........     CALLA   #Menu_Process
-   \   000062   F43F         JMP     ??main_0
-   \   000064   0343         NOP
-    158              }
-    159              
-    160            }
-    161          //------------------------------------------------------------------------------
-    162          }
+    153                UCA0TXBUF = UCA0RXBUF; //PC to FRAM to PC
+   \   000056   9242CC05CE05 MOV.W   &0x5cc, &0x5ce
+    154                portReady = FALSE;
+   \   00005C   8243....     MOV.W   #0x0, &portReady
+   \   000060   F53F         JMP     ??main_0
+   \   000062   0343         NOP
+   \   000064                REQUIRE _A_UCA0TXBUF_L
+   \   000064                REQUIRE _A_UCA0RXBUF_L
+    155              }
+    156              /*if(menu_items){  //start menu
+    157                switch_one_pressed = FALSE;
+    158                switch_two_pressed = FALSE;
+    159                Menu_Process();
+    160              }*/
+    161              
+    162            }
+    163          //------------------------------------------------------------------------------
+    164          }
 
    \                                 In  segment DATA16_ID, align 1, align-sorted
    \                     `?<Initializer for transmission>`:
@@ -398,8 +401,6 @@ C:\Users\David\Documents\ECE 306\homework-09\main.c
    \                                 In  segment DATA16_C, align 1, align-sorted
    \                     `?<Constant "">`:
    \   000000   00           DC8 ""
-    163          
-    164          
     165          
     166          
     167          
@@ -412,6 +413,8 @@ C:\Users\David\Documents\ECE 306\homework-09\main.c
     174          
     175          
     176          
+    177          
+    178          
 
    Maximum stack usage in bytes:
 
@@ -429,7 +432,6 @@ C:\Users\David\Documents\ECE 306\homework-09\main.c
         4   -> Init_Serial_UCA0
         4   -> Init_Serial_UCA1
         4   -> Init_Timers
-        4   -> Menu_Process
         4   -> lcd_BIG_mid
 
 
@@ -446,6 +448,8 @@ C:\Users\David\Documents\ECE 306\homework-09\main.c
        2  ADC_Right_Detector
        2  ADC_Thumb
        2  Time_Sequence
+       2  _A_UCA0RXBUF_L
+       2  _A_UCA0TXBUF_L
        5  adc_char
        1  big
        3  control_state
@@ -456,11 +460,9 @@ C:\Users\David\Documents\ECE 306\homework-09\main.c
        2  left_calibration_ambient
        2  left_calibration_black
        2  left_calibration_white
-     102  main
+     100  main
        2  menu_items
        1  one_time
-       2  pass_flag
-       2  passed_value
        1  posL1
        1  posL2
        1  posL3
@@ -475,15 +477,16 @@ C:\Users\David\Documents\ECE 306\homework-09\main.c
       16  transmission
 
  
- 102 bytes in segment CODE
+ 100 bytes in segment CODE
+   4 bytes in segment DATA16_AN
   34 bytes in segment DATA16_C
   16 bytes in segment DATA16_I
   16 bytes in segment DATA16_ID
-  82 bytes in segment DATA16_Z
+  78 bytes in segment DATA16_Z
  
- 102 bytes of CODE  memory
+ 100 bytes of CODE  memory
   50 bytes of CONST memory
-  98 bytes of DATA  memory
+  94 bytes of DATA  memory (+ 4 bytes shared)
 
 Errors: none
 Warnings: none

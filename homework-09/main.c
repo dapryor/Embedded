@@ -129,8 +129,8 @@ void main(void){
   Init_LEDs();                              // Initialize LEDs
   Init_LCD();                               // Initialize LCD
   Init_ADC();                               // Initialize ADC
-  Init_Serial_UCA1(1);                      // BAUD rate 9600
-  Init_Serial_UCA0(1);                      // BAUD rate 9600
+  Init_Serial_UCA1(TRUE);                      // BAUD rate 9600
+  Init_Serial_UCA0(TRUE);                      // BAUD rate 9600
   
   
   lcd_BIG_mid();
@@ -149,11 +149,9 @@ void main(void){
     
     ADC_Process();              // call sampling function
     
-    
-    
     if(menu_items){  //start menu
-      switch_one_pressed = FALSE;
-      switch_two_pressed = FALSE;
+      switch_one_pressed = FALSE; //switch one off
+      switch_two_pressed = FALSE; //switch two off
       Menu_Process();
     }
     

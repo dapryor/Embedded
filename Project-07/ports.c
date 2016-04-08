@@ -322,24 +322,24 @@ PJDIR = SET_INPUT;			// Set PJ direction to output
 
 PJSEL0 &= ~IOT_WAKEUP; 			
 PJSEL1 &= ~IOT_WAKEUP; 
-PJOUT &= ~IOT_WAKEUP; 
+PJOUT &= ~IOT_WAKEUP;                   // output set to 0
 PJDIR |= IOT_WAKEUP;                    // Set PJ Pin 1 direction to output
 
 PJSEL0 &= ~IOT_FACTORY; 		
 PJSEL1 &= ~IOT_FACTORY; 
-PJOUT &= ~IOT_FACTORY; 
+PJOUT &= ~IOT_FACTORY;                  // output set to 0
 PJDIR |= IOT_FACTORY;                   // Set PJ Pin 2 direction to output
  
 PJSEL0 &= ~IOT_STA_MINIAP; 	        
 PJSEL1 &= ~IOT_STA_MINIAP; 
-PJOUT &= ~IOT_STA_MINIAP; 
+PJOUT |= IOT_STA_MINIAP;                // output set to 1
 PJDIR |= IOT_STA_MINIAP;                // Set PJ Pin 3 direction to output
 //------------------------------------------------------------------------------
 //USED TO RESET
-//PJSEL0 &= ~IOT_RESET;
-//PJSEL1 &= ~IOT_RESET;
-//PJDIR |= IOT_RESET;                   // Set P3 Pin 4 direction to output
-//PJOUT &= ~IOT_RESET;	
+PJSEL0 &= ~IOT_RESET;
+PJSEL1 &= ~IOT_RESET;
+PJDIR |= IOT_RESET;                   // Set P3 Pin 4 direction to output
+PJOUT &= ~IOT_RESET;	              //output set to 0
 // XT1 Setup
 // PJSEL0 |= XINR;
 // PJSEL0 |= XOUTR;

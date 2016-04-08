@@ -15,10 +15,9 @@ volatile char USB_Char_Rx0[SMALL_RING_SIZE];
 volatile char USB_Char_Tx0[LARGE_RING_SIZE];
 volatile char USB_Char_Rx1[SMALL_RING_SIZE];
 volatile char USB_Char_Tx1[LARGE_RING_SIZE];
-extern volatile int passed_value;
-extern volatile int pass_flag;
 extern char *display_1;
 extern char adc_char[5];
+volatile unsigned int portReady = 0;
 
 //----------------------------------------------------------------------------//
 
@@ -31,21 +30,12 @@ __interrupt void USCI_A0_ISR(void){
         case 2: // Vector 2 - RXIFG
             temp = usb_rx_ring_wr0;
             USB_Char_Rx0[temp] = UCA0RXBUF; // RX -> USB_Char_Rx character
-            
-            
-            passed_value = USB_Char_Rx0[temp];
-            passed_value++;
-            HEXtoBCD(passed_value);
-            display_1 = adc_char;
-            Display_Process();
-            
-            
             if (++usb_rx_ring_wr0 >= (SMALL_RING_SIZE)){
                 usb_rx_ring_wr0 = BEGINNING; // Circular buffer back to beginning
             }
-            
-            if(passed_value >= 0){
-              pass_flag=TRUE;
+           
+            if(!portReady){
+              portReady = TRUE;
             }
             
             break;
@@ -56,7 +46,7 @@ __interrupt void USCI_A0_ISR(void){
 }
 
 #pragma vector=USCI_A1_VECTOR
-__interrupt void USCI_A1_ISR(void){
+__interrupt void USCI_A1_ISR(void){ //IOT
     unsigned int temp;
     switch(__even_in_range(UCA1IV,0x08)){
         case 0: // Vector 0 - no interrupt
@@ -64,20 +54,10 @@ __interrupt void USCI_A1_ISR(void){
         case 2: // Vector 2 - RXIFG
             temp = usb_rx_ring_wr1;
             USB_Char_Rx1[temp] = UCA1RXBUF; // RX -> USB_Char_Rx character
-            
-            passed_value = USB_Char_Rx0[temp];
-            passed_value++;
-            HEXtoBCD(passed_value);
-            display_1 = adc_char;
-            Display_Process();
-            
             if (++usb_rx_ring_wr1 >= (SMALL_RING_SIZE)){
                 usb_rx_ring_wr1 = BEGINNING; // Circular buffer back to beginning
             }
             
-            if(passed_value >= 0){
-              pass_flag=TRUE;
-            }
             
             break;
         case 4: // Vector 4 – TXIFG

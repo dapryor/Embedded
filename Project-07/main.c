@@ -87,8 +87,7 @@ extern volatile char USB_Char_Tx1[LARGE_RING_SIZE];
 char transmission[16] = " NCSU  #1 ";
 char received0[16];
 char received1[16];
-volatile int passed_value = FALSE;
-volatile int pass_flag=FALSE;
+extern volatile unsigned int portReady;
 
 
 void main(void){
@@ -150,12 +149,15 @@ void main(void){
     ADC_Process();              // call sampling function
     
     
-    
-    if(menu_items){  //start menu
+    if(portReady){
+      UCA0TXBUF = UCA0RXBUF; //PC to FRAM to PC
+      portReady = FALSE;
+    }
+    /*if(menu_items){  //start menu
       switch_one_pressed = FALSE;
       switch_two_pressed = FALSE;
       Menu_Process();
-    }
+    }*/
     
   }
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           07/Apr/2016  18:59:04
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           07/Apr/2016  22:42:36
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -12,24 +12,24 @@
 #    __core        =  430X
 #    __data_model  =  small
 #    __code_model  =  large
-#    Source file   =  C:\Users\David\Documents\ECE 306\homework-09\ports.c
+#    Source file   =  C:\Users\David\Documents\ECE 306\Project-07\ports.c
 #    Command line  =  
-#        "C:\Users\David\Documents\ECE 306\homework-09\ports.c" -lC
-#        "C:\Users\David\Documents\ECE 306\homework-09\Debug\List" -o
-#        "C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj" --no_cse
+#        "C:\Users\David\Documents\ECE 306\Project-07\ports.c" -lC
+#        "C:\Users\David\Documents\ECE 306\Project-07\Debug\List" -o
+#        "C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj" --no_cse
 #        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
 #        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
 #        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
 #        --core=430X --data_model=small -On --multiplier=32
 #        --hw_workaround=CPU40 --code_model=large
 #    List file     =  
-#        C:\Users\David\Documents\ECE 306\homework-09\Debug\List\ports.lst
+#        C:\Users\David\Documents\ECE 306\Project-07\Debug\List\ports.lst
 #    Object file   =  
-#        C:\Users\David\Documents\ECE 306\homework-09\Debug\Obj\ports.r43
+#        C:\Users\David\Documents\ECE 306\Project-07\Debug\Obj\ports.r43
 #
 ###############################################################################
 
-C:\Users\David\Documents\ECE 306\homework-09\ports.c
+C:\Users\David\Documents\ECE 306\Project-07\ports.c
       1          //------------------------------------------------------------------------------
       2          //  File Name : ports.c
       3          //
@@ -608,7 +608,7 @@ C:\Users\David\Documents\ECE 306\homework-09\ports.c
    \   00000C   92C32A03     BIC.W   #0x1, &0x32a
     324          PJSEL1 &= ~IOT_WAKEUP; 
    \   000010   92C32C03     BIC.W   #0x1, &0x32c
-    325          PJOUT &= ~IOT_WAKEUP; 
+    325          PJOUT &= ~IOT_WAKEUP;                   // output set to 0
    \   000014   92C32203     BIC.W   #0x1, &0x322
     326          PJDIR |= IOT_WAKEUP;                    // Set PJ Pin 1 direction to output
    \   000018   92D32403     BIS.W   #0x1, &0x324
@@ -617,7 +617,7 @@ C:\Users\David\Documents\ECE 306\homework-09\ports.c
    \   00001C   A2C32A03     BIC.W   #0x2, &0x32a
     329          PJSEL1 &= ~IOT_FACTORY; 
    \   000020   A2C32C03     BIC.W   #0x2, &0x32c
-    330          PJOUT &= ~IOT_FACTORY; 
+    330          PJOUT &= ~IOT_FACTORY;                  // output set to 0
    \   000024   A2C32203     BIC.W   #0x2, &0x322
     331          PJDIR |= IOT_FACTORY;                   // Set PJ Pin 2 direction to output
    \   000028   A2D32403     BIS.W   #0x2, &0x324
@@ -626,26 +626,30 @@ C:\Users\David\Documents\ECE 306\homework-09\ports.c
    \   00002C   A2C22A03     BIC.W   #0x4, &0x32a
     334          PJSEL1 &= ~IOT_STA_MINIAP; 
    \   000030   A2C22C03     BIC.W   #0x4, &0x32c
-    335          PJOUT &= ~IOT_STA_MINIAP; 
-   \   000034   A2C22203     BIC.W   #0x4, &0x322
+    335          PJOUT |= IOT_STA_MINIAP;                // output set to 1
+   \   000034   A2D22203     BIS.W   #0x4, &0x322
     336          PJDIR |= IOT_STA_MINIAP;                // Set PJ Pin 3 direction to output
    \   000038   A2D22403     BIS.W   #0x4, &0x324
     337          //------------------------------------------------------------------------------
     338          //USED TO RESET
-    339          //PJSEL0 &= ~IOT_RESET;
-    340          //PJSEL1 &= ~IOT_RESET;
-    341          //PJDIR |= IOT_RESET;                   // Set P3 Pin 4 direction to output
-    342          //PJOUT &= ~IOT_RESET;	
+    339          PJSEL0 &= ~IOT_RESET;
+   \   00003C   B2C22A03     BIC.W   #0x8, &0x32a
+    340          PJSEL1 &= ~IOT_RESET;
+   \   000040   B2C22C03     BIC.W   #0x8, &0x32c
+    341          PJDIR |= IOT_RESET;                   // Set P3 Pin 4 direction to output
+   \   000044   B2D22403     BIS.W   #0x8, &0x324
+    342          PJOUT &= ~IOT_RESET;	              //output set to 0
+   \   000048   B2C22203     BIC.W   #0x8, &0x322
     343          // XT1 Setup
     344          // PJSEL0 |= XINR;
     345          // PJSEL0 |= XOUTR;
     346          //------------------------------------------------------------------------------
     347          }
-   \   00003C   1001         RETA
-   \   00003E                REQUIRE _A_PJSEL0_L
-   \   00003E                REQUIRE _A_PJSEL1_L
-   \   00003E                REQUIRE _A_PJDIR_L
-   \   00003E                REQUIRE _A_PJOUT_L
+   \   00004C   1001         RETA
+   \   00004E                REQUIRE _A_PJSEL0_L
+   \   00004E                REQUIRE _A_PJSEL1_L
+   \   00004E                REQUIRE _A_PJDIR_L
+   \   00004E                REQUIRE _A_PJOUT_L
 
    Maximum stack usage in bytes:
 
@@ -672,7 +676,7 @@ C:\Users\David\Documents\ECE 306\homework-09\ports.c
      154  Init_Port2
      174  Init_Port3
       78  Init_Port4
-      62  Init_PortJ
+      78  Init_PortJ
       22  Init_Ports
        2  _A_PADIR_L
        2  _A_PAOUT_L
@@ -693,10 +697,10 @@ C:\Users\David\Documents\ECE 306\homework-09\ports.c
        2  _A_PJSEL1_L
 
  
- 634 bytes in segment CODE
+ 650 bytes in segment CODE
   34 bytes in segment DATA16_AN
  
- 634 bytes of CODE memory
+ 650 bytes of CODE memory
    0 bytes of DATA memory (+ 34 bytes shared)
 
 Errors: none

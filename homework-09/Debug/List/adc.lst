@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           07/Apr/2016  18:59:04
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           08/Apr/2016  07:53:28
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -501,7 +501,7 @@ C:\Users\David\Documents\ECE 306\homework-09\adc.c
     259          void IR_Calibration(void){
    \                     IR_Calibration:
    \   000000   0A12         PUSH.W  R10
-    260            int proceed = 0;
+    260            int proceed = FALSE;
    \   000002   0A43         MOV.W   #0x0, R10
     261            display_1 = "Ambient Test";
    \   000004   B240........ MOV.W   #`?<Constant "Ambient Test">`, &display_1
@@ -513,14 +513,14 @@ C:\Users\David\Documents\ECE 306\homework-09\adc.c
    \   000016   B240........ MOV.W   #`?<Constant "">`, &display_4
     265            Display_Process();
    \   00001C   ........     CALLA   #Display_Process
-    266            while(proceed == 0){
+    266            while(proceed == FALSE){
    \                     ??IR_Calibration_0:
    \   000020   0A93         CMP.W   #0x0, R10
    \   000022   0720         JNE     ??IR_Calibration_3
     267              if(switch_two_pressed){
    \   000024   8293....     CMP.W   #0x0, &switch_two_pressed
    \   000028   FB27         JEQ     ??IR_Calibration_0
-    268                proceed = 1;
+    268                proceed = TRUE;
    \   00002A   1A43         MOV.W   #0x1, R10
     269                switch_two_pressed = FALSE;
    \   00002C   8243....     MOV.W   #0x0, &switch_two_pressed
@@ -535,12 +535,12 @@ C:\Users\David\Documents\ECE 306\homework-09\adc.c
    \   000036   9242........ MOV.W   &ADC_Right_Detector, &right_calibration_ambient
     275            left_calibration_ambient = ADC_Left_Detector;
    \   00003C   9242........ MOV.W   &ADC_Left_Detector, &left_calibration_ambient
-    276            proceed = 0;
+    276            proceed = FALSE;
    \   000042   0A43         MOV.W   #0x0, R10
     277            
     278            toggle_IR_LED();
    \   000044   ........     CALLA   #toggle_IR_LED
-    279            Five_msec_Delay(30);
+    279            Five_msec_Delay(FOR_150_MSEC);
    \   000048   3C401E00     MOV.W   #0x1e, R12
    \   00004C   ........     CALLA   #Five_msec_Delay
     280            display_1 = "White Test";
@@ -553,14 +553,14 @@ C:\Users\David\Documents\ECE 306\homework-09\adc.c
    \   000062   B240........ MOV.W   #`?<Constant "">`, &display_4
     284            Display_Process();
    \   000068   ........     CALLA   #Display_Process
-    285            while(proceed == 0){
+    285            while(proceed == FALSE){
    \                     ??IR_Calibration_1:
    \   00006C   0A93         CMP.W   #0x0, R10
    \   00006E   0720         JNE     ??IR_Calibration_4
     286              if(switch_two_pressed){
    \   000070   8293....     CMP.W   #0x0, &switch_two_pressed
    \   000074   FB27         JEQ     ??IR_Calibration_1
-    287                proceed = 1;
+    287                proceed = TRUE;
    \   000076   1A43         MOV.W   #0x1, R10
     288                switch_two_pressed = FALSE;
    \   000078   8243....     MOV.W   #0x0, &switch_two_pressed
@@ -574,7 +574,7 @@ C:\Users\David\Documents\ECE 306\homework-09\adc.c
    \   000082   9242........ MOV.W   &ADC_Right_Detector, &right_calibration_white
     293            left_calibration_white = ADC_Left_Detector;
    \   000088   9242........ MOV.W   &ADC_Left_Detector, &left_calibration_white
-    294            proceed = 0;
+    294            proceed = FALSE;
    \   00008E   0A43         MOV.W   #0x0, R10
     295            
     296            display_1 = "Black Test";
@@ -587,14 +587,14 @@ C:\Users\David\Documents\ECE 306\homework-09\adc.c
    \   0000A2   B240........ MOV.W   #`?<Constant "">`, &display_4
     300            Display_Process();
    \   0000A8   ........     CALLA   #Display_Process
-    301            while(proceed == 0){
+    301            while(proceed == FALSE){
    \                     ??IR_Calibration_2:
    \   0000AC   0A93         CMP.W   #0x0, R10
    \   0000AE   0720         JNE     ??IR_Calibration_5
     302              if(switch_two_pressed){
    \   0000B0   8293....     CMP.W   #0x0, &switch_two_pressed
    \   0000B4   FB27         JEQ     ??IR_Calibration_2
-    303                proceed = 1;
+    303                proceed = TRUE;
    \   0000B6   1A43         MOV.W   #0x1, R10
     304                switch_two_pressed = FALSE;
    \   0000B8   8243....     MOV.W   #0x0, &switch_two_pressed

@@ -32,21 +32,12 @@ __interrupt void USCI_A0_ISR(void){
             temp = usb_rx_ring_wr0;
             USB_Char_Rx0[temp] = UCA0RXBUF; // RX -> USB_Char_Rx character
             
-            
-            passed_value = USB_Char_Rx0[temp];
-            passed_value++;
-            HEXtoBCD(passed_value);
-            display_1 = adc_char;
-            Display_Process();
-            
+          
             
             if (++usb_rx_ring_wr0 >= (SMALL_RING_SIZE)){
                 usb_rx_ring_wr0 = BEGINNING; // Circular buffer back to beginning
             }
             
-            if(passed_value >= 0){
-              pass_flag=TRUE;
-            }
             
             break;
         case 4: // Vector 4 – TXIFG
@@ -65,19 +56,12 @@ __interrupt void USCI_A1_ISR(void){
             temp = usb_rx_ring_wr1;
             USB_Char_Rx1[temp] = UCA1RXBUF; // RX -> USB_Char_Rx character
             
-            passed_value = USB_Char_Rx0[temp];
-            passed_value++;
-            HEXtoBCD(passed_value);
-            display_1 = adc_char;
-            Display_Process();
             
             if (++usb_rx_ring_wr1 >= (SMALL_RING_SIZE)){
                 usb_rx_ring_wr1 = BEGINNING; // Circular buffer back to beginning
             }
             
-            if(passed_value >= 0){
-              pass_flag=TRUE;
-            }
+
             
             break;
         case 4: // Vector 4 – TXIFG

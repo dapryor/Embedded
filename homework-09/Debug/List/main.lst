@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           07/Apr/2016  19:55:33
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           08/Apr/2016  07:53:28
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -323,10 +323,10 @@ C:\Users\David\Documents\ECE 306\homework-09\main.c
    \   000018   ........     CALLA   #Init_LCD
     131            Init_ADC();                               // Initialize ADC
    \   00001C   ........     CALLA   #Init_ADC
-    132            Init_Serial_UCA1(1);                      // BAUD rate 9600
+    132            Init_Serial_UCA1(TRUE);                      // BAUD rate 9600
    \   000020   1C43         MOV.W   #0x1, R12
    \   000022   ........     CALLA   #Init_Serial_UCA1
-    133            Init_Serial_UCA0(1);                      // BAUD rate 9600
+    133            Init_Serial_UCA0(TRUE);                      // BAUD rate 9600
    \   000026   1C43         MOV.W   #0x1, R12
    \   000028   ........     CALLA   #Init_Serial_UCA0
     134            
@@ -355,24 +355,22 @@ C:\Users\David\Documents\ECE 306\homework-09\main.c
    \                     ??main_0:
    \   00004C   ........     CALLA   #ADC_Process
     151              
-    152              
-    153              
-    154              if(menu_items){  //start menu
+    152              if(menu_items){  //start menu
    \   000050   8293....     CMP.W   #0x0, &menu_items
    \   000054   FB27         JEQ     ??main_0
-    155                switch_one_pressed = FALSE;
+    153                switch_one_pressed = FALSE; //switch one off
    \   000056   8243....     MOV.W   #0x0, &switch_one_pressed
-    156                switch_two_pressed = FALSE;
+    154                switch_two_pressed = FALSE; //switch two off
    \   00005A   8243....     MOV.W   #0x0, &switch_two_pressed
-    157                Menu_Process();
+    155                Menu_Process();
    \   00005E   ........     CALLA   #Menu_Process
    \   000062   F43F         JMP     ??main_0
    \   000064   0343         NOP
-    158              }
-    159              
-    160            }
-    161          //------------------------------------------------------------------------------
-    162          }
+    156              }
+    157              
+    158            }
+    159          //------------------------------------------------------------------------------
+    160          }
 
    \                                 In  segment DATA16_ID, align 1, align-sorted
    \                     `?<Initializer for transmission>`:
@@ -398,6 +396,8 @@ C:\Users\David\Documents\ECE 306\homework-09\main.c
    \                                 In  segment DATA16_C, align 1, align-sorted
    \                     `?<Constant "">`:
    \   000000   00           DC8 ""
+    161          
+    162          
     163          
     164          
     165          
@@ -410,8 +410,6 @@ C:\Users\David\Documents\ECE 306\homework-09\main.c
     172          
     173          
     174          
-    175          
-    176          
 
    Maximum stack usage in bytes:
 
