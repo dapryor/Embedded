@@ -1,0 +1,85 @@
+//------------------------------------------------------------------------------
+//
+//  Description: This file contains the Macros used throughout the C functions
+//
+//
+//  David Pryor
+//  Jan 2016
+//  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+//------------------------------------------------------------------------------
+// Required defines
+//------------------------------------------------------------------------------
+// In the event the universe no longer exists, this bit will reset
+#define ALWAYS                  (1)
+#define CNTL_STATE_INDEX        (3) // Control States
+#define EMPTY_REGISTER			(0x00)
+#define SET_INPUT					(0x00) // value to set port as input
+#define IOT_WAKEUP           	(0x01) // LED 1
+#define IOT_FACTORY   			(0x02) // LED 2
+#define IOT_STA_MINIAP       	(0x04) // LED 3
+#define IOT_RESET            	(0x08) // LED 4
+#define SW1                  	(0x01) // Switch 1
+#define SW2                  	(0x02) // Switch 2
+#define START						(0x00) // First element
+#define MAX_SIZE_COUNT			(0x05)
+// SWITCHES
+#define SWITCH_OFF				(0x00)
+#define SWITCH_ON					(0x01)
+// CASE NUMBERS (THESE ARE TEMPORARY FILLERS!)
+#define FIDDY									(0x32) //50
+#define ONEHUNNED								(0x64) //100
+#define ONEFIDDY								(0x96) //150
+#define TWOHUNNED								(0xC8) //200
+#define TWOFIDDY								(0xFA) //250
+//------------------------------------------------------------------------------
+// LCD
+#define LCD_HOME_L1	         (0x80)
+#define LCD_HOME_L2         	(0xA0)
+#define LCD_HOME_L3         	(0xC0)
+#define LCD_HOME_L4         	(0xE0)
+#define LINE_SIZE					(0x0B)
+//------------------------------------------------------------------------------
+//port 1 configure
+#define V_DETECT_R				(0x01) //
+#define V_DETECT_L				(0x02) //
+#define IR_LED						(0x04) //
+#define V_THUMB					(0x08) //
+#define SPI_CS_LCD				(0x10) // LCD Chip Select
+#define RESET_LCD					(0x20) // LCD Reset
+#define SIMO_B						(0x40) // SPI mode - slave in/master out of USCI_B0
+#define SOMI_B						(0x80) // SPI mode - slave out/master in of USCI_B0
+//------------------------------------------------------------------------------
+//Configure Port 2
+#define USB_TXD				(0x01) //
+#define USB_RXD				(0x02) //
+#define SPI_SCK				(0x04) //
+#define UNKNOWN1				(0x08) //
+#define UNKNOWN2				(0x10) // 
+#define CPU_TXD				(0x20) // 
+#define CPU_RXD				(0x40) // 
+#define UNKNOWN3				(0x80) //
+//------------------------------------------------------------------------------
+//Configure Port 3
+#define ACCEL_X				(0x01) //
+#define ACCEL_Y				(0x02) //
+#define ACCEL_Z				(0x04) //
+#define LCD_BACKLITE			(0x08) //
+#define R_FORWARD        	(0x10) // LED 5
+#define R_REVERSE        	(0x20) // LED 6
+#define L_FORWARD        	(0x40) // LED 7
+#define L_REVERSE        	(0x80) // LED 8
+//------------------------------------------------------------------------------
+//Configure Port 4
+#define SW1					(0x01) //
+#define SW2					(0x02) //
+//------------------------------------------------------------------------------
+// Port J Pins
+#define IOT_WAKEUP		(0x01) // LED 5
+#define IOT_FACTORY		(0x02) // LED 6
+#define IOT_STA_MINIAP	(0x04) // LED 7
+#define IOT_RESET			(0x08) // LED 8
+#define XINR				(0x10) // XINR
+#define XOUTR				(0x20) // XOUTR
+
+
+
