@@ -21,7 +21,7 @@ extern volatile unsigned int debounce_count_two;
 extern char *display_4;
 extern volatile unsigned int display_count;
 extern volatile unsigned int P5_counter;
-
+extern volatile unsigned int commandCheckTimeout;
 //------------------------------------------------------------------------------
 // TimerA0 0 Interrupt handler
 #pragma vector = TIMER0_A0_VECTOR

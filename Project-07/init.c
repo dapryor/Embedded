@@ -174,7 +174,7 @@ void Init_Serial_UCA0(int baud_choice){ //1=9600 baud, 0=115200 baud
     }
     UCA0CTL1 &= ~UCSWRST; // Release from reset
     UCA0IE |= UCRXIE; // Enable RX interrupt
-    UCA0IE |= UCTXIE; // Enable RX interrupt
+    UCA0IE |= UCTXIE; // Enable TX interrupt
 
 }
 

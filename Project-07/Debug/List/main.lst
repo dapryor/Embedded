@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           08/Apr/2016  00:04:02
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           09/Apr/2016  16:38:56
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -45,14 +45,19 @@ C:\Users\David\Documents\ECE 306\Project-07\main.c
      13          #include  "macros.h"
      14          #include  "msp430.h"
 
-   \                                 In  segment DATA16_AN, at 0x5cc
-   \   union <unnamed> _A_UCA0RXBUF_L
-   \                     _A_UCA0RXBUF_L:
+   \                                 In  segment DATA16_AN, at 0x322
+   \   union <unnamed> _A_PJOUT_L
+   \                     _A_PJOUT_L:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_AN, at 0x5ce
    \   union <unnamed> _A_UCA0TXBUF_L
    \                     _A_UCA0TXBUF_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5ee
+   \   union <unnamed> _A_UCA1TXBUF_L
+   \                     _A_UCA1TXBUF_L:
    \   000000                DS8 2
      15          #include  "functions.h"
      16          
@@ -270,118 +275,540 @@ C:\Users\David\Documents\ECE 306\Project-07\main.c
      89          char received1[16];
    \                     received1:
    \   000000                DS8 16
-     90          extern volatile unsigned int portReady;
-     91          
-     92          
+     90          
+     91          extern volatile unsigned int PCReady;
+
+   \                                 In  segment DATA16_I, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_copy
+     92          char response1[]="I'm Here";
+   \                     response1:
+   \   000000                DS8 9
+   \   000009                REQUIRE `?<Initializer for response1>`
+
+   \                                 In  segment DATA16_I, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_copy
+     93          char response2[]="115,200";
+   \                     response2:
+   \   000000                DS8 8
+   \   000008                REQUIRE `?<Initializer for response2>`
+
+   \                                 In  segment DATA16_I, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_copy
+     94          char response3[]="9600";
+   \                     response3:
+   \   000000                DS8 5
+   \   000005                REQUIRE `?<Initializer for response3>`
+
+   \                                 In  segment DATA16_I, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_copy
+     95          char response4[]="Hardware Reset";
+   \                     response4:
+   \   000000                DS8 15
+   \   00000F                REQUIRE `?<Initializer for response4>`
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     96          volatile char commandBuffer[16];
+   \                     commandBuffer:
+   \   000000                DS8 16
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     97          volatile unsigned int commandIndex=0;
+   \                     commandIndex:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     98          unsigned int writeToCommand=FALSE;
+   \                     writeToCommand:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     99          unsigned int i; //counter variable
+   \                     i:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_I, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_copy
+    100          volatile unsigned int transmitReady=TRUE;
+   \                     transmitReady:
+   \   000000                DS8 2
+   \   000002                REQUIRE `?<Initializer for transmitReady>`
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+    101          volatile unsigned int commandStart=FALSE;
+   \                     commandStart:
+   \   000000                DS8 2
+    102          
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+    103          volatile char IOTBufferTransmit[100];
+   \                     IOTBufferTransmit:
+   \   000000                DS8 100
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+    104          volatile char IOTBufferReceive[100];
+   \                     IOTBufferReceive:
+   \   000000                DS8 100
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+    105          volatile unsigned int IOTIndexTransmit;
+   \                     IOTIndexTransmit:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+    106          volatile unsigned int IOTIndexReceive;
+   \                     IOTIndexReceive:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+    107          volatile unsigned int commandCheckTimeout;
+   \                     commandCheckTimeout:
+   \   000000                DS8 2
+    108          
+    109          
 
    \                                 In  segment CODE, align 2
-     93          void main(void){
+    110          void main(void){
    \                     main:
-     94          //==============================================================================
-     95          // Main Program
-     96          // 
-     97          // Description: This function contains the while loop that runs continuously
-     98          // to act for the operating system. It also calls all the functions to
-     99          // initialize the system.
-    100          //
-    101          // Passed : no variables passed
-    102          // Locals: no variables declared
-    103          // Returned: no values returned
-    104          // Globals:     volatile unsigned int Time_Sequence;
-    105          //              volatile char one_time;
-    106          //              char* display_1
-    107          //              char* display_2
-    108          //              char* display_3
-    109          //              char* display_4
-    110          //              slow_input_down
-    111          //              control_state[CNTL_STATE_INDEX]
-    112          //              char big
-    113          //              char size_count;
-    114          //              char posL1
-    115          //              char posL2
-    116          //              char posL3
-    117          //              char posL4
-    118          //
-    119          // Author: David Pryor
-    120          // Date: Feb 2016
-    121          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
-    122          //==============================================================================
-    123            Init_Ports();                             // Initialize Ports
+    111          //==============================================================================
+    112          // Main Program
+    113          // 
+    114          // Description: This function contains the while loop that runs continuously
+    115          // to act for the operating system. It also calls all the functions to
+    116          // initialize the system.
+    117          //
+    118          // Passed : no variables passed
+    119          // Locals: no variables declared
+    120          // Returned: no values returned
+    121          // Globals:     volatile unsigned int Time_Sequence;
+    122          //              volatile char one_time;
+    123          //              char* display_1
+    124          //              char* display_2
+    125          //              char* display_3
+    126          //              char* display_4
+    127          //              slow_input_down
+    128          //              control_state[CNTL_STATE_INDEX]
+    129          //              char big
+    130          //              char size_count;
+    131          //              char posL1
+    132          //              char posL2
+    133          //              char posL3
+    134          //              char posL4
+    135          //
+    136          // Author: David Pryor
+    137          // Date: Feb 2016
+    138          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    139          //==============================================================================
+    140            Init_Ports();                             // Initialize Ports
    \   000000   ........     CALLA   #Init_Ports
-    124            Init_Clocks();                            // Initialize Clock System 
+    141            Init_Clocks();                            // Initialize Clock System 
    \   000004   ........     CALLA   #Init_Clocks
-    125            Init_Conditions();
+    142            Init_Conditions();
    \   000008   ........     CALLA   #Init_Conditions
-    126            Time_Sequence = SWITCH_OFF;               // 
+    143            Time_Sequence = SWITCH_OFF;               // 
    \   00000C   8243....     MOV.W   #0x0, &Time_Sequence
-    127            Init_Timers();                            // Initialize Timers
+    144            Init_Timers();                            // Initialize Timers
    \   000010   ........     CALLA   #Init_Timers
-    128            Init_LEDs();                              // Initialize LEDs
+    145            Init_LEDs();                              // Initialize LEDs
    \   000014   ........     CALLA   #Init_LEDs
-    129            Init_LCD();                               // Initialize LCD
+    146            Init_LCD();                               // Initialize LCD
    \   000018   ........     CALLA   #Init_LCD
-    130            Init_ADC();                               // Initialize ADC
+    147            Init_ADC();                               // Initialize ADC
    \   00001C   ........     CALLA   #Init_ADC
-    131            Init_Serial_UCA1(1);                      // BAUD rate 9600
+    148            Init_Serial_UCA1(1);                      // BAUD rate 9600
    \   000020   1C43         MOV.W   #0x1, R12
    \   000022   ........     CALLA   #Init_Serial_UCA1
-    132            Init_Serial_UCA0(1);                      // BAUD rate 9600
+    149            Init_Serial_UCA0(1);                      // BAUD rate 9600
    \   000026   1C43         MOV.W   #0x1, R12
    \   000028   ........     CALLA   #Init_Serial_UCA0
-    133            
-    134            
-    135            lcd_BIG_mid();
-   \   00002C   ........     CALLA   #lcd_BIG_mid
-    136            display_1 = "  David   ";
-   \   000030   B240........ MOV.W   #`?<Constant "  David   ">`, &display_1
-    137            display_2 = "Homework 9";  
-   \   000036   B240........ MOV.W   #`?<Constant "Homework 9">`, &display_2
-    138            display_3 = "  Pryor   ";
-   \   00003C   B240........ MOV.W   #`?<Constant "  Pryor   ">`, &display_3
-    139            display_4 = "";
-   \   000042   B240........ MOV.W   #`?<Constant "">`, &display_4
-    140            Display_Process();
-   \   000048   ........     CALLA   #Display_Process
-    141          
-    142          
-    143          
-    144          //------------------------------------------------------------------------------
-    145          // Begining of the "While" Operating System
-    146          //------------------------------------------------------------------------------
-    147            while(ALWAYS) {                            // Can the Operating system run
-    148              
-    149              ADC_Process();              // call sampling function
+    150            Five_msec_Delay(1);
+   \   00002C   1C43         MOV.W   #0x1, R12
+   \   00002E   ........     CALLA   #Five_msec_Delay
+    151            PJOUT |= IOT_RESET; //IOT reset is active low, so this turns IOT reset off.
+   \   000032   B2D22203     BIS.W   #0x8, &0x322
+    152            
+    153            lcd_BIG_mid();
+   \   000036   ........     CALLA   #lcd_BIG_mid
+    154            display_1 = "  David   ";
+   \   00003A   B240........ MOV.W   #`?<Constant "  David   ">`, &display_1
+    155            display_2 = "Homework 9";  
+   \   000040   B240........ MOV.W   #`?<Constant "Homework 9">`, &display_2
+    156            display_3 = "  Pryor   ";
+   \   000046   B240........ MOV.W   #`?<Constant "  Pryor   ">`, &display_3
+    157            display_4 = "";
+   \   00004C   B240........ MOV.W   #`?<Constant "">`, &display_4
+    158            Display_Process();
+   \   000052   ........     CALLA   #Display_Process
+    159          
+    160          
+    161          
+    162          //------------------------------------------------------------------------------
+    163          // Begining of the "While" Operating System
+    164          //------------------------------------------------------------------------------
+    165            while(ALWAYS) {                            // Can the Operating system run
+    166              
+    167              ADC_Process();              // call sampling function
+   \                     ??main_6:
+   \   000056   ........     CALLA   #ADC_Process
+    168              
+    169              
+    170          if(commandStart==TRUE){ //commandStart=TRUE once "." has been received
+   \   00005A   9293....     CMP.W   #0x1, &commandStart
+   \   00005E   C120         JNE     ??main_11
+    171                 
+    172                 commandIndex=0;
+   \   000060   8243....     MOV.W   #0x0, &commandIndex
+    173                 writeToCommand=TRUE; //write to command buffer (in interrupt)
+   \   000064   9243....     MOV.W   #0x1, &writeToCommand
+    174                 commandCheckTimeout=0;
+   \   000068   8243....     MOV.W   #0x0, &commandCheckTimeout
+    175                 for(i=0;i<16;i++){ //clear command buffer
+   \   00006C   8243....     MOV.W   #0x0, &i
    \                     ??main_0:
-   \   00004C   ........     CALLA   #ADC_Process
-    150              
-    151              
-    152              if(portReady){
-   \   000050   8293....     CMP.W   #0x0, &portReady
-   \   000054   FB27         JEQ     ??main_0
-    153                UCA0TXBUF = UCA0RXBUF; //PC to FRAM to PC
-   \   000056   9242CC05CE05 MOV.W   &0x5cc, &0x5ce
-    154                portReady = FALSE;
-   \   00005C   8243....     MOV.W   #0x0, &portReady
-   \   000060   F53F         JMP     ??main_0
-   \   000062   0343         NOP
-   \   000064                REQUIRE _A_UCA0TXBUF_L
-   \   000064                REQUIRE _A_UCA0RXBUF_L
-    155              }
-    156              /*if(menu_items){  //start menu
-    157                switch_one_pressed = FALSE;
-    158                switch_two_pressed = FALSE;
-    159                Menu_Process();
-    160              }*/
-    161              
-    162            }
-    163          //------------------------------------------------------------------------------
-    164          }
+   \   000070   B2901000.... CMP.W   #0x10, &i
+   \   000076   072C         JC      ??main_4
+    176                     commandBuffer[i]='\0';
+   \   000078   1F42....     MOV.W   &i, R15
+   \   00007C   CF43....     MOV.B   #0x0, commandBuffer(R15)
+    177                 }
+   \   000080   9253....     ADD.W   #0x1, &i
+   \   000084   F53F         JMP     ??main_0
+    178                 
+    179                 while(ALWAYS){ //search through command buffer
+    180                     if(commandBuffer[0]=='@'){ //FIRST COMMAND
+   \                     ??main_4:
+   \   000086   F2904000.... CMP.B   #0x40, &commandBuffer
+   \   00008C   2120         JNE     ??main_12
+    181                         if(commandBuffer[1]==0x000D){ //make sure it is the end of a command line
+   \   00008E   F2900D00.... CMP.B   #0xd, &commandBuffer + 1
+   \   000094   1D20         JNE     ??main_12
+    182                             i=0;
+   \   000096   8243....     MOV.W   #0x0, &i
+    183                             while(response1[i] != '\0'){
+   \                     ??main_1:
+   \   00009A   1F42....     MOV.W   &i, R15
+   \   00009E   CF93....     CMP.B   #0x0, response1(R15)
+   \   0000A2   0F24         JEQ     ??main_13
+    184                                 if(transmitReady==TRUE){
+   \   0000A4   9293....     CMP.W   #0x1, &transmitReady
+   \   0000A8   F823         JNE     ??main_1
+    185                                     transmitReady=FALSE;
+   \   0000AA   8243....     MOV.W   #0x0, &transmitReady
+    186                                     UCA0TXBUF=response1[i]; //send transmission message
+   \   0000AE   1F42....     MOV.W   &i, R15
+   \   0000B2   5F4F....     MOV.B   response1(R15), R15
+   \   0000B6   4F4F         MOV.B   R15, R15
+   \   0000B8   824FCE05     MOV.W   R15, &0x5ce
+    187                                     i++;
+   \   0000BC   9253....     ADD.W   #0x1, &i
+   \   0000C0   EC3F         JMP     ??main_1
+    188                                 }
+    189                             }
+    190                             Five_msec_Delay(5);
+   \                     ??main_13:
+   \   0000C2   3C400500     MOV.W   #0x5, R12
+   \   0000C6   ........     CALLA   #Five_msec_Delay
+    191                             commandStart=FALSE; //command done
+   \   0000CA   8243....     MOV.W   #0x0, &commandStart
+    192                             break;
+   \   0000CE   853C         JMP     ??main_14
+    193                         }
+    194                     }
+    195                     if(commandBuffer[0]=='F'){ //SECOND COMMAND
+   \                     ??main_12:
+   \   0000D0   F2904600.... CMP.B   #0x46, &commandBuffer
+   \   0000D6   2420         JNE     ??main_15
+    196                         if(commandBuffer[1]==0x000D){ //make sure it is the end of a command line
+   \   0000D8   F2900D00.... CMP.B   #0xd, &commandBuffer + 1
+   \   0000DE   2020         JNE     ??main_15
+    197                             i=0;
+   \   0000E0   8243....     MOV.W   #0x0, &i
+    198                             Init_Serial_UCA1(0); //set IOT baud to 115200
+   \   0000E4   0C43         MOV.W   #0x0, R12
+   \   0000E6   ........     CALLA   #Init_Serial_UCA1
+    199                             while(response2[i] != '\0'){
+   \                     ??main_2:
+   \   0000EA   1F42....     MOV.W   &i, R15
+   \   0000EE   CF93....     CMP.B   #0x0, response2(R15)
+   \   0000F2   0F24         JEQ     ??main_16
+    200                                 if(transmitReady==TRUE){
+   \   0000F4   9293....     CMP.W   #0x1, &transmitReady
+   \   0000F8   F823         JNE     ??main_2
+    201                                     transmitReady=FALSE;
+   \   0000FA   8243....     MOV.W   #0x0, &transmitReady
+    202                                     UCA0TXBUF=response2[i]; //send transmission message
+   \   0000FE   1F42....     MOV.W   &i, R15
+   \   000102   5F4F....     MOV.B   response2(R15), R15
+   \   000106   4F4F         MOV.B   R15, R15
+   \   000108   824FCE05     MOV.W   R15, &0x5ce
+    203                                     i++;
+   \   00010C   9253....     ADD.W   #0x1, &i
+   \   000110   EC3F         JMP     ??main_2
+    204                                 }
+    205                             }
+    206                             Five_msec_Delay(5);
+   \                     ??main_16:
+   \   000112   3C400500     MOV.W   #0x5, R12
+   \   000116   ........     CALLA   #Five_msec_Delay
+    207                             commandStart=FALSE; //command done
+   \   00011A   8243....     MOV.W   #0x0, &commandStart
+    208                             break;
+   \   00011E   5D3C         JMP     ??main_14
+    209                         }
+    210                     }
+    211                     if(commandBuffer[0]=='S'){ //THIRD COMMAND
+   \                     ??main_15:
+   \   000120   F2905300.... CMP.B   #0x53, &commandBuffer
+   \   000126   2420         JNE     ??main_17
+    212                         if(commandBuffer[1]==0x000D){ //make sure it is the end of a command line
+   \   000128   F2900D00.... CMP.B   #0xd, &commandBuffer + 1
+   \   00012E   2020         JNE     ??main_17
+    213                             i=0;
+   \   000130   8243....     MOV.W   #0x0, &i
+    214                             Init_Serial_UCA1(1); //set IOT baud to 9600
+   \   000134   1C43         MOV.W   #0x1, R12
+   \   000136   ........     CALLA   #Init_Serial_UCA1
+    215                             while(response3[i] != '\0'){
+   \                     ??main_3:
+   \   00013A   1F42....     MOV.W   &i, R15
+   \   00013E   CF93....     CMP.B   #0x0, response3(R15)
+   \   000142   0F24         JEQ     ??main_18
+    216                                 if(transmitReady==TRUE){
+   \   000144   9293....     CMP.W   #0x1, &transmitReady
+   \   000148   F823         JNE     ??main_3
+    217                                     transmitReady=FALSE;
+   \   00014A   8243....     MOV.W   #0x0, &transmitReady
+    218                                     UCA0TXBUF=response3[i]; //send transmission message
+   \   00014E   1F42....     MOV.W   &i, R15
+   \   000152   5F4F....     MOV.B   response3(R15), R15
+   \   000156   4F4F         MOV.B   R15, R15
+   \   000158   824FCE05     MOV.W   R15, &0x5ce
+    219                                     i++;
+   \   00015C   9253....     ADD.W   #0x1, &i
+   \   000160   EC3F         JMP     ??main_3
+    220                                 }
+    221                             }
+    222                             Five_msec_Delay(5);
+   \                     ??main_18:
+   \   000162   3C400500     MOV.W   #0x5, R12
+   \   000166   ........     CALLA   #Five_msec_Delay
+    223                             commandStart=FALSE;
+   \   00016A   8243....     MOV.W   #0x0, &commandStart
+    224                             break;
+   \   00016E   353C         JMP     ??main_14
+    225                         }
+    226                     }
+    227                     
+    228                     if(commandBuffer[0]=='R'){ //THIRD COMMAND
+   \                     ??main_17:
+   \   000170   F2905200.... CMP.B   #0x52, &commandBuffer
+   \   000176   2920         JNE     ??main_19
+    229                         if(commandBuffer[1]==0x000D){ //make sure it is the end of a command line
+   \   000178   F2900D00.... CMP.B   #0xd, &commandBuffer + 1
+   \   00017E   8323         JNE     ??main_4
+    230                             i=0;
+   \   000180   8243....     MOV.W   #0x0, &i
+    231                             PJOUT &= ~IOT_RESET; //reset IOT
+   \   000184   B2C22203     BIC.W   #0x8, &0x322
+    232                             Five_msec_Delay(10); //wait 50 ms
+   \   000188   3C400A00     MOV.W   #0xa, R12
+   \   00018C   ........     CALLA   #Five_msec_Delay
+    233                             PJOUT |= IOT_RESET; //turn IOT back on (stop reset)
+   \   000190   B2D22203     BIS.W   #0x8, &0x322
+    234                             while(response4[i] != '\0'){
+   \                     ??main_5:
+   \   000194   1F42....     MOV.W   &i, R15
+   \   000198   CF93....     CMP.B   #0x0, response4(R15)
+   \   00019C   0F24         JEQ     ??main_20
+    235                                 if(transmitReady==TRUE){
+   \   00019E   9293....     CMP.W   #0x1, &transmitReady
+   \   0001A2   F823         JNE     ??main_5
+    236                                     transmitReady=FALSE;
+   \   0001A4   8243....     MOV.W   #0x0, &transmitReady
+    237                                     UCA0TXBUF=response4[i]; //send transmission message
+   \   0001A8   1F42....     MOV.W   &i, R15
+   \   0001AC   5F4F....     MOV.B   response4(R15), R15
+   \   0001B0   4F4F         MOV.B   R15, R15
+   \   0001B2   824FCE05     MOV.W   R15, &0x5ce
+    238                                     i++;
+   \   0001B6   9253....     ADD.W   #0x1, &i
+   \   0001BA   EC3F         JMP     ??main_5
+    239                                 }
+    240                             }
+    241                             Five_msec_Delay(5);
+   \                     ??main_20:
+   \   0001BC   3C400500     MOV.W   #0x5, R12
+   \   0001C0   ........     CALLA   #Five_msec_Delay
+    242                             commandStart=FALSE;
+   \   0001C4   8243....     MOV.W   #0x0, &commandStart
+    243                             break;
+   \   0001C8   083C         JMP     ??main_14
+    244                         }
+    245                     }
+    246                     
+    247                     else if(commandCheckTimeout>=10){
+   \                     ??main_19:
+   \   0001CA   B2900A00.... CMP.W   #0xa, &commandCheckTimeout
+   \   0001D0   5A2B         JNC     ??main_4
+    248                         commandCheckTimeout=0;
+   \   0001D2   8243....     MOV.W   #0x0, &commandCheckTimeout
+    249                         commandStart=FALSE;
+   \   0001D6   8243....     MOV.W   #0x0, &commandStart
+    250                         break;
+    251                     }
+    252                 }
+    253                 writeToCommand=FALSE; //command has been executed.
+   \                     ??main_14:
+   \   0001DA   8243....     MOV.W   #0x0, &writeToCommand
+    254                 commandStart=FALSE;
+   \   0001DE   8243....     MOV.W   #0x0, &commandStart
+    255             }
+    256             
+    257             if(PCReady==TRUE){ 
+   \                     ??main_11:
+   \   0001E2   9293....     CMP.W   #0x1, &PCReady
+   \   0001E6   3723         JNE     ??main_6
+    258                 i=0;
+   \   0001E8   8243....     MOV.W   #0x0, &i
+    259                 Five_msec_Delay(6);
+   \   0001EC   3C400600     MOV.W   #0x6, R12
+   \   0001F0   ........     CALLA   #Five_msec_Delay
+    260                 while(IOTBufferTransmit[i] != '\0'){
+   \                     ??main_7:
+   \   0001F4   1F42....     MOV.W   &i, R15
+   \   0001F8   CF93....     CMP.B   #0x0, IOTBufferTransmit(R15)
+   \   0001FC   0F24         JEQ     ??main_21
+    261                     if(transmitReady==TRUE){
+   \   0001FE   9293....     CMP.W   #0x1, &transmitReady
+   \   000202   F823         JNE     ??main_7
+    262                         transmitReady=FALSE;
+   \   000204   8243....     MOV.W   #0x0, &transmitReady
+    263                         UCA1TXBUF=IOTBufferTransmit[i];
+   \   000208   1F42....     MOV.W   &i, R15
+   \   00020C   5F4F....     MOV.B   IOTBufferTransmit(R15), R15
+   \   000210   4F4F         MOV.B   R15, R15
+   \   000212   824FEE05     MOV.W   R15, &0x5ee
+    264                         i++;
+   \   000216   9253....     ADD.W   #0x1, &i
+   \   00021A   EC3F         JMP     ??main_7
+    265                     }
+    266                 }
+    267                 for(i=0;i<100;i++){ //clear IOT buffer
+   \                     ??main_21:
+   \   00021C   8243....     MOV.W   #0x0, &i
+   \                     ??main_8:
+   \   000220   B2906400.... CMP.W   #0x64, &i
+   \   000226   072C         JC      ??main_22
+    268                     IOTBufferTransmit[i]='\0';
+   \   000228   1F42....     MOV.W   &i, R15
+   \   00022C   CF43....     MOV.B   #0x0, IOTBufferTransmit(R15)
+    269                 }
+   \   000230   9253....     ADD.W   #0x1, &i
+   \   000234   F53F         JMP     ??main_8
+    270                 
+    271                 IOTIndexTransmit=0;
+   \                     ??main_22:
+   \   000236   8243....     MOV.W   #0x0, &IOTIndexTransmit
+    272                 i=0;
+   \   00023A   8243....     MOV.W   #0x0, &i
+    273                 Five_msec_Delay(5);
+   \   00023E   3C400500     MOV.W   #0x5, R12
+   \   000242   ........     CALLA   #Five_msec_Delay
+    274                 
+    275                 while(IOTBufferReceive[i] != '\0'){
+   \                     ??main_9:
+   \   000246   1F42....     MOV.W   &i, R15
+   \   00024A   CF93....     CMP.B   #0x0, IOTBufferReceive(R15)
+   \   00024E   0F24         JEQ     ??main_23
+    276                     if(transmitReady==TRUE){
+   \   000250   9293....     CMP.W   #0x1, &transmitReady
+   \   000254   F823         JNE     ??main_9
+    277                         transmitReady=FALSE;
+   \   000256   8243....     MOV.W   #0x0, &transmitReady
+    278                         UCA0TXBUF=IOTBufferReceive[i];
+   \   00025A   1F42....     MOV.W   &i, R15
+   \   00025E   5F4F....     MOV.B   IOTBufferReceive(R15), R15
+   \   000262   4F4F         MOV.B   R15, R15
+   \   000264   824FCE05     MOV.W   R15, &0x5ce
+    279                         i++;
+   \   000268   9253....     ADD.W   #0x1, &i
+   \   00026C   EC3F         JMP     ??main_9
+    280                     }
+    281                 }
+    282                 for(i=0;i<100;i++){ //clear IOT buffer
+   \                     ??main_23:
+   \   00026E   8243....     MOV.W   #0x0, &i
+   \                     ??main_10:
+   \   000272   B2906400.... CMP.W   #0x64, &i
+   \   000278   072C         JC      ??main_24
+    283                     IOTBufferReceive[i]='\0';
+   \   00027A   1F42....     MOV.W   &i, R15
+   \   00027E   CF43....     MOV.B   #0x0, IOTBufferReceive(R15)
+    284                 }
+   \   000282   9253....     ADD.W   #0x1, &i
+   \   000286   F53F         JMP     ??main_10
+    285                 IOTIndexReceive=0;
+   \                     ??main_24:
+   \   000288   8243....     MOV.W   #0x0, &IOTIndexReceive
+    286                 Five_msec_Delay(5);
+   \   00028C   3C400500     MOV.W   #0x5, R12
+   \   000290   ........     CALLA   #Five_msec_Delay
+    287                 PCReady=FALSE;
+   \   000294   8243....     MOV.W   #0x0, &PCReady
+   \   000298   DE3E         JMP     ??main_6
+   \   00029A   0343         NOP
+   \   00029C                REQUIRE _A_PJOUT_L
+   \   00029C                REQUIRE _A_UCA0TXBUF_L
+   \   00029C                REQUIRE _A_UCA1TXBUF_L
+    288             }
+    289              /*if(menu_items){  //start menu
+    290                switch_one_pressed = FALSE;
+    291                switch_two_pressed = FALSE;
+    292                Menu_Process();
+    293              }*/
+    294              
+    295            }
+    296          //------------------------------------------------------------------------------
+    297          }
 
    \                                 In  segment DATA16_ID, align 1, align-sorted
    \                     `?<Initializer for transmission>`:
    \   000000   204E43535520 DC8 " NCSU  #1 "
    \            2023312000  
    \   00000B   0000000000   DC8 0, 0, 0, 0, 0
+
+   \                                 In  segment DATA16_ID, align 1, align-sorted
+   \                     `?<Initializer for response1>`:
+   \   000000   49276D204865 DC8 "I'm Here"
+   \            726500      
+
+   \                                 In  segment DATA16_ID, align 1, align-sorted
+   \                     `?<Initializer for response2>`:
+   \   000000   3131352C3230 DC8 "115,200"
+   \            3000        
+
+   \                                 In  segment DATA16_ID, align 1, align-sorted
+   \                     `?<Initializer for response3>`:
+   \   000000   3936303000   DC8 "9600"
+
+   \                                 In  segment DATA16_ID, align 1, align-sorted
+   \                     `?<Initializer for response4>`:
+   \   000000   486172647761 DC8 "Hardware Reset"
+   \            726520526573
+   \            657400      
+
+   \                                 In  segment DATA16_ID, align 2, align-sorted
+   \                     `?<Initializer for transmitReady>`:
+   \   000000   0100         DC16 1
 
    \                                 In  segment DATA16_C, align 1, align-sorted
    \                     `?<Constant "  David   ">`:
@@ -401,20 +828,20 @@ C:\Users\David\Documents\ECE 306\Project-07\main.c
    \                                 In  segment DATA16_C, align 1, align-sorted
    \                     `?<Constant "">`:
    \   000000   00           DC8 ""
-    165          
-    166          
-    167          
-    168          
-    169          
-    170          
-    171          
-    172          
-    173          
-    174          
-    175          
-    176          
-    177          
-    178          
+    298          
+    299          
+    300          
+    301          
+    302          
+    303          
+    304          
+    305          
+    306          
+    307          
+    308          
+    309          
+    310          
+    311          
 
    Maximum stack usage in bytes:
 
@@ -423,6 +850,7 @@ C:\Users\David\Documents\ECE 306\Project-07\main.c
       4   main
         4   -> ADC_Process
         4   -> Display_Process
+        4   -> Five_msec_Delay
         4   -> Init_ADC
         4   -> Init_Clocks
         4   -> Init_Conditions
@@ -443,24 +871,39 @@ C:\Users\David\Documents\ECE 306\Project-07\main.c
       11  ?<Constant "  Pryor   ">
        1  ?<Constant "">
       11  ?<Constant "Homework 9">
+       9  ?<Initializer for response1>
+       8  ?<Initializer for response2>
+       5  ?<Initializer for response3>
+      15  ?<Initializer for response4>
       16  ?<Initializer for transmission>
+       2  ?<Initializer for transmitReady>
        2  ADC_Left_Detector
        2  ADC_Right_Detector
        2  ADC_Thumb
+     100  IOTBufferReceive
+     100  IOTBufferTransmit
+       2  IOTIndexReceive
+       2  IOTIndexTransmit
        2  Time_Sequence
-       2  _A_UCA0RXBUF_L
+       2  _A_PJOUT_L
        2  _A_UCA0TXBUF_L
+       2  _A_UCA1TXBUF_L
        5  adc_char
        1  big
+      16  commandBuffer
+       2  commandCheckTimeout
+       2  commandIndex
+       2  commandStart
        3  control_state
        2  display_count
        2  do_this
        2  five_msec_delay
+       2  i
        1  led_smclk
        2  left_calibration_ambient
        2  left_calibration_black
        2  left_calibration_white
-     100  main
+     668  main
        2  menu_items
        1  one_time
        1  posL1
@@ -469,24 +912,30 @@ C:\Users\David\Documents\ECE 306\Project-07\main.c
        1  posL4
       16  received0
       16  received1
+       9  response1
+       8  response2
+       5  response3
+      15  response4
        2  right_calibration_ambient
        2  right_calibration_black
        2  right_calibration_white
        1  size_count
        2  threshold
       16  transmission
+       2  transmitReady
+       2  writeToCommand
 
  
- 100 bytes in segment CODE
-   4 bytes in segment DATA16_AN
+ 668 bytes in segment CODE
+   6 bytes in segment DATA16_AN
   34 bytes in segment DATA16_C
-  16 bytes in segment DATA16_I
-  16 bytes in segment DATA16_ID
-  78 bytes in segment DATA16_Z
+  55 bytes in segment DATA16_I
+  55 bytes in segment DATA16_ID
+ 308 bytes in segment DATA16_Z
  
- 100 bytes of CODE  memory
-  50 bytes of CONST memory
-  94 bytes of DATA  memory (+ 4 bytes shared)
+ 668 bytes of CODE  memory
+  89 bytes of CONST memory
+ 363 bytes of DATA  memory (+ 6 bytes shared)
 
 Errors: none
 Warnings: none

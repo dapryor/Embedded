@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=153530390
+Checksum=1709241611
 [Stack]
 FillEnabled=0
 OverflowWarningsEnabled=1
@@ -22,15 +22,14 @@ Counter1=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 ShowArgs=0
 [Disassembly]
 MixedMode=1
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
+[Aliases]
+Count=0
+SuppressDialog=0
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\interrupts_serial.c}.38.15" 1 0 0 0 "" 0 ""
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\interrupts_serial.c}.48.13" 1 0 0 0 "" 0 ""
 Count=1
 [FET]
 Clock mode=46
@@ -52,6 +51,7 @@ SP=0
 SR=0
 all registers=0
 File name=
-[Aliases]
-Count=0
-SuppressDialog=0
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
