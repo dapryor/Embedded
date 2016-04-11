@@ -108,12 +108,17 @@ void Project5(void);
 
 //Menu
 void Menu_Process(void);
-void Resistor_Menu(void);
-void Shapes_Menu(void);
+void Baud_Menu(void);
+void IOT_Menu(void);
 void Song_Menu(void);
 
 //Serial
 void Init_Serial_UCA0(int baud_choice);
 void Init_Serial_UCA1(int baud_choice);
-
+void parseIOTData(void);
+void printMacAddress(void);
+void clearReceiveBuffer(void);
+void IOTHardwareReset(void);
+void uart_puts(const char *str);
+void commandTree(void);
 

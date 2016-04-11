@@ -81,30 +81,33 @@ extern volatile unsigned int switch_two_pressed;
 unsigned int menu_items = FALSE;
 unsigned int threshold;
 extern volatile char USB_Char_Rx0[SMALL_RING_SIZE];
-extern volatile char USB_Char_Tx0[LARGE_RING_SIZE];
 extern volatile char USB_Char_Rx1[SMALL_RING_SIZE];
-extern volatile char USB_Char_Tx1[LARGE_RING_SIZE];
-char transmission[16] = " NCSU  #1 ";
-char received0[16];
-char received1[16];
+extern unsigned int BaudMenuFG;
+extern unsigned int IOTMenuFG;
+extern unsigned int MainFG;
 
-extern volatile unsigned int PCReady;
-char response1[]="I'm Here";
-char response2[]="115,200";
-char response3[]="9600";
-char response4[]="Hardware Reset";
-volatile char commandBuffer[16];
+volatile char commandBuffer[30];
 volatile unsigned int commandIndex=0;
-unsigned int writeToCommand=FALSE;
-unsigned int i; //counter variable
-volatile unsigned int transmitReady=TRUE;
-volatile unsigned int commandStart=FALSE;
-
-volatile char IOTBufferTransmit[100];
+unsigned int writeCommandFG=FALSE;
+unsigned int i, j; //counter variable
+volatile unsigned int transmitFG=TRUE;
+volatile unsigned int StartCommandFG=FALSE;
+unsigned int macFG=FALSE;
 volatile char IOTBufferReceive[100];
-volatile unsigned int IOTIndexTransmit;
-volatile unsigned int IOTIndexReceive;
-volatile unsigned int commandCheckTimeout;
+volatile unsigned int IOTIndexTransmit = FALSE;
+volatile unsigned int IOTIndexReceive = FALSE;
+volatile unsigned int newLineFG=FALSE;
+char SSIDBuff[11];
+char firstipBuff[11];
+char secondipBuff[11];
+char firstMacBuff[11];
+char secondMacBuff[11];
+char *macPtr;
+char *ipPtr;
+char *SSIDPtr;
+unsigned int countP = FALSE;
+volatile char receiving[100];
+volatile unsigned int receivingInd=0;
 
 
 void main(void){
@@ -145,14 +148,14 @@ void main(void){
   Init_LEDs();                              // Initialize LEDs
   Init_LCD();                               // Initialize LCD
   Init_ADC();                               // Initialize ADC
-  Init_Serial_UCA1(1);                      // BAUD rate 9600
+  Init_Serial_UCA1(0);                      // BAUD rate 9600
   Init_Serial_UCA0(1);                      // BAUD rate 9600
   Five_msec_Delay(1);
-  PJOUT |= IOT_RESET; //IOT reset is active low, so this turns IOT reset off.
+  PJOUT |= IOT_STA_MINIAP; //turning on miniap (only works this way)
   
   lcd_BIG_mid();
   display_1 = "  David   ";
-  display_2 = "Homework 9";  
+  display_2 = "Project  7";  
   display_3 = "  Pryor   ";
   display_4 = "";
   Display_Process();
@@ -165,141 +168,138 @@ void main(void){
   while(ALWAYS) {                            // Can the Operating system run
     
     ADC_Process();              // call sampling function
+    if(MainFG){
+        Menu_Process();
+    }
+    else if(BaudMenuFG==TRUE){
+        Baud_Menu(); 
+    }
+    else if(IOTMenuFG==TRUE){
+        IOT_Menu();
+    }
     
-    
-if(commandStart==TRUE){ //commandStart=TRUE once "." has been received
-       
-       commandIndex=0;
-       writeToCommand=TRUE; //write to command buffer (in interrupt)
-       commandCheckTimeout=0;
-       for(i=0;i<16;i++){ //clear command buffer
-           commandBuffer[i]='\0';
-       }
-       
-       while(ALWAYS){ //search through command buffer
-           if(commandBuffer[0]=='@'){ //FIRST COMMAND
-               if(commandBuffer[1]==0x000D){ //make sure it is the end of a command line
-                   i=0;
-                   while(response1[i] != '\0'){
-                       if(transmitReady==TRUE){
-                           transmitReady=FALSE;
-                           UCA0TXBUF=response1[i]; //send transmission message
-                           i++;
-                       }
-                   }
-                   Five_msec_Delay(5);
-                   commandStart=FALSE; //command done
-                   break;
-               }
-           }
-           if(commandBuffer[0]=='F'){ //SECOND COMMAND
-               if(commandBuffer[1]==0x000D){ //make sure it is the end of a command line
-                   i=0;
-                   Init_Serial_UCA1(0); //set IOT baud to 115200
-                   while(response2[i] != '\0'){
-                       if(transmitReady==TRUE){
-                           transmitReady=FALSE;
-                           UCA0TXBUF=response2[i]; //send transmission message
-                           i++;
-                       }
-                   }
-                   Five_msec_Delay(5);
-                   commandStart=FALSE; //command done
-                   break;
-               }
-           }
-           if(commandBuffer[0]=='S'){ //THIRD COMMAND
-               if(commandBuffer[1]==0x000D){ //make sure it is the end of a command line
-                   i=0;
-                   Init_Serial_UCA1(1); //set IOT baud to 9600
-                   while(response3[i] != '\0'){
-                       if(transmitReady==TRUE){
-                           transmitReady=FALSE;
-                           UCA0TXBUF=response3[i]; //send transmission message
-                           i++;
-                       }
-                   }
-                   Five_msec_Delay(5);
-                   commandStart=FALSE;
-                   break;
-               }
-           }
-           
-           if(commandBuffer[0]=='R'){ //THIRD COMMAND
-               if(commandBuffer[1]==0x000D){ //make sure it is the end of a command line
-                   i=0;
-                   PJOUT &= ~IOT_RESET; //reset IOT
-                   Five_msec_Delay(10); //wait 50 ms
-                   PJOUT |= IOT_RESET; //turn IOT back on (stop reset)
-                   while(response4[i] != '\0'){
-                       if(transmitReady==TRUE){
-                           transmitReady=FALSE;
-                           UCA0TXBUF=response4[i]; //send transmission message
-                           i++;
-                       }
-                   }
-                   Five_msec_Delay(5);
-                   commandStart=FALSE;
-                   break;
-               }
-           }
-           
-           else if(commandCheckTimeout>=10){
-               commandCheckTimeout=0;
-               commandStart=FALSE;
-               break;
-           }
-       }
-       writeToCommand=FALSE; //command has been executed.
-       commandStart=FALSE;
-   }
-   
-   if(PCReady==TRUE){ 
-       i=0;
-       Five_msec_Delay(6);
-       while(IOTBufferTransmit[i] != '\0'){
-           if(transmitReady==TRUE){
-               transmitReady=FALSE;
-               UCA1TXBUF=IOTBufferTransmit[i];
-               i++;
-           }
-       }
-       for(i=0;i<100;i++){ //clear IOT buffer
-           IOTBufferTransmit[i]='\0';
-       }
-       
-       IOTIndexTransmit=0;
-       i=0;
-       Five_msec_Delay(5);
-       
-       while(IOTBufferReceive[i] != '\0'){
-           if(transmitReady==TRUE){
-               transmitReady=FALSE;
-               UCA0TXBUF=IOTBufferReceive[i];
-               i++;
-           }
-       }
-       for(i=0;i<100;i++){ //clear IOT buffer
-           IOTBufferReceive[i]='\0';
-       }
-       IOTIndexReceive=0;
-       Five_msec_Delay(5);
-       PCReady=FALSE;
-   }
-    /*if(menu_items){  //start menu
-      switch_one_pressed = FALSE;
-      switch_two_pressed = FALSE;
-      Menu_Process();
-    }*/
-    
+    if(StartCommandFG){ //StartCommandFG=TRUE once "@" has been received
+        commandTree();
+    }
+    printMacAddress(); //prints mac address to screen
+    macFG=FALSE; //turn off command to print mac address
+    clearReceiveBuffer();
+    parseIOTData();
   }
 //------------------------------------------------------------------------------
 }
 
 
+void clearReceiveBuffer(void){
+    if(newLineFG==TRUE){
+        newLineFG=FALSE;
+        receivingInd=0; //reset index
+        for(i=0;i<100;i++){ //clear buffer
+            receiving[i]='\0';
+        }
+    }
+}
 
+void printMacAddress(void){
+    if(macFG==TRUE && UCA1BRW == 52){ //when mac address needed, will take from buffer, and print to screen.
+       while(IOTBufferReceive[37]=='\0'); //wait until all received
+       for(i=21;i<=28;i++){ //capture first half of MAC address
+           firstMacBuff[i-21]=IOTBufferReceive[i];
+       }
+       for(i=30;i<=37;i++){ //capture second half of MAC address
+           secondMacBuff[i-30]=IOTBufferReceive[i];
+       }
+       lcd_4line();
+       display_1="Mac Addr:";
+       macPtr=firstMacBuff;
+       display_2=macPtr;
+       macPtr=secondMacBuff;
+       display_3=macPtr;
+       display_4="          ";
+       Display_Process();
+       macFG=FALSE;
+       
+       for(i=0;i<40;i++){ //clear IOT buffer so that junk isnt written to terminal after junk-->command
+           IOTBufferReceive[i]='\0';
+       }
+       
+       IOTIndexReceive=0;
+   }
+}
 
-
+void parseIOTData(void){
+    for(i=0;i<=100-3;i++){ //search through received strings
+        if(receiving[i]=='D'){
+            if(receiving[i+1]==':'){
+                if(receiving[i+2]=='2'){
+                    Five_msec_Delay(1);
+                    if(receiving[i+3]=='1'){
+                        display_4="Scanning";
+                        Display_Process();
+                    }
+                    else if(receiving[i+3]=='4'){
+                        countP=0; //initialize period counter
+                        Five_msec_Delay(3); //short delay to allow all characters to enter
+                        j=0;
+                        for(i=17;receiving[i] != '\r';i++){ //go from beginning of address until 2nd period hit (2nd group)
+                            if(receiving[i] == '.'){
+                                countP++;
+                            }
+                            if(countP >=2){ //stop copying to buffer if 2nd period has been hit (2nd "group" is copied)
+                                break;
+                            }
+                            firstipBuff[j]=receiving[i];
+                            j++;
+                        }
+                        posL3=(10-j)/2; //center first half of ip address
+                        i++; //skip the period
+                        for(j=0;receiving[i] != '\r';i++){
+                            secondipBuff[j]=receiving[i];
+                            j++;
+                        }
+                        posL4=(10-j)/2; //center second half of ip address
+                        display_1=SSIDPtr; //from D:25 
+                        display_2="  ipaddr  ";
+                        ipPtr=firstipBuff;
+                        display_3=ipPtr;
+                        ipPtr=secondipBuff;
+                        display_4=ipPtr;
+                        lcd_4line();
+                        Display_Process();
+                        posL1=0; //reset line positions back to beginning
+                        posL3=0;
+                        posL4=0;
+                        Five_msec_Delay(600); //display IP for 3 seconds before screen gets cleared by menus
+                    }
+                    else if(receiving[i+3]=='5'){
+                        Five_msec_Delay(5);//short delay to allow all characters to enter
+                        for(i=32;receiving[i] != '\'' && i<=42 ;i++){ //copy SSID until end of quoted name or until max size for LCD is hit
+                            SSIDBuff[i-32]=receiving[i];
+                        }
+                        SSIDPtr=SSIDBuff;
+                        posL1=(10-(i-32))/2; //center SSID
+                        //SSID is displayed in D:24
+                    }
+                    
+                }
+                else if(receiving[i+2]=='3'){ //clear display once scanning is complete
+                    if(receiving[i+3]=='5'){
+                        display_4="          "; 
+                        Display_Process();
+                    }
+                }
+                else if(receiving[i+2]=='4'){ //detect disassociation --> reassociate by resetting module
+                    if(receiving[i+3]=='1'){
+                        uart_puts("AT+CFUN=1\r"); //Get SSID to ncsu
+                        PJOUT &= ~IOT_RESET; //reset IOT
+                        Five_msec_Delay(10); //wait 50 ms
+                        PJOUT |= IOT_RESET; //turn IOT back on (stop reset)
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 

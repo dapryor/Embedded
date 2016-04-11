@@ -738,7 +738,7 @@
         </option>
         <option>
           <name>OutputFile</name>
-          <state>Homework 09.d43</state>
+          <state>Project 07.d43</state>
         </option>
         <option>
           <name>OutputFormat</name>
@@ -2255,6 +2255,9 @@
   </file>
   <file>
     <name>$PROJ_DIR$\clocks.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\command_Structure.c</name>
   </file>
   <file>
     <name>$PROJ_DIR$\init.c</name>

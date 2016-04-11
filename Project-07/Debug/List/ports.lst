@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           09/Apr/2016  16:38:36
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           11/Apr/2016  00:15:28
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -626,8 +626,8 @@ C:\Users\David\Documents\ECE 306\Project-07\ports.c
    \   00002C   A2C22A03     BIC.W   #0x4, &0x32a
     334          PJSEL1 &= ~IOT_STA_MINIAP; 
    \   000030   A2C22C03     BIC.W   #0x4, &0x32c
-    335          PJOUT |= IOT_STA_MINIAP;                // output set to 1
-   \   000034   A2D22203     BIS.W   #0x4, &0x322
+    335          PJOUT &= ~IOT_STA_MINIAP;                // output set to 1
+   \   000034   A2C22203     BIC.W   #0x4, &0x322
     336          PJDIR |= IOT_STA_MINIAP;                // Set PJ Pin 3 direction to output
    \   000038   A2D22403     BIS.W   #0x4, &0x324
     337          //------------------------------------------------------------------------------
@@ -638,8 +638,8 @@ C:\Users\David\Documents\ECE 306\Project-07\ports.c
    \   000040   B2C22C03     BIC.W   #0x8, &0x32c
     341          PJDIR |= IOT_RESET;                   // Set P3 Pin 4 direction to output
    \   000044   B2D22403     BIS.W   #0x8, &0x324
-    342          PJOUT &= ~IOT_RESET;	              //output set to 0
-   \   000048   B2C22203     BIC.W   #0x8, &0x322
+    342          PJOUT |= IOT_RESET;	              //output set to 0
+   \   000048   B2D22203     BIS.W   #0x8, &0x322
     343          // XT1 Setup
     344          // PJSEL0 |= XINR;
     345          // PJSEL0 |= XOUTR;
@@ -650,11 +650,28 @@ C:\Users\David\Documents\ECE 306\Project-07\ports.c
    \   00004E                REQUIRE _A_PJSEL1_L
    \   00004E                REQUIRE _A_PJDIR_L
    \   00004E                REQUIRE _A_PJOUT_L
+    348          
+
+   \                                 In  segment CODE, align 2
+    349          void IOTHardwareReset(void){
+   \                     IOTHardwareReset:
+    350              PJOUT &= ~IOT_RESET; //reset IOT
+   \   000000   B2C22203     BIC.W   #0x8, &0x322
+    351              Five_msec_Delay(10); //wait 50 ms
+   \   000004   3C400A00     MOV.W   #0xa, R12
+   \   000008   ........     CALLA   #Five_msec_Delay
+    352              PJOUT |= IOT_RESET; //turn IOT back on (stop reset)
+   \   00000C   B2D22203     BIS.W   #0x8, &0x322
+    353          }
+   \   000010   1001         RETA
+   \   000012                REQUIRE _A_PJOUT_L
 
    Maximum stack usage in bytes:
 
    CSTACK Function
    ------ --------
+      4   IOTHardwareReset
+        4   -> Five_msec_Delay
       4   Init_Port1
       4   Init_Port2
       4   Init_Port3
@@ -672,6 +689,7 @@ C:\Users\David\Documents\ECE 306\Project-07\ports.c
 
    Bytes  Function/Label
    -----  --------------
+      18  IOTHardwareReset
      144  Init_Port1
      154  Init_Port2
      174  Init_Port3
@@ -697,10 +715,10 @@ C:\Users\David\Documents\ECE 306\Project-07\ports.c
        2  _A_PJSEL1_L
 
  
- 650 bytes in segment CODE
+ 668 bytes in segment CODE
   34 bytes in segment DATA16_AN
  
- 650 bytes of CODE memory
+ 668 bytes of CODE memory
    0 bytes of DATA memory (+ 34 bytes shared)
 
 Errors: none

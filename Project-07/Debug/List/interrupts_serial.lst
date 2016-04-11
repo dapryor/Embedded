@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           09/Apr/2016  16:38:36
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           11/Apr/2016  00:15:28
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -132,193 +132,188 @@ C:\Users\David\Documents\ECE 306\Project-07\interrupts_serial.c
    \   000000                DS8 16
      18          extern char *display_1;
      19          extern char adc_char[5];
-
-   \                                 In  segment DATA16_Z, align 2, align-sorted
-   \   000000                REQUIRE ?cstart_init_zero
-     20          volatile unsigned int PCReady = 0;
-   \                     PCReady:
-   \   000000                DS8 2
-     21          
-     22          extern volatile unsigned int PCReady;
-     23          extern volatile char commandBuffer[];
-     24          extern volatile unsigned int commandIndex;
-     25          extern unsigned int writeToCommand;
-     26          extern volatile unsigned int transmitReady;
-     27          extern volatile unsigned int commandStart;
-     28          
-     29          extern volatile char IOTBufferTransmit[];
-     30          extern volatile char IOTBufferReceive[];
-     31          extern volatile unsigned int IOTIndexTransmit;
-     32          extern volatile unsigned int IOTIndexReceive;
-     33          //----------------------------------------------------------------------------//
-     34          
-     35          #pragma vector=USCI_A0_VECTOR
+     20          extern unsigned int writeCommandFG;
+     21          extern volatile char commandBuffer[30];
+     22          extern volatile unsigned int commandIndex;
+     23          extern volatile unsigned int transmitFG;
+     24          extern volatile unsigned int StartCommandFG;
+     25          extern unsigned int i; //counter variable
+     26          extern volatile char IOTBufferReceive[];
+     27          extern volatile unsigned int IOTIndexTransmit;
+     28          extern volatile unsigned int IOTIndexReceive;
+     29          extern unsigned int macFG;
+     30          extern volatile unsigned int newLineFG;
+     31          extern volatile char receiving[100];
+     32          extern volatile unsigned int receivingInd;
+     33          
+     34          //----------------------------------------------------------------------------//
+     35          
+     36          #pragma vector=USCI_A0_VECTOR
 
    \                                 In  segment ISR_CODE, align 2
-     36          __interrupt void USCI_A0_ISR(void){
+     37          __interrupt void USCI_A0_ISR(void){
    \                     USCI_A0_ISR:
-   \   000000   5F15         PUSHM.W #0x6, R15
-     37              unsigned int temp,temp2,temp3,i;
-     38              switch(__even_in_range(UCA0IV,0x08)){
+   \   000000   2F15         PUSHM.W #0x3, R15
+     38              unsigned int temp,temp2;
+     39              switch(__even_in_range(UCA0IV,0x08)){
    \   000002   1E42DE05     MOV.W   &0x5de, R14
    \   000006   E00E         ADDA    R14, PC
    \                     `?<Jumptable for USCI_A0_ISR>_0`:
-   \   000008   3E3C         JMP     ??USCI_A0_ISR_1
-   \   00000A   033C         JMP     ??USCI_A0_ISR_8
-   \   00000C   3A3C         JMP     ??USCI_A0_ISR_9
-   \   00000E   3B3C         JMP     ??USCI_A0_ISR_1
-   \   000010   3A3C         JMP     ??USCI_A0_ISR_1
-     39                  case 0: // Vector 0 - no interrupt
-     40                      break;
-     41                  case 2: // Vector 2 - RXIFG
-     42                      temp = usb_rx_ring_wr0;
-   \                     ??USCI_A0_ISR_8:
-   \   000012   1F42....     MOV.W   &usb_rx_ring_wr0, R15
-     43                      for(i=0;i<SMALL_RING_SIZE;i++){ //clear command buffer
-   \   000016   0A43         MOV.W   #0x0, R10
-   \                     ??USCI_A0_ISR_0:
-   \   000018   3A901000     CMP.W   #0x10, R10
-   \   00001C   042C         JC      ??USCI_A0_ISR_3
-     44                        USB_Char_Rx0[i]='\0';
-   \   00001E   CA43....     MOV.B   #0x0, USB_Char_Rx0(R10)
-     45                      }
-   \   000022   1A53         ADD.W   #0x1, R10
-   \   000024   F93F         JMP     ??USCI_A0_ISR_0
-     46                      USB_Char_Rx0[temp] = UCA0RXBUF; // RX -> USB_Char_Rx character
-   \                     ??USCI_A0_ISR_3:
-   \   000026   1E42CC05     MOV.W   &0x5cc, R14
-   \   00002A   CF4E....     MOV.B   R14, USB_Char_Rx0(R15)
-     47                      
-     48                      if(UCA0RXBUF=='@'){
-   \   00002E   B2904000CC05 CMP.W   #0x40, &0x5cc
-   \   000034   0220         JNE     ??USCI_A0_ISR_4
-     49                          commandStart=TRUE;
-   \   000036   9243....     MOV.W   #0x1, &commandStart
-     50                      }
-     51                      
-     52                      if (++usb_rx_ring_wr0 >= (SMALL_RING_SIZE)){
+   \   000008   273C         JMP     ??USCI_A0_ISR_0
+   \   00000A   033C         JMP     ??USCI_A0_ISR_4
+   \   00000C   233C         JMP     ??USCI_A0_ISR_5
+   \   00000E   243C         JMP     ??USCI_A0_ISR_0
+   \   000010   233C         JMP     ??USCI_A0_ISR_0
+     40                  case 0: // Vector 0 - no interrupt
+     41                      break;
+     42                  case 2: // Vector 2 - RXIFG
+     43                      temp = usb_rx_ring_wr0;
    \                     ??USCI_A0_ISR_4:
-   \   00003A   1E42....     MOV.W   &usb_rx_ring_wr0, R14
-   \   00003E   1E53         ADD.W   #0x1, R14
-   \   000040   824E....     MOV.W   R14, &usb_rx_ring_wr0
-   \   000044   3E901000     CMP.W   #0x10, R14
-   \   000048   0228         JNC     ??USCI_A0_ISR_5
-     53                          usb_rx_ring_wr0 = BEGINNING; // Circular buffer back to beginning
-   \   00004A   8243....     MOV.W   #0x0, &usb_rx_ring_wr0
-     54                      }
-     55                      if(writeToCommand==TRUE){
+   \   000012   1F42....     MOV.W   &usb_rx_ring_wr0, R15
+     44                      USB_Char_Rx0[temp] = UCA0RXBUF; // RX -> USB_Char_Rx character
+   \   000016   1E42CC05     MOV.W   &0x5cc, R14
+   \   00001A   CF4E....     MOV.B   R14, USB_Char_Rx0(R15)
+     45                      
+     46                      if(UCA0RXBUF=='.'){
+   \   00001E   B2902E00CC05 CMP.W   #0x2e, &0x5cc
+   \   000024   0220         JNE     ??USCI_A0_ISR_2
+     47                          StartCommandFG=TRUE;
+   \   000026   9243....     MOV.W   #0x1, &StartCommandFG
+     48                      }
+     49                      
+     50                      if (++usb_rx_ring_wr0 >= (SMALL_RING_SIZE)){
+   \                     ??USCI_A0_ISR_2:
+   \   00002A   1E42....     MOV.W   &usb_rx_ring_wr0, R14
+   \   00002E   1E53         ADD.W   #0x1, R14
+   \   000030   824E....     MOV.W   R14, &usb_rx_ring_wr0
+   \   000034   3E901000     CMP.W   #0x10, R14
+   \   000038   0228         JNC     ??USCI_A0_ISR_3
+     51                          usb_rx_ring_wr0 = BEGINNING; // Circular buffer back to beginning
+   \   00003A   8243....     MOV.W   #0x0, &usb_rx_ring_wr0
+     52                      }
+     53                      if(writeCommandFG){
+   \                     ??USCI_A0_ISR_3:
+   \   00003E   8293....     CMP.W   #0x0, &writeCommandFG
+   \   000042   0A24         JEQ     ??USCI_A0_ISR_0
+     54                          temp2=commandIndex;
+   \   000044   1D42....     MOV.W   &commandIndex, R13
+     55                          commandBuffer[temp2]=USB_Char_Rx0[temp];//write newly recieved character to command buffer
+   \   000048   DD4F........ MOV.B   USB_Char_Rx0(R15), commandBuffer(R13)
+     56                          commandIndex++;
+   \   00004E   9253....     ADD.W   #0x1, &commandIndex
+     57                      }
+     58                      
+     59                      
+     60                      break;
+   \   000052   023C         JMP     ??USCI_A0_ISR_0
+     61                  case 4: // Vector 4 – TXIFG
+     62                    transmitFG=TRUE;   
    \                     ??USCI_A0_ISR_5:
-   \   00004E   9293....     CMP.W   #0x1, &writeToCommand
-   \   000052   0720         JNE     ??USCI_A0_ISR_6
-     56                          temp2=commandIndex;
-   \   000054   1D42....     MOV.W   &commandIndex, R13
-     57                          commandBuffer[temp2]=USB_Char_Rx0[temp];//write newly recieved character to command buffer
-   \   000058   DD4F........ MOV.B   USB_Char_Rx0(R15), commandBuffer(R13)
-     58                          commandIndex++;
-   \   00005E   9253....     ADD.W   #0x1, &commandIndex
-     59                      }
-     60                      if(commandStart==FALSE){
-   \                     ??USCI_A0_ISR_6:
-   \   000062   8293....     CMP.W   #0x0, &commandStart
-   \   000066   0720         JNE     ??USCI_A0_ISR_7
-     61                          temp3=IOTIndexTransmit;
-   \   000068   1C42....     MOV.W   &IOTIndexTransmit, R12
-     62                          IOTBufferTransmit[temp3]=USB_Char_Rx0[temp];
-   \   00006C   DC4F........ MOV.B   USB_Char_Rx0(R15), IOTBufferTransmit(R12)
-     63                          IOTIndexTransmit++;
-   \   000072   9253....     ADD.W   #0x1, &IOTIndexTransmit
-     64                      }
-     65                      if(!PCReady){
-   \                     ??USCI_A0_ISR_7:
-   \   000076   8293....     CMP.W   #0x0, &PCReady
-   \   00007A   0520         JNE     ??USCI_A0_ISR_1
-     66                        PCReady = TRUE;
-   \   00007C   9243....     MOV.W   #0x1, &PCReady
-     67                      }
-     68                      
-     69                      break;
-   \   000080   023C         JMP     ??USCI_A0_ISR_1
-     70                  case 4: // Vector 4 – TXIFG
-     71                    transmitReady=TRUE;   
-   \                     ??USCI_A0_ISR_9:
-   \   000082   9243....     MOV.W   #0x1, &transmitReady
-     72                    break;
-     73                  default: break;
-     74              }
-     75          }
-   \                     ??USCI_A0_ISR_1:
-   \   000086   5A17         POPM.W  #0x6, R15
-   \   000088   0013         RETI
-   \   00008A                REQUIRE _A_UCA0RXBUF_L
-   \   00008A                REQUIRE UCA0IV
-     76          
-     77          #pragma vector=USCI_A1_VECTOR
+   \   000054   9243....     MOV.W   #0x1, &transmitFG
+     63                    break;
+     64                  default: break;
+     65              }
+     66          }
+   \                     ??USCI_A0_ISR_0:
+   \   000058   2D17         POPM.W  #0x3, R15
+   \   00005A   0013         RETI
+   \   00005C                REQUIRE _A_UCA0RXBUF_L
+   \   00005C                REQUIRE UCA0IV
+     67          
+     68          #pragma vector=USCI_A1_VECTOR
 
    \                                 In  segment ISR_CODE, align 2
-     78          __interrupt void USCI_A1_ISR(void){ //IOT
+     69          __interrupt void USCI_A1_ISR(void){ //IOT
    \                     USCI_A1_ISR:
-   \   000000   2F15         PUSHM.W #0x3, R15
-     79              unsigned int temp,temp2;
-     80              switch(__even_in_range(UCA1IV,0x08)){
+   \   000000   3F15         PUSHM.W #0x4, R15
+     70              unsigned int temp,temp2, temp3;
+     71              switch(__even_in_range(UCA1IV,0x08)){
    \   000002   1E42FE05     MOV.W   &0x5fe, R14
    \   000006   E00E         ADDA    R14, PC
    \                     `?<Jumptable for USCI_A1_ISR>_0`:
-   \   000008   263C         JMP     ??USCI_A1_ISR_0
-   \   00000A   033C         JMP     ??USCI_A1_ISR_4
-   \   00000C   223C         JMP     ??USCI_A1_ISR_5
-   \   00000E   233C         JMP     ??USCI_A1_ISR_0
-   \   000010   223C         JMP     ??USCI_A1_ISR_0
-     81                  case 0: // Vector 0 - no interrupt
-     82                      break;
-     83                  case 2: // Vector 2 - RXIFG
-     84                      temp = usb_rx_ring_wr1;
-   \                     ??USCI_A1_ISR_4:
+   \   000008   3E3C         JMP     ??USCI_A1_ISR_0
+   \   00000A   033C         JMP     ??USCI_A1_ISR_6
+   \   00000C   3A3C         JMP     ??USCI_A1_ISR_7
+   \   00000E   3B3C         JMP     ??USCI_A1_ISR_0
+   \   000010   3A3C         JMP     ??USCI_A1_ISR_0
+     72                  case 0: // Vector 0 - no interrupt
+     73                      break;
+     74                  case 2: // Vector 2 - RXIFG
+     75                      temp = usb_rx_ring_wr1;
+   \                     ??USCI_A1_ISR_6:
    \   000012   1F42....     MOV.W   &usb_rx_ring_wr1, R15
-     85                      USB_Char_Rx1[temp] = UCA1RXBUF; // RX -> USB_Char_Rx character
+     76                      USB_Char_Rx1[temp] = UCA1RXBUF; // RX -> USB_Char_Rx character
    \   000016   1E42EC05     MOV.W   &0x5ec, R14
    \   00001A   CF4E....     MOV.B   R14, USB_Char_Rx1(R15)
-     86                      if (++usb_rx_ring_wr1 >= (SMALL_RING_SIZE)){
-   \   00001E   1E42....     MOV.W   &usb_rx_ring_wr1, R14
-   \   000022   1E53         ADD.W   #0x1, R14
-   \   000024   824E....     MOV.W   R14, &usb_rx_ring_wr1
-   \   000028   3E901000     CMP.W   #0x10, R14
-   \   00002C   0228         JNC     ??USCI_A1_ISR_2
-     87                          usb_rx_ring_wr1 = BEGINNING; // Circular buffer back to beginning
-   \   00002E   8243....     MOV.W   #0x0, &usb_rx_ring_wr1
-     88                      }
-     89                      if(commandStart==FALSE){
+     77                      if(UCA1RXBUF=='.'){
+   \   00001E   B2902E00EC05 CMP.W   #0x2e, &0x5ec
+   \   000024   0220         JNE     ??USCI_A1_ISR_1
+     78                          StartCommandFG=TRUE;
+   \   000026   9243....     MOV.W   #0x1, &StartCommandFG
+     79                      }
+     80                      if (++usb_rx_ring_wr1 >= (SMALL_RING_SIZE)){
+   \                     ??USCI_A1_ISR_1:
+   \   00002A   1E42....     MOV.W   &usb_rx_ring_wr1, R14
+   \   00002E   1E53         ADD.W   #0x1, R14
+   \   000030   824E....     MOV.W   R14, &usb_rx_ring_wr1
+   \   000034   3E901000     CMP.W   #0x10, R14
+   \   000038   0228         JNC     ??USCI_A1_ISR_2
+     81                          usb_rx_ring_wr1 = BEGINNING; // Circular buffer back to beginning
+   \   00003A   8243....     MOV.W   #0x0, &usb_rx_ring_wr1
+     82                      }
+     83                      if(UCA1RXBUF== '\n'){ //reset receivingInd if new line hits
    \                     ??USCI_A1_ISR_2:
-   \   000032   8293....     CMP.W   #0x0, &commandStart
-   \   000036   0720         JNE     ??USCI_A1_ISR_3
-     90                          temp2=IOTIndexReceive;
-   \   000038   1D42....     MOV.W   &IOTIndexReceive, R13
-     91                          IOTBufferReceive[temp2]=USB_Char_Rx1[temp];
-   \   00003C   DD4F........ MOV.B   USB_Char_Rx1(R15), IOTBufferReceive(R13)
-     92                          IOTIndexReceive++;
-   \   000042   9253....     ADD.W   #0x1, &IOTIndexReceive
-     93                      }
-     94                      if(!PCReady){
+   \   00003E   B2900A00EC05 CMP.W   #0xa, &0x5ec
+   \   000044   0220         JNE     ??USCI_A1_ISR_3
+     84                          newLineFG=TRUE;
+   \   000046   9243....     MOV.W   #0x1, &newLineFG
+     85                      }
+     86                      if(writeCommandFG){
    \                     ??USCI_A1_ISR_3:
-   \   000046   8293....     CMP.W   #0x0, &PCReady
-   \   00004A   0520         JNE     ??USCI_A1_ISR_0
-     95                        PCReady = TRUE;
-   \   00004C   9243....     MOV.W   #0x1, &PCReady
-     96                      }
-     97                      break;
-   \   000050   023C         JMP     ??USCI_A1_ISR_0
-     98                  case 4: // Vector 4 – TXIFG
-     99                      transmitReady=TRUE; 
+   \   00004A   8293....     CMP.W   #0x0, &writeCommandFG
+   \   00004E   0724         JEQ     ??USCI_A1_ISR_4
+     87                          temp2=commandIndex;
+   \   000050   1D42....     MOV.W   &commandIndex, R13
+     88                          commandBuffer[temp2]=USB_Char_Rx0[temp];//write newly recieved character to command buffer
+   \   000054   DD4F........ MOV.B   USB_Char_Rx0(R15), commandBuffer(R13)
+     89                          commandIndex++;
+   \   00005A   9253....     ADD.W   #0x1, &commandIndex
+     90                      }
+     91                      if(macFG){
+   \                     ??USCI_A1_ISR_4:
+   \   00005E   8293....     CMP.W   #0x0, &macFG
+   \   000062   0724         JEQ     ??USCI_A1_ISR_5
+     92                          temp2=IOTIndexReceive; //takes info from IOT device, and writes it to PC
+   \   000064   1D42....     MOV.W   &IOTIndexReceive, R13
+     93                          IOTBufferReceive[temp2]=USB_Char_Rx1[temp];
+   \   000068   DD4F........ MOV.B   USB_Char_Rx1(R15), IOTBufferReceive(R13)
+     94                          IOTIndexReceive++; 
+   \   00006E   9253....     ADD.W   #0x1, &IOTIndexReceive
+     95                      }
+     96          
+     97                      //IOT TALKING?  
+     98                      temp3=receivingInd;
    \                     ??USCI_A1_ISR_5:
-   \   000052   9243....     MOV.W   #0x1, &transmitReady
-    100                      break;
-    101                  default: break;
-    102              }
-    103          }
+   \   000072   1C42....     MOV.W   &receivingInd, R12
+     99                      receiving[temp3]=USB_Char_Rx1[temp];
+   \   000076   DC4F........ MOV.B   USB_Char_Rx1(R15), receiving(R12)
+    100                      receivingInd++;
+   \   00007C   9253....     ADD.W   #0x1, &receivingInd
+    101                      break;
+   \   000080   023C         JMP     ??USCI_A1_ISR_0
+    102                  case 4: // Vector 4 – TXIFG
+    103                      transmitFG=TRUE; 
+   \                     ??USCI_A1_ISR_7:
+   \   000082   9243....     MOV.W   #0x1, &transmitFG
+    104                      break;
+    105                  default: break;
+    106              }
+    107          }
    \                     ??USCI_A1_ISR_0:
-   \   000056   2D17         POPM.W  #0x3, R15
-   \   000058   0013         RETI
-   \   00005A                REQUIRE _A_UCA1RXBUF_L
-   \   00005A                REQUIRE UCA1IV
+   \   000086   3C17         POPM.W  #0x4, R15
+   \   000088   0013         RETI
+   \   00008A                REQUIRE _A_UCA1RXBUF_L
+   \   00008A                REQUIRE UCA1IV
 
    \                                 In  segment INTVEC, offset 0x56, root
    \                     `??USCI_A1_ISR::??INTVEC 86`:
@@ -332,24 +327,23 @@ C:\Users\David\Documents\ECE 306\Project-07\interrupts_serial.c
 
    CSTACK Function
    ------ --------
-     16   USCI_A0_ISR
-     10   USCI_A1_ISR
+     10   USCI_A0_ISR
+     12   USCI_A1_ISR
 
 
    Segment part sizes:
 
    Bytes  Function/Label
    -----  --------------
-       2  PCReady
        2  UCA0IV
        2  UCA1IV
       16  USB_Char_Rx0
       16  USB_Char_Rx1
       16  USB_Char_Tx0
       16  USB_Char_Tx1
-     138  USCI_A0_ISR
+      92  USCI_A0_ISR
        2  USCI_A0_ISR::??INTVEC 96
-      90  USCI_A1_ISR
+     138  USCI_A1_ISR
        2  USCI_A1_ISR::??INTVEC 86
        2  _A_UCA0RXBUF_L
        2  _A_UCA1RXBUF_L
@@ -364,13 +358,13 @@ C:\Users\David\Documents\ECE 306\Project-07\interrupts_serial.c
 
  
    8 bytes in segment DATA16_AN
-  82 bytes in segment DATA16_Z
+  80 bytes in segment DATA16_Z
    4 bytes in segment INTVEC
- 228 bytes in segment ISR_CODE
+ 230 bytes in segment ISR_CODE
  
- 228 bytes of CODE  memory
+ 230 bytes of CODE  memory
    0 bytes of CONST memory (+ 4 bytes shared)
-  82 bytes of DATA  memory (+ 8 bytes shared)
+  80 bytes of DATA  memory (+ 8 bytes shared)
 
 Errors: none
 Warnings: none

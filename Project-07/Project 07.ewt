@@ -1967,6 +1967,9 @@
     <name>$PROJ_DIR$\clocks.c</name>
   </file>
   <file>
+    <name>$PROJ_DIR$\command_Structure.c</name>
+  </file>
+  <file>
     <name>$PROJ_DIR$\init.c</name>
   </file>
   <file>
