@@ -41,7 +41,7 @@
           
           
           
-        <item>ADC_Thumb</item><item>lcdBuff</item><item>deltaThumb</item><item>thumbPrev</item><item></item></expressions>
+        <item>ADC_Thumb</item><item>lcdBuff</item><item>deltaThumb</item><item>thumbPrev</item><item/></expressions>
         <col-names>
           
           

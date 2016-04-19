@@ -266,10 +266,11 @@ void parseIOTData(void){
                         display_4=ipPtr;
                         lcd_4line();
                         Display_Process();
+                        Five_msec_Delay(600); //display IP for 3 seconds before screen gets cleared by menus
                         posL1=0; //reset line positions back to beginning
                         posL3=0;
                         posL4=0;
-                        Five_msec_Delay(600); //display IP for 3 seconds before screen gets cleared by menus
+                        
                     }
                     else if(receiving[i+3]=='5'){
                         Five_msec_Delay(5);//short delay to allow all characters to enter

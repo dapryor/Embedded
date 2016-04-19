@@ -1,0 +1,917 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           11/Apr/2016  14:23:10
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  D:\Project-07-Final\command_Structure.c
+#    Command line  =  
+#        D:\Project-07-Final\command_Structure.c -lC
+#        D:\Project-07-Final\Debug\List -o D:\Project-07-Final\Debug\Obj
+#        --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  D:\Project-07-Final\Debug\List\command_Structure.lst
+#    Object file   =  D:\Project-07-Final\Debug\Obj\command_Structure.r43
+#
+###############################################################################
+
+D:\Project-07-Final\command_Structure.c
+      1          #include <stdlib.h>
+      2          #include "macros.h"
+      3          #include "functions.h"
+      4          #include "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x322
+   \   union <unnamed> _A_PJOUT_L
+   \                     _A_PJOUT_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5ce
+   \   union <unnamed> _A_UCA0TXBUF_L
+   \                     _A_UCA0TXBUF_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5ee
+   \   union <unnamed> _A_UCA1TXBUF_L
+   \                     _A_UCA1TXBUF_L:
+   \   000000                DS8 2
+      5          
+      6          //GLOBAL VARIABLES------------------------------------------------------------//
+      7          //multi-function globals//
+      8          extern char *display_1;
+      9          extern char *display_2;
+     10          extern char *display_3;
+     11          extern char *display_4;
+     12          extern volatile unsigned int pressed1;
+     13          extern volatile unsigned int pressed2;
+     14          
+     15          //commandTree() globals//
+     16          extern volatile char commandBuffer[30];
+     17          extern volatile unsigned int commandIndex;
+     18          extern unsigned int writeCommandFG;
+     19          extern unsigned int i,j, k; //counter variable
+     20          extern volatile unsigned int transmitReady;
+     21          extern volatile unsigned int StartCommandFG;
+     22          extern unsigned int macFG;
+     23          extern volatile unsigned int IOTIndexReceive; //testing
+     24          
+     25          //calibrate_detector() globals//
+     26          extern unsigned int Ambient_right; //Variables for detector calibration
+     27          extern unsigned int Ambient_left;
+     28          extern unsigned int White_right;
+     29          extern unsigned int White_left;
+     30          extern unsigned int Black_right;
+     31          extern unsigned int Black_left;
+     32          extern unsigned int threshhold;
+     33          extern volatile unsigned int Left_Detector;
+     34          extern volatile unsigned int Right_Detector;
+
+   \                                 In  segment DATA16_Z, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     35          char numberBuff[5];
+   \                     numberBuff:
+   \   000000                DS8 5
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     36          unsigned int time=0;
+   \                     time:
+   \   000000                DS8 2
+     37          extern volatile unsigned int right_forward_rate;
+     38          extern volatile unsigned int right_reverse_rate;
+     39          extern volatile unsigned int left_forward_rate;
+     40          extern volatile unsigned int left_reverse_rate;
+     41          //----------------------------------------------------------------------------//
+     42          
+     43          
+
+   \                                 In  segment CODE, align 2
+     44          void commandTree(void){
+   \                     commandTree:
+     45            commandIndex=0;
+   \   000000   8243....     MOV.W   #0x0, &commandIndex
+     46              for(i=0;i<30;i++){ //clear command buffer
+   \   000004   8243....     MOV.W   #0x0, &i
+   \                     ??commandTree_0:
+   \   000008   B2901E00.... CMP.W   #0x1e, &i
+   \   00000E   072C         JC      ??commandTree_8
+     47                  commandBuffer[i]='\0';
+   \   000010   1F42....     MOV.W   &i, R15
+   \   000014   CF43....     MOV.B   #0x0, commandBuffer(R15)
+     48                  
+     49              }
+   \   000018   9253....     ADD.W   #0x1, &i
+   \   00001C   F53F         JMP     ??commandTree_0
+     50              i=0;
+   \                     ??commandTree_8:
+   \   00001E   8243....     MOV.W   #0x0, &i
+     51              writeCommandFG=TRUE; //write to command buffer (in interrupt)
+   \   000022   9243....     MOV.W   #0x1, &writeCommandFG
+     52              Five_msec_Delay(10); //short delay to allow for commandBuffer to fill   
+   \   000026   3C400A00     MOV.W   #0xa, R12
+   \   00002A   ........     CALLA   #Five_msec_Delay
+     53              while(commandBuffer[i] != '\r' && commandBuffer[i] != '\n'){ //search through command buffer, and end if carriage return or new line is hit
+   \                     ??commandTree_7:
+   \   00002E   1F42....     MOV.W   &i, R15
+   \   000032   FF900D00.... CMP.B   #0xd, commandBuffer(R15)
+   \   000038   ....         JNE     $+6
+   \   00003A   ........     BRA     #??commandTree_9
+   \   00003E   1F42....     MOV.W   &i, R15
+   \   000042   FF900A00.... CMP.B   #0xa, commandBuffer(R15)
+   \   000048   ....         JNE     $+6
+   \   00004A   ........     BRA     #??commandTree_9
+     54                  for(k=0;k<5;k++){
+   \   00004E   8243....     MOV.W   #0x0, &k
+   \                     ??commandTree_1:
+   \   000052   B2900500.... CMP.W   #0x5, &k
+   \   000058   072C         JC      ??commandTree_10
+     55                      numberBuff[k] = '\0'; //clearing number buffer
+   \   00005A   1F42....     MOV.W   &k, R15
+   \   00005E   CF43....     MOV.B   #0x0, numberBuff(R15)
+     56                  }
+   \   000062   9253....     ADD.W   #0x1, &k
+   \   000066   F53F         JMP     ??commandTree_1
+     57                  if(!(commandBuffer[i+0]=='4' && commandBuffer[i+1]=='3' && commandBuffer[i+2]=='2' && commandBuffer[i+3]=='1')){ //if command contains securuty pin, then enter command tree
+   \                     ??commandTree_10:
+   \   000068   1F42....     MOV.W   &i, R15
+   \   00006C   FF903400.... CMP.B   #0x34, commandBuffer(R15)
+   \   000072   1220         JNE     ??commandTree_11
+   \   000074   1F42....     MOV.W   &i, R15
+   \   000078   FF903300.... CMP.B   #0x33, commandBuffer + 1(R15)
+   \   00007E   0C20         JNE     ??commandTree_11
+   \   000080   1F42....     MOV.W   &i, R15
+   \   000084   FF903200.... CMP.B   #0x32, commandBuffer + 2(R15)
+   \   00008A   0620         JNE     ??commandTree_11
+   \   00008C   1F42....     MOV.W   &i, R15
+   \   000090   FF903100.... CMP.B   #0x31, commandBuffer + 3(R15)
+   \   000096   0424         JEQ     ??commandTree_12
+     58                      StartCommandFG=FALSE;
+   \                     ??commandTree_11:
+   \   000098   8243....     MOV.W   #0x0, &StartCommandFG
+     59                      break;
+   \   00009C   ........     BRA     #??commandTree_9
+     60                  }
+     61                  if(commandBuffer[i+4]=='A'){ //FIRST COMMAND
+   \                     ??commandTree_12:
+   \   0000A0   1F42....     MOV.W   &i, R15
+   \   0000A4   FF904100.... CMP.B   #0x41, commandBuffer + 4(R15)
+   \   0000AA   1C20         JNE     ??commandTree_13
+     62                      if(commandBuffer[i+5]=='\r' || commandBuffer[i+5]=='.' || commandBuffer[i+5]=='\n'){ //make sure it is the end of a command line
+   \   0000AC   1F42....     MOV.W   &i, R15
+   \   0000B0   FF900D00.... CMP.B   #0xd, commandBuffer + 5(R15)
+   \   0000B6   0E24         JEQ     ??commandTree_14
+   \   0000B8   1F42....     MOV.W   &i, R15
+   \   0000BC   FF902E00.... CMP.B   #0x2e, commandBuffer + 5(R15)
+   \   0000C2   0824         JEQ     ??commandTree_14
+   \   0000C4   1F42....     MOV.W   &i, R15
+   \   0000C8   FF900A00.... CMP.B   #0xa, commandBuffer + 5(R15)
+   \   0000CE   ....         JEQ     $+6
+   \   0000D0   ........     BRA     #??commandTree_6
+     63                          uart_puts("I'm Here\r");
+   \                     ??commandTree_14:
+   \   0000D4   3C40....     MOV.W   #`?<Constant "I\\'m Here\\r">`, R12
+   \   0000D8   ........     CALLA   #uart_puts
+     64                          StartCommandFG=FALSE;
+   \   0000DC   8243....     MOV.W   #0x0, &StartCommandFG
+   \   0000E0   ........     BRA     #??commandTree_6
+     65                      }
+     66                  }
+     67                  else if(commandBuffer[i+4]=='B'){ //Check for baud rate command or reverse command
+   \                     ??commandTree_13:
+   \   0000E4   1F42....     MOV.W   &i, R15
+   \   0000E8   FF904200.... CMP.B   #0x42, commandBuffer + 4(R15)
+   \   0000EE   D620         JNE     ??commandTree_15
+     68                    k=0;
+   \   0000F0   8243....     MOV.W   #0x0, &k
+     69                    j=i+5;
+   \   0000F4   1F42....     MOV.W   &i, R15
+   \   0000F8   3F500500     ADD.W   #0x5, R15
+   \   0000FC   824F....     MOV.W   R15, &j
+     70                    for(;commandBuffer[j]!='\r' &&  commandBuffer[j]!='\n' && commandBuffer[j]!='.';j++){
+   \                     ??commandTree_2:
+   \   000100   1F42....     MOV.W   &j, R15
+   \   000104   FF900D00.... CMP.B   #0xd, commandBuffer(R15)
+   \   00010A   5424         JEQ     ??commandTree_16
+   \   00010C   1F42....     MOV.W   &j, R15
+   \   000110   FF900A00.... CMP.B   #0xa, commandBuffer(R15)
+   \   000116   4E24         JEQ     ??commandTree_16
+   \   000118   1F42....     MOV.W   &j, R15
+   \   00011C   FF902E00.... CMP.B   #0x2e, commandBuffer(R15)
+   \   000122   4824         JEQ     ??commandTree_16
+     71                      if(commandBuffer[j] == '0' || commandBuffer[j] == '1'|| commandBuffer[j] == '2'|| commandBuffer[j] == '3'|| commandBuffer[j] == '4'|| commandBuffer[j] == '5'|| commandBuffer[j] == '6'|| commandBuffer[j] == '7'|| commandBuffer[j] == '8'|| commandBuffer[j] == '9'){
+   \   000124   1F42....     MOV.W   &j, R15
+   \   000128   FF903000.... CMP.B   #0x30, commandBuffer(R15)
+   \   00012E   3624         JEQ     ??commandTree_17
+   \   000130   1F42....     MOV.W   &j, R15
+   \   000134   FF903100.... CMP.B   #0x31, commandBuffer(R15)
+   \   00013A   3024         JEQ     ??commandTree_17
+   \   00013C   1F42....     MOV.W   &j, R15
+   \   000140   FF903200.... CMP.B   #0x32, commandBuffer(R15)
+   \   000146   2A24         JEQ     ??commandTree_17
+   \   000148   1F42....     MOV.W   &j, R15
+   \   00014C   FF903300.... CMP.B   #0x33, commandBuffer(R15)
+   \   000152   2424         JEQ     ??commandTree_17
+   \   000154   1F42....     MOV.W   &j, R15
+   \   000158   FF903400.... CMP.B   #0x34, commandBuffer(R15)
+   \   00015E   1E24         JEQ     ??commandTree_17
+   \   000160   1F42....     MOV.W   &j, R15
+   \   000164   FF903500.... CMP.B   #0x35, commandBuffer(R15)
+   \   00016A   1824         JEQ     ??commandTree_17
+   \   00016C   1F42....     MOV.W   &j, R15
+   \   000170   FF903600.... CMP.B   #0x36, commandBuffer(R15)
+   \   000176   1224         JEQ     ??commandTree_17
+   \   000178   1F42....     MOV.W   &j, R15
+   \   00017C   FF903700.... CMP.B   #0x37, commandBuffer(R15)
+   \   000182   0C24         JEQ     ??commandTree_17
+   \   000184   1F42....     MOV.W   &j, R15
+   \   000188   FF903800.... CMP.B   #0x38, commandBuffer(R15)
+   \   00018E   0624         JEQ     ??commandTree_17
+   \   000190   1F42....     MOV.W   &j, R15
+   \   000194   FF903900.... CMP.B   #0x39, commandBuffer(R15)
+   \   00019A   0920         JNE     ??commandTree_18
+     72                        numberBuff[k] = commandBuffer[j]; // grabbing numbers from command
+   \                     ??commandTree_17:
+   \   00019C   1F42....     MOV.W   &j, R15
+   \   0001A0   1E42....     MOV.W   &k, R14
+   \   0001A4   DE4F........ MOV.B   commandBuffer(R15), numberBuff(R14)
+     73                        k++;
+   \   0001AA   9253....     ADD.W   #0x1, &k
+     74                      }
+     75                    }
+   \                     ??commandTree_18:
+   \   0001AE   9253....     ADD.W   #0x1, &j
+   \   0001B2   A63F         JMP     ??commandTree_2
+     76                    if(commandBuffer[i+5]=='F'){ //SECOND COMMAND
+   \                     ??commandTree_16:
+   \   0001B4   1F42....     MOV.W   &i, R15
+   \   0001B8   FF904600.... CMP.B   #0x46, commandBuffer + 5(R15)
+   \   0001BE   1F20         JNE     ??commandTree_19
+     77                        if(commandBuffer[i+6]=='\r' || commandBuffer[i+6]=='.' || commandBuffer[i+6]=='\n'){ //make sure it is the end of a command line
+   \   0001C0   1F42....     MOV.W   &i, R15
+   \   0001C4   FF900D00.... CMP.B   #0xd, commandBuffer + 6(R15)
+   \   0001CA   0E24         JEQ     ??commandTree_20
+   \   0001CC   1F42....     MOV.W   &i, R15
+   \   0001D0   FF902E00.... CMP.B   #0x2e, commandBuffer + 6(R15)
+   \   0001D6   0824         JEQ     ??commandTree_20
+   \   0001D8   1F42....     MOV.W   &i, R15
+   \   0001DC   FF900A00.... CMP.B   #0xa, commandBuffer + 6(R15)
+   \   0001E2   ....         JEQ     $+6
+   \   0001E4   ........     BRA     #??commandTree_6
+     78                          Init_Serial_UCA1(0); //set IOT baud to 115200
+   \                     ??commandTree_20:
+   \   0001E8   0C43         MOV.W   #0x0, R12
+   \   0001EA   ........     CALLA   #Init_Serial_UCA1
+     79                          uart_puts("115,200\n");
+   \   0001EE   3C40....     MOV.W   #`?<Constant "115,200\\n">`, R12
+   \   0001F2   ........     CALLA   #uart_puts
+     80                          StartCommandFG=FALSE;
+   \   0001F6   8243....     MOV.W   #0x0, &StartCommandFG
+   \   0001FA   ........     BRA     #??commandTree_6
+     81                      }
+     82                    }
+     83                    else if(commandBuffer[i+5]=='S'){ //THIRD COMMAND
+   \                     ??commandTree_19:
+   \   0001FE   1F42....     MOV.W   &i, R15
+   \   000202   FF905300.... CMP.B   #0x53, commandBuffer + 5(R15)
+   \   000208   1F20         JNE     ??commandTree_21
+     84                      if(commandBuffer[i+6]=='\r' || commandBuffer[i+6]=='.' || commandBuffer[i+6]=='\n'){ //make sure it is the end of a command line
+   \   00020A   1F42....     MOV.W   &i, R15
+   \   00020E   FF900D00.... CMP.B   #0xd, commandBuffer + 6(R15)
+   \   000214   0E24         JEQ     ??commandTree_22
+   \   000216   1F42....     MOV.W   &i, R15
+   \   00021A   FF902E00.... CMP.B   #0x2e, commandBuffer + 6(R15)
+   \   000220   0824         JEQ     ??commandTree_22
+   \   000222   1F42....     MOV.W   &i, R15
+   \   000226   FF900A00.... CMP.B   #0xa, commandBuffer + 6(R15)
+   \   00022C   ....         JEQ     $+6
+   \   00022E   ........     BRA     #??commandTree_6
+     85                          Init_Serial_UCA1(1); //set IOT baud to 9600
+   \                     ??commandTree_22:
+   \   000232   1C43         MOV.W   #0x1, R12
+   \   000234   ........     CALLA   #Init_Serial_UCA1
+     86                          uart_puts("9600\n");
+   \   000238   3C40....     MOV.W   #`?<Constant "9600\\n">`, R12
+   \   00023C   ........     CALLA   #uart_puts
+     87                          StartCommandFG=FALSE;
+   \   000240   8243....     MOV.W   #0x0, &StartCommandFG
+   \   000244   ........     BRA     #??commandTree_6
+     88                      }
+     89                    }  
+     90                    else if(numberBuff[0] != '\0'){
+   \                     ??commandTree_21:
+   \   000248   C293....     CMP.B   #0x0, &numberBuff
+   \   00024C   ....         JNE     $+6
+   \   00024E   ........     BRA     #??commandTree_6
+     91                        time = atoi(numberBuff);
+   \   000252   3C40....     MOV.W   #numberBuff, R12
+   \   000256   ........     CALLA   #atoi
+   \   00025A   824C....     MOV.W   R12, &time
+     92                        time /= 5;
+   \   00025E   1C42....     MOV.W   &time, R12
+   \   000262   3E400500     MOV.W   #0x5, R14
+   \   000266   ........     CALLA   #?DivMod16u
+   \   00026A   824C....     MOV.W   R12, &time
+     93                        left_reverse_rate = 7000;
+   \   00026E   B240581B.... MOV.W   #0x1b58, &left_reverse_rate
+     94                        right_reverse_rate = 7000;
+   \   000274   B240581B.... MOV.W   #0x1b58, &right_reverse_rate
+     95                        left_wheel_reverse_on();
+   \   00027A   ........     CALLA   #left_wheel_reverse_on
+     96                        right_wheel_reverse_on();
+   \   00027E   ........     CALLA   #right_wheel_reverse_on
+     97                        Five_msec_Delay(time);
+   \   000282   1C42....     MOV.W   &time, R12
+   \   000286   ........     CALLA   #Five_msec_Delay
+     98                        left_wheel_reverse_off();
+   \   00028A   ........     CALLA   #left_wheel_reverse_off
+     99                        right_wheel_reverse_off();
+   \   00028E   ........     CALLA   #right_wheel_reverse_off
+    100                        Five_msec_Delay(1);
+   \   000292   1C43         MOV.W   #0x1, R12
+   \   000294   ........     CALLA   #Five_msec_Delay
+   \   000298   ........     BRA     #??commandTree_6
+    101                      }
+    102                  }   
+    103                  else if(commandBuffer[i+4]=='F'){ //Wheel forward command check
+   \                     ??commandTree_15:
+   \   00029C   1F42....     MOV.W   &i, R15
+   \   0002A0   FF904600.... CMP.B   #0x46, commandBuffer + 4(R15)
+   \   0002A6   8920         JNE     ??commandTree_23
+    104                    k=0;
+   \   0002A8   8243....     MOV.W   #0x0, &k
+    105                    j=i+5;
+   \   0002AC   1F42....     MOV.W   &i, R15
+   \   0002B0   3F500500     ADD.W   #0x5, R15
+   \   0002B4   824F....     MOV.W   R15, &j
+    106                    for(;commandBuffer[j]!='\r' &&  commandBuffer[j]!='\n' && commandBuffer[j]!='.';j++){
+   \                     ??commandTree_3:
+   \   0002B8   1F42....     MOV.W   &j, R15
+   \   0002BC   FF900D00.... CMP.B   #0xd, commandBuffer(R15)
+   \   0002C2   5424         JEQ     ??commandTree_24
+   \   0002C4   1F42....     MOV.W   &j, R15
+   \   0002C8   FF900A00.... CMP.B   #0xa, commandBuffer(R15)
+   \   0002CE   4E24         JEQ     ??commandTree_24
+   \   0002D0   1F42....     MOV.W   &j, R15
+   \   0002D4   FF902E00.... CMP.B   #0x2e, commandBuffer(R15)
+   \   0002DA   4824         JEQ     ??commandTree_24
+    107                      if(commandBuffer[j] == '0' || commandBuffer[j] == '1'|| commandBuffer[j] == '2'|| commandBuffer[j] == '3'|| commandBuffer[j] == '4'|| commandBuffer[j] == '5'|| commandBuffer[j] == '6'|| commandBuffer[j] == '7'|| commandBuffer[j] == '8'|| commandBuffer[j] == '9'){
+   \   0002DC   1F42....     MOV.W   &j, R15
+   \   0002E0   FF903000.... CMP.B   #0x30, commandBuffer(R15)
+   \   0002E6   3624         JEQ     ??commandTree_25
+   \   0002E8   1F42....     MOV.W   &j, R15
+   \   0002EC   FF903100.... CMP.B   #0x31, commandBuffer(R15)
+   \   0002F2   3024         JEQ     ??commandTree_25
+   \   0002F4   1F42....     MOV.W   &j, R15
+   \   0002F8   FF903200.... CMP.B   #0x32, commandBuffer(R15)
+   \   0002FE   2A24         JEQ     ??commandTree_25
+   \   000300   1F42....     MOV.W   &j, R15
+   \   000304   FF903300.... CMP.B   #0x33, commandBuffer(R15)
+   \   00030A   2424         JEQ     ??commandTree_25
+   \   00030C   1F42....     MOV.W   &j, R15
+   \   000310   FF903400.... CMP.B   #0x34, commandBuffer(R15)
+   \   000316   1E24         JEQ     ??commandTree_25
+   \   000318   1F42....     MOV.W   &j, R15
+   \   00031C   FF903500.... CMP.B   #0x35, commandBuffer(R15)
+   \   000322   1824         JEQ     ??commandTree_25
+   \   000324   1F42....     MOV.W   &j, R15
+   \   000328   FF903600.... CMP.B   #0x36, commandBuffer(R15)
+   \   00032E   1224         JEQ     ??commandTree_25
+   \   000330   1F42....     MOV.W   &j, R15
+   \   000334   FF903700.... CMP.B   #0x37, commandBuffer(R15)
+   \   00033A   0C24         JEQ     ??commandTree_25
+   \   00033C   1F42....     MOV.W   &j, R15
+   \   000340   FF903800.... CMP.B   #0x38, commandBuffer(R15)
+   \   000346   0624         JEQ     ??commandTree_25
+   \   000348   1F42....     MOV.W   &j, R15
+   \   00034C   FF903900.... CMP.B   #0x39, commandBuffer(R15)
+   \   000352   0920         JNE     ??commandTree_26
+    108                        numberBuff[k] = commandBuffer[j]; // grabbing numbers from command
+   \                     ??commandTree_25:
+   \   000354   1F42....     MOV.W   &j, R15
+   \   000358   1E42....     MOV.W   &k, R14
+   \   00035C   DE4F........ MOV.B   commandBuffer(R15), numberBuff(R14)
+    109                        k++;
+   \   000362   9253....     ADD.W   #0x1, &k
+    110                      }
+    111                    }
+   \                     ??commandTree_26:
+   \   000366   9253....     ADD.W   #0x1, &j
+   \   00036A   A63F         JMP     ??commandTree_3
+    112                    if(numberBuff[0] != '\0'){
+   \                     ??commandTree_24:
+   \   00036C   C293....     CMP.B   #0x0, &numberBuff
+   \   000370   BA25         JEQ     ??commandTree_6
+    113                        time = atoi(numberBuff);
+   \   000372   3C40....     MOV.W   #numberBuff, R12
+   \   000376   ........     CALLA   #atoi
+   \   00037A   824C....     MOV.W   R12, &time
+    114                        time /= 5;
+   \   00037E   1C42....     MOV.W   &time, R12
+   \   000382   3E400500     MOV.W   #0x5, R14
+   \   000386   ........     CALLA   #?DivMod16u
+   \   00038A   824C....     MOV.W   R12, &time
+    115                        left_forward_rate = 7000;
+   \   00038E   B240581B.... MOV.W   #0x1b58, &left_forward_rate
+    116                        right_forward_rate = 7000;
+   \   000394   B240581B.... MOV.W   #0x1b58, &right_forward_rate
+    117                        left_wheel_forward_on();
+   \   00039A   ........     CALLA   #left_wheel_forward_on
+    118                        right_wheel_forward_on();
+   \   00039E   ........     CALLA   #right_wheel_forward_on
+    119                        Five_msec_Delay(time);
+   \   0003A2   1C42....     MOV.W   &time, R12
+   \   0003A6   ........     CALLA   #Five_msec_Delay
+    120                        left_wheel_forward_off();
+   \   0003AA   ........     CALLA   #left_wheel_forward_off
+    121                        right_wheel_forward_off();
+   \   0003AE   ........     CALLA   #right_wheel_forward_off
+    122                        Five_msec_Delay(1);
+   \   0003B2   1C43         MOV.W   #0x1, R12
+   \   0003B4   ........     CALLA   #Five_msec_Delay
+   \   0003B8   963D         JMP     ??commandTree_6
+    123                      }
+    124                  }   
+    125                  else if(commandBuffer[i+4]=='R'){ // (HARDWARE RESET) or turn right command
+   \                     ??commandTree_23:
+   \   0003BA   1F42....     MOV.W   &i, R15
+   \   0003BE   FF905200.... CMP.B   #0x52, commandBuffer + 4(R15)
+   \   0003C4   AA20         JNE     ??commandTree_27
+    126                      k=0;
+   \   0003C6   8243....     MOV.W   #0x0, &k
+    127                      j=i+5;
+   \   0003CA   1F42....     MOV.W   &i, R15
+   \   0003CE   3F500500     ADD.W   #0x5, R15
+   \   0003D2   824F....     MOV.W   R15, &j
+    128                      for(;commandBuffer[j]!='\r' &&  commandBuffer[j]!='\n' && commandBuffer[j]!='.';j++){
+   \                     ??commandTree_4:
+   \   0003D6   1F42....     MOV.W   &j, R15
+   \   0003DA   FF900D00.... CMP.B   #0xd, commandBuffer(R15)
+   \   0003E0   5424         JEQ     ??commandTree_28
+   \   0003E2   1F42....     MOV.W   &j, R15
+   \   0003E6   FF900A00.... CMP.B   #0xa, commandBuffer(R15)
+   \   0003EC   4E24         JEQ     ??commandTree_28
+   \   0003EE   1F42....     MOV.W   &j, R15
+   \   0003F2   FF902E00.... CMP.B   #0x2e, commandBuffer(R15)
+   \   0003F8   4824         JEQ     ??commandTree_28
+    129                          if(commandBuffer[j] == '0' || commandBuffer[j] == '1'|| commandBuffer[j] == '2'|| commandBuffer[j] == '3'|| commandBuffer[j] == '4'|| commandBuffer[j] == '5'|| commandBuffer[j] == '6'|| commandBuffer[j] == '7'|| commandBuffer[j] == '8'|| commandBuffer[j] == '9'){
+   \   0003FA   1F42....     MOV.W   &j, R15
+   \   0003FE   FF903000.... CMP.B   #0x30, commandBuffer(R15)
+   \   000404   3624         JEQ     ??commandTree_29
+   \   000406   1F42....     MOV.W   &j, R15
+   \   00040A   FF903100.... CMP.B   #0x31, commandBuffer(R15)
+   \   000410   3024         JEQ     ??commandTree_29
+   \   000412   1F42....     MOV.W   &j, R15
+   \   000416   FF903200.... CMP.B   #0x32, commandBuffer(R15)
+   \   00041C   2A24         JEQ     ??commandTree_29
+   \   00041E   1F42....     MOV.W   &j, R15
+   \   000422   FF903300.... CMP.B   #0x33, commandBuffer(R15)
+   \   000428   2424         JEQ     ??commandTree_29
+   \   00042A   1F42....     MOV.W   &j, R15
+   \   00042E   FF903400.... CMP.B   #0x34, commandBuffer(R15)
+   \   000434   1E24         JEQ     ??commandTree_29
+   \   000436   1F42....     MOV.W   &j, R15
+   \   00043A   FF903500.... CMP.B   #0x35, commandBuffer(R15)
+   \   000440   1824         JEQ     ??commandTree_29
+   \   000442   1F42....     MOV.W   &j, R15
+   \   000446   FF903600.... CMP.B   #0x36, commandBuffer(R15)
+   \   00044C   1224         JEQ     ??commandTree_29
+   \   00044E   1F42....     MOV.W   &j, R15
+   \   000452   FF903700.... CMP.B   #0x37, commandBuffer(R15)
+   \   000458   0C24         JEQ     ??commandTree_29
+   \   00045A   1F42....     MOV.W   &j, R15
+   \   00045E   FF903800.... CMP.B   #0x38, commandBuffer(R15)
+   \   000464   0624         JEQ     ??commandTree_29
+   \   000466   1F42....     MOV.W   &j, R15
+   \   00046A   FF903900.... CMP.B   #0x39, commandBuffer(R15)
+   \   000470   0920         JNE     ??commandTree_30
+    130                              numberBuff[k] = commandBuffer[j]; // grabbing numbers from command
+   \                     ??commandTree_29:
+   \   000472   1F42....     MOV.W   &j, R15
+   \   000476   1E42....     MOV.W   &k, R14
+   \   00047A   DE4F........ MOV.B   commandBuffer(R15), numberBuff(R14)
+    131                              k++;
+   \   000480   9253....     ADD.W   #0x1, &k
+    132                          }
+    133                      }
+   \                     ??commandTree_30:
+   \   000484   9253....     ADD.W   #0x1, &j
+   \   000488   A63F         JMP     ??commandTree_4
+    134                      if(commandBuffer[i+5]=='\r' || commandBuffer[i+5]=='.' || commandBuffer[i+5]=='\n'){ //make sure it is the end of a command line
+   \                     ??commandTree_28:
+   \   00048A   1F42....     MOV.W   &i, R15
+   \   00048E   FF900D00.... CMP.B   #0xd, commandBuffer + 5(R15)
+   \   000494   0C24         JEQ     ??commandTree_31
+   \   000496   1F42....     MOV.W   &i, R15
+   \   00049A   FF902E00.... CMP.B   #0x2e, commandBuffer + 5(R15)
+   \   0004A0   0624         JEQ     ??commandTree_31
+   \   0004A2   1F42....     MOV.W   &i, R15
+   \   0004A6   FF900A00.... CMP.B   #0xa, commandBuffer + 5(R15)
+   \   0004AC   0F20         JNE     ??commandTree_32
+    135                          PJOUT &= ~IOT_RESET; //reset IOT
+   \                     ??commandTree_31:
+   \   0004AE   B2C22203     BIC.W   #0x8, &0x322
+    136                          Five_msec_Delay(10); //wait 50 ms
+   \   0004B2   3C400A00     MOV.W   #0xa, R12
+   \   0004B6   ........     CALLA   #Five_msec_Delay
+    137                          PJOUT |= IOT_RESET; //turn IOT back on (stop reset)
+   \   0004BA   B2D22203     BIS.W   #0x8, &0x322
+    138                          uart_puts("Hardware Reset");
+   \   0004BE   3C40....     MOV.W   #`?<Constant "Hardware Reset">`, R12
+   \   0004C2   ........     CALLA   #uart_puts
+    139                          StartCommandFG=FALSE;
+   \   0004C6   8243....     MOV.W   #0x0, &StartCommandFG
+   \   0004CA   0D3D         JMP     ??commandTree_6
+    140                      }
+    141                      else if(numberBuff[0] != '\0'){
+   \                     ??commandTree_32:
+   \   0004CC   C293....     CMP.B   #0x0, &numberBuff
+   \   0004D0   0A25         JEQ     ??commandTree_6
+    142                        time = atoi(numberBuff); //string to number
+   \   0004D2   3C40....     MOV.W   #numberBuff, R12
+   \   0004D6   ........     CALLA   #atoi
+   \   0004DA   824C....     MOV.W   R12, &time
+    143                        time *= 0.638888; 
+   \   0004DE   1C42....     MOV.W   &time, R12
+   \   0004E2   0D43         MOV.W   #0x0, R13
+   \   0004E4   ........     CALLA   #_Cast32uto32f
+   \   0004E8   3E402A8E     MOV.W   #0x8e2a, R14
+   \   0004EC   3F40233F     MOV.W   #0x3f23, R15
+   \   0004F0   ........     CALLA   #_Mul32f
+   \   0004F4   ........     CALLA   #_Cast32fto32u
+   \   0004F8   824C....     MOV.W   R12, &time
+    144                        left_forward_rate = 7000;
+   \   0004FC   B240581B.... MOV.W   #0x1b58, &left_forward_rate
+    145                        left_wheel_forward_on();
+   \   000502   ........     CALLA   #left_wheel_forward_on
+    146                        Five_msec_Delay(time);
+   \   000506   1C42....     MOV.W   &time, R12
+   \   00050A   ........     CALLA   #Five_msec_Delay
+    147                        left_wheel_forward_off();
+   \   00050E   ........     CALLA   #left_wheel_forward_off
+    148                        Five_msec_Delay(1);
+   \   000512   1C43         MOV.W   #0x1, R12
+   \   000514   ........     CALLA   #Five_msec_Delay
+   \   000518   E63C         JMP     ??commandTree_6
+    149                      }
+    150                  }
+    151                  else if(commandBuffer[i+4]=='L'){ // (HARDWARE RESET) or turn right command
+   \                     ??commandTree_27:
+   \   00051A   1F42....     MOV.W   &i, R15
+   \   00051E   FF904C00.... CMP.B   #0x4c, commandBuffer + 4(R15)
+   \   000524   8920         JNE     ??commandTree_33
+    152                      k=0;
+   \   000526   8243....     MOV.W   #0x0, &k
+    153                      j=i+5;
+   \   00052A   1F42....     MOV.W   &i, R15
+   \   00052E   3F500500     ADD.W   #0x5, R15
+   \   000532   824F....     MOV.W   R15, &j
+    154                      for(;commandBuffer[j]!='\r' &&  commandBuffer[j]!='\n' && commandBuffer[j]!='.';j++){
+   \                     ??commandTree_5:
+   \   000536   1F42....     MOV.W   &j, R15
+   \   00053A   FF900D00.... CMP.B   #0xd, commandBuffer(R15)
+   \   000540   5424         JEQ     ??commandTree_34
+   \   000542   1F42....     MOV.W   &j, R15
+   \   000546   FF900A00.... CMP.B   #0xa, commandBuffer(R15)
+   \   00054C   4E24         JEQ     ??commandTree_34
+   \   00054E   1F42....     MOV.W   &j, R15
+   \   000552   FF902E00.... CMP.B   #0x2e, commandBuffer(R15)
+   \   000558   4824         JEQ     ??commandTree_34
+    155                          if(commandBuffer[j] == '0' || commandBuffer[j] == '1'|| commandBuffer[j] == '2'|| commandBuffer[j] == '3'|| commandBuffer[j] == '4'|| commandBuffer[j] == '5'|| commandBuffer[j] == '6'|| commandBuffer[j] == '7'|| commandBuffer[j] == '8'|| commandBuffer[j] == '9'){
+   \   00055A   1F42....     MOV.W   &j, R15
+   \   00055E   FF903000.... CMP.B   #0x30, commandBuffer(R15)
+   \   000564   3624         JEQ     ??commandTree_35
+   \   000566   1F42....     MOV.W   &j, R15
+   \   00056A   FF903100.... CMP.B   #0x31, commandBuffer(R15)
+   \   000570   3024         JEQ     ??commandTree_35
+   \   000572   1F42....     MOV.W   &j, R15
+   \   000576   FF903200.... CMP.B   #0x32, commandBuffer(R15)
+   \   00057C   2A24         JEQ     ??commandTree_35
+   \   00057E   1F42....     MOV.W   &j, R15
+   \   000582   FF903300.... CMP.B   #0x33, commandBuffer(R15)
+   \   000588   2424         JEQ     ??commandTree_35
+   \   00058A   1F42....     MOV.W   &j, R15
+   \   00058E   FF903400.... CMP.B   #0x34, commandBuffer(R15)
+   \   000594   1E24         JEQ     ??commandTree_35
+   \   000596   1F42....     MOV.W   &j, R15
+   \   00059A   FF903500.... CMP.B   #0x35, commandBuffer(R15)
+   \   0005A0   1824         JEQ     ??commandTree_35
+   \   0005A2   1F42....     MOV.W   &j, R15
+   \   0005A6   FF903600.... CMP.B   #0x36, commandBuffer(R15)
+   \   0005AC   1224         JEQ     ??commandTree_35
+   \   0005AE   1F42....     MOV.W   &j, R15
+   \   0005B2   FF903700.... CMP.B   #0x37, commandBuffer(R15)
+   \   0005B8   0C24         JEQ     ??commandTree_35
+   \   0005BA   1F42....     MOV.W   &j, R15
+   \   0005BE   FF903800.... CMP.B   #0x38, commandBuffer(R15)
+   \   0005C4   0624         JEQ     ??commandTree_35
+   \   0005C6   1F42....     MOV.W   &j, R15
+   \   0005CA   FF903900.... CMP.B   #0x39, commandBuffer(R15)
+   \   0005D0   0920         JNE     ??commandTree_36
+    156                              numberBuff[k] = commandBuffer[j]; // grabbing numbers from command
+   \                     ??commandTree_35:
+   \   0005D2   1F42....     MOV.W   &j, R15
+   \   0005D6   1E42....     MOV.W   &k, R14
+   \   0005DA   DE4F........ MOV.B   commandBuffer(R15), numberBuff(R14)
+    157                              k++;
+   \   0005E0   9253....     ADD.W   #0x1, &k
+    158                          }
+    159                      }
+   \                     ??commandTree_36:
+   \   0005E4   9253....     ADD.W   #0x1, &j
+   \   0005E8   A63F         JMP     ??commandTree_5
+    160                      if(numberBuff[0] != '\0'){
+   \                     ??commandTree_34:
+   \   0005EA   C293....     CMP.B   #0x0, &numberBuff
+   \   0005EE   7B24         JEQ     ??commandTree_6
+    161                        time = atoi(numberBuff); //string to number
+   \   0005F0   3C40....     MOV.W   #numberBuff, R12
+   \   0005F4   ........     CALLA   #atoi
+   \   0005F8   824C....     MOV.W   R12, &time
+    162                        time *= 0.638888; 
+   \   0005FC   1C42....     MOV.W   &time, R12
+   \   000600   0D43         MOV.W   #0x0, R13
+   \   000602   ........     CALLA   #_Cast32uto32f
+   \   000606   3E402A8E     MOV.W   #0x8e2a, R14
+   \   00060A   3F40233F     MOV.W   #0x3f23, R15
+   \   00060E   ........     CALLA   #_Mul32f
+   \   000612   ........     CALLA   #_Cast32fto32u
+   \   000616   824C....     MOV.W   R12, &time
+    163                        right_forward_rate = 7000;
+   \   00061A   B240581B.... MOV.W   #0x1b58, &right_forward_rate
+    164                        right_wheel_forward_on();
+   \   000620   ........     CALLA   #right_wheel_forward_on
+    165                        Five_msec_Delay(time);
+   \   000624   1C42....     MOV.W   &time, R12
+   \   000628   ........     CALLA   #Five_msec_Delay
+    166                        right_wheel_forward_off();
+   \   00062C   ........     CALLA   #right_wheel_forward_off
+    167                        Five_msec_Delay(1);
+   \   000630   1C43         MOV.W   #0x1, R12
+   \   000632   ........     CALLA   #Five_msec_Delay
+   \   000636   573C         JMP     ??commandTree_6
+    168                      }
+    169                  }   
+    170                  else if(commandBuffer[i+4]=='C'){ //FIFTH COMMAND (Configure)
+   \                     ??commandTree_33:
+   \   000638   1F42....     MOV.W   &i, R15
+   \   00063C   FF904300.... CMP.B   #0x43, commandBuffer + 4(R15)
+   \   000642   3120         JNE     ??commandTree_37
+    171                      if(commandBuffer[i+5]=='\r' || commandBuffer[i+5]=='.' || commandBuffer[i+5]=='\n'){ //make sure it is the end of a command line(termite is set to end each line w/ carriage return)
+   \   000644   1F42....     MOV.W   &i, R15
+   \   000648   FF900D00.... CMP.B   #0xd, commandBuffer + 5(R15)
+   \   00064E   0C24         JEQ     ??commandTree_38
+   \   000650   1F42....     MOV.W   &i, R15
+   \   000654   FF902E00.... CMP.B   #0x2e, commandBuffer + 5(R15)
+   \   00065A   0624         JEQ     ??commandTree_38
+   \   00065C   1F42....     MOV.W   &i, R15
+   \   000660   FF900A00.... CMP.B   #0xa, commandBuffer + 5(R15)
+   \   000666   3F20         JNE     ??commandTree_6
+    172                          Init_Serial_UCA1(0); //Set A1 to 115200. TEMPORARILY SET TO 9600 SO IOT RESPONSE CAN BE SEEN ON TERMINAL
+   \                     ??commandTree_38:
+   \   000668   0C43         MOV.W   #0x0, R12
+   \   00066A   ........     CALLA   #Init_Serial_UCA1
+    173                          uart_puts("AT+S.SCFG=console1_speed,9600\r"); //set IOT baud rate to 9600
+   \   00066E   3C40....     MOV.W   #`?<Constant "AT+S.SCFG=console1_sp...">`, R12
+   \   000672   ........     CALLA   #uart_puts
+    174                          Five_msec_Delay(400); //delay 2 seconds to allow change to take effect
+   \   000676   3C409001     MOV.W   #0x190, R12
+   \   00067A   ........     CALLA   #Five_msec_Delay
+    175                          uart_puts("AT&W\r"); //save settings to FRAM
+   \   00067E   3C40....     MOV.W   #`?<Constant "AT&W\\r">`, R12
+   \   000682   ........     CALLA   #uart_puts
+    176                          Five_msec_Delay(200); //delay 1 second to allow change to take effect
+   \   000686   3C40C800     MOV.W   #0xc8, R12
+   \   00068A   ........     CALLA   #Five_msec_Delay
+    177                          Init_Serial_UCA1(1); //Set A1 to 9600 baud
+   \   00068E   1C43         MOV.W   #0x1, R12
+   \   000690   ........     CALLA   #Init_Serial_UCA1
+    178                          uart_puts("AT+CFUN=1\r"); //Send software reset command
+   \   000694   3C40....     MOV.W   #`?<Constant "AT+CFUN=1\\r">`, R12
+   \   000698   ........     CALLA   #uart_puts
+    179                          IOTHardwareReset(); //resetting iot using pin
+   \   00069C   ........     CALLA   #IOTHardwareReset
+    180          
+    181                          StartCommandFG=FALSE;
+   \   0006A0   8243....     MOV.W   #0x0, &StartCommandFG
+   \   0006A4   203C         JMP     ??commandTree_6
+    182                      }
+    183                  }
+    184                  
+    185                  else if(commandBuffer[i+4]=='M'){ //SIXTH COMMAND (Get MAC Address)
+   \                     ??commandTree_37:
+   \   0006A6   1F42....     MOV.W   &i, R15
+   \   0006AA   FF904D00.... CMP.B   #0x4d, commandBuffer + 4(R15)
+   \   0006B0   1A20         JNE     ??commandTree_6
+    186                      if(commandBuffer[i+5]=='\r' || commandBuffer[i+5]=='.' || commandBuffer[i+5]=='\n'){ //make sure it is the end of a command line(termite is set to end each line w/ carriage return)
+   \   0006B2   1F42....     MOV.W   &i, R15
+   \   0006B6   FF900D00.... CMP.B   #0xd, commandBuffer + 5(R15)
+   \   0006BC   0C24         JEQ     ??commandTree_39
+   \   0006BE   1F42....     MOV.W   &i, R15
+   \   0006C2   FF902E00.... CMP.B   #0x2e, commandBuffer + 5(R15)
+   \   0006C8   0624         JEQ     ??commandTree_39
+   \   0006CA   1F42....     MOV.W   &i, R15
+   \   0006CE   FF900A00.... CMP.B   #0xa, commandBuffer + 5(R15)
+   \   0006D4   0820         JNE     ??commandTree_6
+    187                          uart_puts("AT+S.GCFG=nv_wifi_macaddr\r");//get MAC address
+   \                     ??commandTree_39:
+   \   0006D6   3C40....     MOV.W   #`?<Constant "AT+S.GCFG=nv_wifi_mac...">`, R12
+   \   0006DA   ........     CALLA   #uart_puts
+    188                          //print address to display (code to do this is in main)
+    189                          macFG=TRUE;
+   \   0006DE   9243....     MOV.W   #0x1, &macFG
+    190          
+    191                          StartCommandFG=FALSE;
+   \   0006E2   8243....     MOV.W   #0x0, &StartCommandFG
+    192                      }
+    193                  }
+    194                  
+    195          
+    196                  for(;commandBuffer[i]!='\r' &&  commandBuffer[i]!='\n' && commandBuffer[i]!='.';i++){
+   \                     ??commandTree_6:
+   \   0006E6   1F42....     MOV.W   &i, R15
+   \   0006EA   FF900D00.... CMP.B   #0xd, commandBuffer(R15)
+   \   0006F0   0F24         JEQ     ??commandTree_40
+   \   0006F2   1F42....     MOV.W   &i, R15
+   \   0006F6   FF900A00.... CMP.B   #0xa, commandBuffer(R15)
+   \   0006FC   0924         JEQ     ??commandTree_40
+   \   0006FE   1F42....     MOV.W   &i, R15
+   \   000702   FF902E00.... CMP.B   #0x2e, commandBuffer(R15)
+   \   000708   0324         JEQ     ??commandTree_40
+   \   00070A   9253....     ADD.W   #0x1, &i
+   \   00070E   EB3F         JMP     ??commandTree_6
+    197                      //this for loop is for incrementing i to the next period, or incrementing i to the point where
+    198                      //it breaks out of the while loop
+    199                  }
+    200                  if(commandBuffer[i]=='.'){ //if not breaking out of while loop, increment i to skip the period part of the next command
+   \                     ??commandTree_40:
+   \   000710   1F42....     MOV.W   &i, R15
+   \   000714   FF902E00.... CMP.B   #0x2e, commandBuffer(R15)
+   \   00071A   ....         JEQ     $+6
+   \   00071C   ........     BRA     #??commandTree_7
+    201                      i++;
+   \   000720   9253....     ADD.W   #0x1, &i
+   \   000724   ........     BRA     #??commandTree_7
+    202                  }
+    203              }
+    204              StartCommandFG=FALSE;
+   \                     ??commandTree_9:
+   \   000728   8243....     MOV.W   #0x0, &StartCommandFG
+    205              writeCommandFG=FALSE; //command has been executed.
+   \   00072C   8243....     MOV.W   #0x0, &writeCommandFG
+    206          }
+   \   000730   1001         RETA
+   \   000732                REQUIRE _A_PJOUT_L
+    207          
+
+   \                                 In  segment CODE, align 2
+    208          void uart_puts(const char *str){
+   \                     uart_puts:
+   \   000000   0A12         PUSH.W  R10
+   \   000002   0A4C         MOV.W   R12, R10
+    209              if (str != '\0') {
+   \   000004   0A93         CMP.W   #0x0, R10
+   \   000006   1024         JEQ     ??uart_puts_1
+    210                  while (*str != '\0') {
+   \                     ??uart_puts_0:
+   \   000008   CA930000     CMP.B   #0x0, 0(R10)
+   \   00000C   0D24         JEQ     ??uart_puts_1
+    211                      /* give time for the transmit buffer to be ready */
+    212                      Five_msec_Delay(1);
+   \   00000E   1C43         MOV.W   #0x1, R12
+   \   000010   ........     CALLA   #Five_msec_Delay
+    213                      /* Transmit data */
+    214                      UCA1TXBUF = *str; //send to IOT
+   \   000014   6F4A         MOV.B   @R10, R15
+   \   000016   4F4F         MOV.B   R15, R15
+   \   000018   824FEE05     MOV.W   R15, &0x5ee
+    215                      UCA0TXBUF = *str; //echo to PC
+   \   00001C   6F4A         MOV.B   @R10, R15
+   \   00001E   4F4F         MOV.B   R15, R15
+   \   000020   824FCE05     MOV.W   R15, &0x5ce
+    216                      str++;
+   \   000024   1A53         ADD.W   #0x1, R10
+   \   000026   F03F         JMP     ??uart_puts_0
+    217                  }
+    218              }
+    219          }
+   \                     ??uart_puts_1:
+   \   000028   3A41         POP.W   R10
+   \   00002A   1001         RETA
+   \   00002C                REQUIRE _A_UCA1TXBUF_L
+   \   00002C                REQUIRE _A_UCA0TXBUF_L
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "I\\'m Here\\r">`:
+   \   000000   49276D204865 DC8 "I'm Here\015"
+   \            72650D00    
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "115,200\\n">`:
+   \   000000   3131352C3230 DC8 "115,200\012"
+   \            300A00      
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "9600\\n">`:
+   \   000000   393630300A00 DC8 "9600\012"
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Hardware Reset">`:
+   \   000000   486172647761 DC8 "Hardware Reset"
+   \            726520526573
+   \            657400      
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+S.SCFG=console1_sp...">`:
+   \   000000   41542B532E53 DC8 "AT+S.SCFG=console1_speed,9600\015"
+   \            4346473D636F
+   \            6E736F6C6531
+   \            5F7370656564
+   \            2C393630300D
+   \            00          
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT&W\\r">`:
+   \   000000   415426570D00 DC8 "AT&W\015"
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+CFUN=1\\r">`:
+   \   000000   41542B434655 DC8 "AT+CFUN=1\015"
+   \            4E3D310D00  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+S.GCFG=nv_wifi_mac...">`:
+   \   000000   41542B532E47 DC8 "AT+S.GCFG=nv_wifi_macaddr\015"
+   \            4346473D6E76
+   \            5F776966695F
+   \            6D6163616464
+   \            720D00      
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   commandTree
+        4   -> Five_msec_Delay
+        4   -> IOTHardwareReset
+        4   -> Init_Serial_UCA1
+        4   -> _Cast32fto32u
+        4   -> _Cast32uto32f
+        4   -> _Mul32f
+        4   -> atoi
+        4   -> left_wheel_forward_off
+        4   -> left_wheel_forward_on
+        4   -> left_wheel_reverse_off
+        4   -> left_wheel_reverse_on
+        4   -> right_wheel_forward_off
+        4   -> right_wheel_forward_on
+        4   -> right_wheel_reverse_off
+        4   -> right_wheel_reverse_on
+        4   -> uart_puts
+        4 ?DivMod16u
+      6   uart_puts
+        6   -> Five_msec_Delay
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       9  ?<Constant "115,200\n">
+       6  ?<Constant "9600\n">
+       6  ?<Constant "AT&W\r">
+      11  ?<Constant "AT+CFUN=1\r">
+      27  ?<Constant "AT+S.GCFG=nv_wifi_mac...">
+      31  ?<Constant "AT+S.SCFG=console1_sp...">
+      15  ?<Constant "Hardware Reset">
+      10  ?<Constant "I\'m Here\r">
+       2  _A_PJOUT_L
+       2  _A_UCA0TXBUF_L
+       2  _A_UCA1TXBUF_L
+    1842  commandTree
+       5  numberBuff
+       2  time
+      44  uart_puts
+
+ 
+ 1 886 bytes in segment CODE
+     6 bytes in segment DATA16_AN
+   115 bytes in segment DATA16_C
+     7 bytes in segment DATA16_Z
+ 
+ 1 886 bytes of CODE  memory
+   115 bytes of CONST memory
+     7 bytes of DATA  memory (+ 6 bytes shared)
+
+Errors: none
+Warnings: none

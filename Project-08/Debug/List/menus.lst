@@ -1,0 +1,943 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           18/Apr/2016  23:20:34
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\Documents\ECE 306\Project-08\menus.c
+#    Command line  =  
+#        "C:\Users\David\Documents\ECE 306\Project-08\menus.c" -lC
+#        "C:\Users\David\Documents\ECE 306\Project-08\Debug\List" -o
+#        "C:\Users\David\Documents\ECE 306\Project-08\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\Documents\ECE 306\Project-08\Debug\List\menus.lst
+#    Object file   =  
+#        C:\Users\David\Documents\ECE 306\Project-08\Debug\Obj\menus.r43
+#
+###############################################################################
+
+C:\Users\David\Documents\ECE 306\Project-08\menus.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : menus.c
+      3          //
+      4          //  Description: This file contains the menus Routines 
+      5          //
+      6          //  David Pryor
+      7          //  April 2016
+      8          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+      9          //------------------------------------------------------------------------------
+     10          #include  "macros.h"
+     11          #include  "msp430.h"
+     12          #include  "functions.h"
+     13          
+     14          extern unsigned int menu_items;
+     15          extern char *display_1;
+     16          extern char *display_2;
+     17          extern char *display_3;
+     18          extern char *display_4;
+     19          extern volatile unsigned int switch_one_pressed;
+     20          extern volatile unsigned int switch_two_pressed;
+     21          extern volatile unsigned int ADC_Thumb;
+
+   \                                 In  segment DATA16_I, align 1, align-sorted
+   \   000000                REQUIRE ?cstart_init_copy
+     22          char lcdBuff[10] = "         ";
+   \                     lcdBuff:
+   \   000000                DS8 10
+   \   00000A                REQUIRE `?<Initializer for lcdBuff>`
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     23          unsigned int BaudMenuFG = FALSE;
+   \                     BaudMenuFG:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     24          unsigned int IOTMenuFG = FALSE;
+   \                     IOTMenuFG:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_I, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_copy
+     25          unsigned int MainFG = TRUE;
+   \                     MainFG:
+   \   000000                DS8 2
+   \   000002                REQUIRE `?<Initializer for MainFG>`
+     26          
+     27          
+
+   \                                 In  segment CODE, align 2
+     28          void Menu_Process(void){
+   \                     Menu_Process:
+     29          // Menu Process
+     30          // 
+     31          // Description: This function creates the main menu.
+     32          //
+     33          // Passed : no variables passed
+     34          // Locals: no variables declared
+     35          // Returned: no values returned
+     36          // Globals:    
+     37          //              char* display_1
+     38          //              char* display_2
+     39          //              char* display_3
+     40          //              char* display_4
+     41          //              unsigned int menu_items;
+     42          //              volatile unsigned int ADC_Thumb;
+     43          //              volatile unsigned int switch_one_pressed;
+     44          //              volatile unsigned int switch_two_pressed;
+     45          //
+     46          // Author: David Pryor
+     47          // Date: April 2016
+     48          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     49          //==============================================================================
+     50            lcd_4line();// going to default lcd screen size
+   \   000000   ........     CALLA   #lcd_4line
+     51            //---------------------RESISTOR MENU------------------------------------------
+     52            if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_THREE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_TWO || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_ONE )){
+   \   000004   8293....     CMP.W   #0x0, &menu_items
+   \   000008   2A24         JEQ     ??Menu_Process_2
+   \   00000A   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00000E   3FF080FF     AND.W   #0xff80, R15
+   \   000012   3F900001     CMP.W   #0x100, R15
+   \   000016   0B24         JEQ     ??Menu_Process_3
+   \   000018   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00001C   3FF080FF     AND.W   #0xff80, R15
+   \   000020   3F908000     CMP.W   #0x80, R15
+   \   000024   0424         JEQ     ??Menu_Process_3
+   \   000026   B2B080FF.... BIT.W   #0xff80, &ADC_Thumb
+   \   00002C   1820         JNE     ??Menu_Process_2
+     53              display_1 = " A1  Baud ";
+   \                     ??Menu_Process_3:
+   \   00002E   B240........ MOV.W   #`?<Constant " A1  Baud ">`, &display_1
+     54              display_2 = "   Menu   ";  
+   \   000034   B240........ MOV.W   #`?<Constant "   Menu   ">`, &display_2
+     55              display_3 = "";
+   \   00003A   B240........ MOV.W   #`?<Constant "">`, &display_3
+     56              display_4 = "";
+   \   000040   B240........ MOV.W   #`?<Constant "">`, &display_4
+     57              while(switch_one_pressed){
+   \                     ??Menu_Process_0:
+   \   000046   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   00004A   5E24         JEQ     ??Menu_Process_4
+     58                switch_two_pressed = FALSE;
+   \   00004C   8243....     MOV.W   #0x0, &switch_two_pressed
+     59                BaudMenuFG = TRUE;
+   \   000050   9243....     MOV.W   #0x1, &BaudMenuFG
+     60                MainFG = FALSE;
+   \   000054   8243....     MOV.W   #0x0, &MainFG
+     61                switch_one_pressed = FALSE;
+   \   000058   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   00005C   F43F         JMP     ??Menu_Process_0
+     62              }  
+     63            }
+     64            //---------------------SHAPES MENU--------------------------------------------
+     65            else if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SIX || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FIVE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FOUR )){
+   \                     ??Menu_Process_2:
+   \   00005E   8293....     CMP.W   #0x0, &menu_items
+   \   000062   2D24         JEQ     ??Menu_Process_5
+   \   000064   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000068   3FF080FF     AND.W   #0xff80, R15
+   \   00006C   3F908002     CMP.W   #0x280, R15
+   \   000070   0E24         JEQ     ??Menu_Process_6
+   \   000072   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000076   3FF080FF     AND.W   #0xff80, R15
+   \   00007A   3F900002     CMP.W   #0x200, R15
+   \   00007E   0724         JEQ     ??Menu_Process_6
+   \   000080   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000084   3FF080FF     AND.W   #0xff80, R15
+   \   000088   3F908001     CMP.W   #0x180, R15
+   \   00008C   1820         JNE     ??Menu_Process_5
+     66              display_1 = "   IOT    ";
+   \                     ??Menu_Process_6:
+   \   00008E   B240........ MOV.W   #`?<Constant "   IOT    ">`, &display_1
+     67              display_2 = "   Menu   ";  
+   \   000094   B240........ MOV.W   #`?<Constant "   Menu   ">`, &display_2
+     68              display_3 = "";
+   \   00009A   B240........ MOV.W   #`?<Constant "">`, &display_3
+     69              display_4 = "";
+   \   0000A0   B240........ MOV.W   #`?<Constant "">`, &display_4
+     70              if(switch_one_pressed){
+   \   0000A6   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   0000AA   2E24         JEQ     ??Menu_Process_4
+     71                switch_two_pressed = FALSE;
+   \   0000AC   8243....     MOV.W   #0x0, &switch_two_pressed
+     72                IOTMenuFG = TRUE;
+   \   0000B0   9243....     MOV.W   #0x1, &IOTMenuFG
+     73                MainFG = FALSE;
+   \   0000B4   8243....     MOV.W   #0x0, &MainFG
+     74                switch_one_pressed = FALSE;
+   \   0000B8   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   0000BC   1001         RETA
+     75          
+     76              }  
+     77            }
+     78            //---------------------SONG MENU----------------------------------------------
+     79            else if(menu_items  && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_EIGHT || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SEVEN)){
+   \                     ??Menu_Process_5:
+   \   0000BE   8293....     CMP.W   #0x0, &menu_items
+   \   0000C2   2224         JEQ     ??Menu_Process_4
+   \   0000C4   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000C8   3FF080FF     AND.W   #0xff80, R15
+   \   0000CC   3F908003     CMP.W   #0x380, R15
+   \   0000D0   0724         JEQ     ??Menu_Process_7
+   \   0000D2   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000D6   3FF080FF     AND.W   #0xff80, R15
+   \   0000DA   3F900003     CMP.W   #0x300, R15
+   \   0000DE   1420         JNE     ??Menu_Process_4
+     80              display_1 = "   black   ";
+   \                     ??Menu_Process_7:
+   \   0000E0   B240........ MOV.W   #`?<Constant "   black   ">`, &display_1
+     81              display_2 = "    test   ";  
+   \   0000E6   B240........ MOV.W   #`?<Constant "    test   ">`, &display_2
+     82              display_3 = "";
+   \   0000EC   B240........ MOV.W   #`?<Constant "">`, &display_3
+     83              display_4 = "";
+   \   0000F2   B240........ MOV.W   #`?<Constant "">`, &display_4
+     84              if(switch_one_pressed){
+   \   0000F8   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   0000FC   0524         JEQ     ??Menu_Process_4
+     85                switch_two_pressed = FALSE;
+   \   0000FE   8243....     MOV.W   #0x0, &switch_two_pressed
+     86                switch_one_pressed = FALSE;
+   \   000102   8243....     MOV.W   #0x0, &switch_one_pressed
+     87                //some declarations (wheel rate, etc)
+     88                //check if starting on white
+     89                
+     90                while(ALWAYS){ //doing black line detection until done with the black line
+   \                     ??Menu_Process_1:
+   \   000106   FF3F         JMP     ??Menu_Process_1
+     91                  //clear time counter to zero
+     92                  //while loop for pivot correcting back from right sensor leaving
+     93                  //assign current time count to temp time count for error correcting
+     94                  //if statement checking if left spin correction needed from correcting right pivot
+     95                
+     96                  //clear time counter to zero
+     97                  //while loop for pivot correcting back from left sensor leaving
+     98                  //assign current time count to temp time count for error correcting
+     99                  //if statement checking if right spin correction needed from correcting right pivot
+    100                
+    101                  //if both sensors on black then go forward (WHILE)
+    102                  
+    103                  //if statement checking if wheel have left to right (work in progress)
+    104                }
+    105              }  
+    106            }
+    107          }
+   \                     ??Menu_Process_4:
+   \   000108   1001         RETA
+    108          
+
+   \                                 In  segment CODE, align 2
+    109          void Baud_Menu(void){
+   \                     Baud_Menu:
+    110            // Resistor Menu
+    111          // 
+    112          // Description: This function creates the menu for the resistor values and colors.
+    113          //
+    114          // Passed : no variables passed
+    115          // Locals: no variables declared
+    116          // Returned: no values returned
+    117          // Globals:    
+    118          //              char* display_1
+    119          //              char* display_2
+    120          //              char* display_3
+    121          //              char* display_4
+    122          //              volatile unsigned int ADC_Thumb;
+    123          //              volatile unsigned int switch_one_pressed;
+    124          //              volatile unsigned int switch_two_pressed;
+    125          //
+    126          // Author: David Pryor
+    127          // Date: April 2016
+    128          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    129          //==============================================================================
+    130              lcd_4line();// going to default lcd screen size
+   \   000000   ........     CALLA   #lcd_4line
+    131            //---------------------RESISTOR MENU------------------------------------------
+    132              if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_ONE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_TWO || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_THREE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FOUR )){
+   \   000004   8293....     CMP.W   #0x0, &menu_items
+   \   000008   2C24         JEQ     ??Baud_Menu_0
+   \   00000A   B2B080FF.... BIT.W   #0xff80, &ADC_Thumb
+   \   000010   1524         JEQ     ??Baud_Menu_1
+   \   000012   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000016   3FF080FF     AND.W   #0xff80, R15
+   \   00001A   3F908000     CMP.W   #0x80, R15
+   \   00001E   0E24         JEQ     ??Baud_Menu_1
+   \   000020   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000024   3FF080FF     AND.W   #0xff80, R15
+   \   000028   3F900001     CMP.W   #0x100, R15
+   \   00002C   0724         JEQ     ??Baud_Menu_1
+   \   00002E   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000032   3FF080FF     AND.W   #0xff80, R15
+   \   000036   3F908001     CMP.W   #0x180, R15
+   \   00003A   1320         JNE     ??Baud_Menu_0
+    133                  display_1=" A1 Baud  ";
+   \                     ??Baud_Menu_1:
+   \   00003C   B240........ MOV.W   #`?<Constant " A1 Baud  ">`, &display_1
+    134                  display_2="   9600   ";
+   \   000042   B240........ MOV.W   #`?<Constant "   9600   ">`, &display_2
+    135                  if(switch_one_pressed){
+   \   000048   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   00004C   3B24         JEQ     ??Baud_Menu_2
+    136                      Init_Serial_UCA1(1);
+   \   00004E   1C43         MOV.W   #0x1, R12
+   \   000050   ........     CALLA   #Init_Serial_UCA1
+    137                      uart_puts("A1 Baud Rate at 9600\n");
+   \   000054   3C40....     MOV.W   #`?<Constant "A1 Baud Rate at 9600\\n">`, R12
+   \   000058   ........     CALLA   #uart_puts
+    138                      switch_one_pressed=FALSE;
+   \   00005C   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   000060   313C         JMP     ??Baud_Menu_2
+    139                  }
+    140            }
+    141            //---------------------SHAPES MENU--------------------------------------------
+    142              else if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FIVE  || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SIX || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SEVEN || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_EIGHT )){
+   \                     ??Baud_Menu_0:
+   \   000062   8293....     CMP.W   #0x0, &menu_items
+   \   000066   2E24         JEQ     ??Baud_Menu_2
+   \   000068   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00006C   3FF080FF     AND.W   #0xff80, R15
+   \   000070   3F900002     CMP.W   #0x200, R15
+   \   000074   1524         JEQ     ??Baud_Menu_3
+   \   000076   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00007A   3FF080FF     AND.W   #0xff80, R15
+   \   00007E   3F908002     CMP.W   #0x280, R15
+   \   000082   0E24         JEQ     ??Baud_Menu_3
+   \   000084   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000088   3FF080FF     AND.W   #0xff80, R15
+   \   00008C   3F900003     CMP.W   #0x300, R15
+   \   000090   0724         JEQ     ??Baud_Menu_3
+   \   000092   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000096   3FF080FF     AND.W   #0xff80, R15
+   \   00009A   3F908003     CMP.W   #0x380, R15
+   \   00009E   1220         JNE     ??Baud_Menu_2
+    143                  display_1=" A1 Baud  ";
+   \                     ??Baud_Menu_3:
+   \   0000A0   B240........ MOV.W   #`?<Constant " A1 Baud  ">`, &display_1
+    144                  display_2="  115200  ";
+   \   0000A6   B240........ MOV.W   #`?<Constant "  115200  ">`, &display_2
+    145                  if(switch_one_pressed){
+   \   0000AC   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   0000B0   0924         JEQ     ??Baud_Menu_2
+    146                      uart_puts("A1 Baud Rate at 115200\n");
+   \   0000B2   3C40....     MOV.W   #`?<Constant "A1 Baud Rate at 115200\\n">`, R12
+   \   0000B6   ........     CALLA   #uart_puts
+    147                      Init_Serial_UCA1(0);
+   \   0000BA   0C43         MOV.W   #0x0, R12
+   \   0000BC   ........     CALLA   #Init_Serial_UCA1
+    148                      switch_one_pressed=FALSE;
+   \   0000C0   8243....     MOV.W   #0x0, &switch_one_pressed
+    149                  } 
+    150            }
+    151              if(switch_two_pressed){
+   \                     ??Baud_Menu_2:
+   \   0000C4   8293....     CMP.W   #0x0, &switch_two_pressed
+   \   0000C8   0824         JEQ     ??Baud_Menu_4
+    152                  switch_one_pressed = FALSE;
+   \   0000CA   8243....     MOV.W   #0x0, &switch_one_pressed
+    153                  switch_two_pressed = FALSE;
+   \   0000CE   8243....     MOV.W   #0x0, &switch_two_pressed
+    154                  BaudMenuFG=FALSE;
+   \   0000D2   8243....     MOV.W   #0x0, &BaudMenuFG
+    155                  MainFG=TRUE;
+   \   0000D6   9243....     MOV.W   #0x1, &MainFG
+    156              }
+    157          }
+   \                     ??Baud_Menu_4:
+   \   0000DA   1001         RETA
+    158          
+
+   \                                 In  segment CODE, align 2
+    159          void IOT_Menu(void){
+   \                     IOT_Menu:
+    160          // Shape Menu
+    161          // 
+    162          // Description: This function creates the menu for the shapes.
+    163          //
+    164          // Passed : no variables passed
+    165          // Locals: no variables declared
+    166          // Returned: no values returned
+    167          // Globals:    
+    168          //              char* display_1
+    169          //              char* display_2
+    170          //              char* display_3
+    171          //              volatile unsigned int ADC_Thumb;
+    172          //              volatile unsigned int switch_one_pressed;
+    173          //              volatile unsigned int switch_two_pressed;
+    174          //
+    175          // Author: David Pryor
+    176          // Date: April 2016
+    177          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    178          //==============================================================================
+    179            
+    180              if((ADC_Thumb < SECTION_NINE_START)){
+   \   000000   B2906600.... CMP.W   #0x66, &ADC_Thumb
+   \   000006   162C         JC      ??IOT_Menu_0
+    181                  display_1=" Set SSID ";
+   \   000008   B240........ MOV.W   #`?<Constant " Set SSID ">`, &display_1
+    182                  display_2="          ";
+   \   00000E   B240........ MOV.W   #`?<Constant "          ">`, &display_2
+    183                  display_3="          ";
+   \   000014   B240........ MOV.W   #`?<Constant "          ">`, &display_3
+    184                  display_4="          ";
+   \   00001A   B240........ MOV.W   #`?<Constant "          ">`, &display_4
+    185                  if(switch_one_pressed==TRUE){
+   \   000020   9293....     CMP.W   #0x1, &switch_one_pressed
+   \   000024   1621         JNE     ??IOT_Menu_1
+    186                      uart_puts("AT+S.SSIDTXT=ncsu\r"); //Set SSID to ncsu
+   \   000026   3C40....     MOV.W   #`?<Constant "AT+S.SSIDTXT=ncsu\\r">`, R12
+   \   00002A   ........     CALLA   #uart_puts
+    187                      switch_one_pressed=FALSE;
+   \   00002E   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   000032   0F3D         JMP     ??IOT_Menu_1
+    188                  }
+    189              }
+    190              else if((ADC_Thumb >= SECTION_NINE_START) && (ADC_Thumb < SECTION_EIGHT_START)){
+   \                     ??IOT_Menu_0:
+   \   000034   B2906600.... CMP.W   #0x66, &ADC_Thumb
+   \   00003A   1A28         JNC     ??IOT_Menu_2
+   \   00003C   B290CC00.... CMP.W   #0xcc, &ADC_Thumb
+   \   000042   162C         JC      ??IOT_Menu_2
+    191                  display_1=" Get SSID ";
+   \   000044   B240........ MOV.W   #`?<Constant " Get SSID ">`, &display_1
+    192                  display_2="          ";
+   \   00004A   B240........ MOV.W   #`?<Constant "          ">`, &display_2
+    193                  display_3="          ";
+   \   000050   B240........ MOV.W   #`?<Constant "          ">`, &display_3
+    194                  display_4="          ";
+   \   000056   B240........ MOV.W   #`?<Constant "          ">`, &display_4
+    195                  if(switch_one_pressed==TRUE){
+   \   00005C   9293....     CMP.W   #0x1, &switch_one_pressed
+   \   000060   F820         JNE     ??IOT_Menu_1
+    196                      uart_puts("AT+S.SSIDTXT\r"); //Get SSID to ncsu
+   \   000062   3C40....     MOV.W   #`?<Constant "AT+S.SSIDTXT\\r">`, R12
+   \   000066   ........     CALLA   #uart_puts
+    197                      switch_one_pressed=FALSE;
+   \   00006A   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   00006E   F13C         JMP     ??IOT_Menu_1
+    198                  }
+    199              }
+    200              else if((ADC_Thumb >= SECTION_EIGHT_START) && (ADC_Thumb < SECTION_SEVEN_START)){
+   \                     ??IOT_Menu_2:
+   \   000070   B290CC00.... CMP.W   #0xcc, &ADC_Thumb
+   \   000076   1A28         JNC     ??IOT_Menu_3
+   \   000078   B2903201.... CMP.W   #0x132, &ADC_Thumb
+   \   00007E   162C         JC      ??IOT_Menu_3
+    201                  display_1=" Set Host ";
+   \   000080   B240........ MOV.W   #`?<Constant " Set Host ">`, &display_1
+    202                  display_2="   Name   ";
+   \   000086   B240........ MOV.W   #`?<Constant "   Name   ">`, &display_2
+    203                  display_3="          ";
+   \   00008C   B240........ MOV.W   #`?<Constant "          ">`, &display_3
+    204                  display_4="          ";
+   \   000092   B240........ MOV.W   #`?<Constant "          ">`, &display_4
+    205                  if(switch_one_pressed==TRUE){
+   \   000098   9293....     CMP.W   #0x1, &switch_one_pressed
+   \   00009C   DA20         JNE     ??IOT_Menu_1
+    206                      uart_puts("AT+S.SCFG=ip_hostname,ECE-306_08_C\r"); //Get SSID to ncsu
+   \   00009E   3C40....     MOV.W   #`?<Constant "AT+S.SCFG=ip_hostname...">`, R12
+   \   0000A2   ........     CALLA   #uart_puts
+    207                      switch_one_pressed=FALSE;
+   \   0000A6   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   0000AA   D33C         JMP     ??IOT_Menu_1
+    208                  }
+    209              }
+    210              else if((ADC_Thumb >= SECTION_SEVEN_START) && (ADC_Thumb < SECTION_SIX_START)){
+   \                     ??IOT_Menu_3:
+   \   0000AC   B2903201.... CMP.W   #0x132, &ADC_Thumb
+   \   0000B2   1A28         JNC     ??IOT_Menu_4
+   \   0000B4   B2909801.... CMP.W   #0x198, &ADC_Thumb
+   \   0000BA   162C         JC      ??IOT_Menu_4
+    211                  display_1=" Get Host ";
+   \   0000BC   B240........ MOV.W   #`?<Constant " Get Host ">`, &display_1
+    212                  display_2="   Name   ";
+   \   0000C2   B240........ MOV.W   #`?<Constant "   Name   ">`, &display_2
+    213                  display_3="          ";
+   \   0000C8   B240........ MOV.W   #`?<Constant "          ">`, &display_3
+    214                  display_4="          ";
+   \   0000CE   B240........ MOV.W   #`?<Constant "          ">`, &display_4
+    215                  if(switch_one_pressed==TRUE){
+   \   0000D4   9293....     CMP.W   #0x1, &switch_one_pressed
+   \   0000D8   BC20         JNE     ??IOT_Menu_1
+    216                      uart_puts("AT+S.GCFG=ip_hostname\r"); //Get SSID to ncsu
+   \   0000DA   3C40....     MOV.W   #`?<Constant "AT+S.GCFG=ip_hostname\\r">`, R12
+   \   0000DE   ........     CALLA   #uart_puts
+    217                      switch_one_pressed=FALSE;
+   \   0000E2   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   0000E6   B53C         JMP     ??IOT_Menu_1
+    218                  }
+    219              }
+    220              else if((ADC_Thumb >= SECTION_SIX_START) && (ADC_Thumb < SECTION_FIVE_START)){
+   \                     ??IOT_Menu_4:
+   \   0000E8   B2909801.... CMP.W   #0x198, &ADC_Thumb
+   \   0000EE   1A28         JNC     ??IOT_Menu_5
+   \   0000F0   B290FE01.... CMP.W   #0x1fe, &ADC_Thumb
+   \   0000F6   162C         JC      ??IOT_Menu_5
+    221                  display_1=" Set Net. ";
+   \   0000F8   B240........ MOV.W   #`?<Constant " Set Net. ">`, &display_1
+    222                  display_2=" Privacy  ";
+   \   0000FE   B240........ MOV.W   #`?<Constant " Privacy  ">`, &display_2
+    223                  display_3=" Mode     ";
+   \   000104   B240........ MOV.W   #`?<Constant " Mode     ">`, &display_3
+    224                  display_4="          ";
+   \   00010A   B240........ MOV.W   #`?<Constant "          ">`, &display_4
+    225                  if(switch_one_pressed==TRUE){
+   \   000110   9293....     CMP.W   #0x1, &switch_one_pressed
+   \   000114   9E20         JNE     ??IOT_Menu_1
+    226                      uart_puts("AT+S.SCFG=wifi_priv_mode,0\r"); //Get SSID to ncsu
+   \   000116   3C40....     MOV.W   #`?<Constant "AT+S.SCFG=wifi_priv_m...">`, R12
+   \   00011A   ........     CALLA   #uart_puts
+    227                      switch_one_pressed=FALSE;
+   \   00011E   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   000122   973C         JMP     ??IOT_Menu_1
+    228                  }
+    229              }
+    230              else if((ADC_Thumb >= SECTION_FIVE_START) && (ADC_Thumb < SECTION_FOUR_START)){
+   \                     ??IOT_Menu_5:
+   \   000124   B290FE01.... CMP.W   #0x1fe, &ADC_Thumb
+   \   00012A   1A28         JNC     ??IOT_Menu_6
+   \   00012C   B2906402.... CMP.W   #0x264, &ADC_Thumb
+   \   000132   162C         JC      ??IOT_Menu_6
+    231                  display_1=" Get Net. ";
+   \   000134   B240........ MOV.W   #`?<Constant " Get Net. ">`, &display_1
+    232                  display_2=" Privacy  ";
+   \   00013A   B240........ MOV.W   #`?<Constant " Privacy  ">`, &display_2
+    233                  display_3=" Mode     ";
+   \   000140   B240........ MOV.W   #`?<Constant " Mode     ">`, &display_3
+    234                  display_4="          ";
+   \   000146   B240........ MOV.W   #`?<Constant "          ">`, &display_4
+    235                  if(switch_one_pressed==TRUE){
+   \   00014C   9293....     CMP.W   #0x1, &switch_one_pressed
+   \   000150   8020         JNE     ??IOT_Menu_1
+    236                      uart_puts("AT+S.GCFG=wifi_priv_mode\r"); //Get SSID to ncsu
+   \   000152   3C40....     MOV.W   #`?<Constant "AT+S.GCFG=wifi_priv_m...">`, R12
+   \   000156   ........     CALLA   #uart_puts
+    237                      switch_one_pressed=FALSE;
+   \   00015A   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   00015E   793C         JMP     ??IOT_Menu_1
+    238                  }
+    239              }
+    240              else if((ADC_Thumb >= SECTION_FOUR_START) && (ADC_Thumb < SECTION_THREE_START)){
+   \                     ??IOT_Menu_6:
+   \   000160   B2906402.... CMP.W   #0x264, &ADC_Thumb
+   \   000166   1A28         JNC     ??IOT_Menu_7
+   \   000168   B290CA02.... CMP.W   #0x2ca, &ADC_Thumb
+   \   00016E   162C         JC      ??IOT_Menu_7
+    241                display_1=" Set Net. ";
+   \   000170   B240........ MOV.W   #`?<Constant " Set Net. ">`, &display_1
+    242                  display_2="   Mode   ";
+   \   000176   B240........ MOV.W   #`?<Constant "   Mode   ">`, &display_2
+    243                  display_3="          ";
+   \   00017C   B240........ MOV.W   #`?<Constant "          ">`, &display_3
+    244                  display_4="          ";
+   \   000182   B240........ MOV.W   #`?<Constant "          ">`, &display_4
+    245                  if(switch_one_pressed==TRUE){
+   \   000188   9293....     CMP.W   #0x1, &switch_one_pressed
+   \   00018C   6220         JNE     ??IOT_Menu_1
+    246                      uart_puts("AT+S.SCFG=wifi_mode,1\r"); //Get SSID to ncsu
+   \   00018E   3C40....     MOV.W   #`?<Constant "AT+S.SCFG=wifi_mode,1\\r">`, R12
+   \   000192   ........     CALLA   #uart_puts
+    247                      switch_one_pressed=FALSE;
+   \   000196   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   00019A   5B3C         JMP     ??IOT_Menu_1
+    248                  }
+    249              }
+    250              else if((ADC_Thumb >= SECTION_THREE_START) && (ADC_Thumb < SECTION_TWO_START)){
+   \                     ??IOT_Menu_7:
+   \   00019C   B290CA02.... CMP.W   #0x2ca, &ADC_Thumb
+   \   0001A2   1A28         JNC     ??IOT_Menu_8
+   \   0001A4   B2903003.... CMP.W   #0x330, &ADC_Thumb
+   \   0001AA   162C         JC      ??IOT_Menu_8
+    251                  display_1=" Get Net. ";
+   \   0001AC   B240........ MOV.W   #`?<Constant " Get Net. ">`, &display_1
+    252                  display_2="   Mode   ";
+   \   0001B2   B240........ MOV.W   #`?<Constant "   Mode   ">`, &display_2
+    253                  display_3="          ";
+   \   0001B8   B240........ MOV.W   #`?<Constant "          ">`, &display_3
+    254                  display_4="          ";
+   \   0001BE   B240........ MOV.W   #`?<Constant "          ">`, &display_4
+    255                  if(switch_one_pressed==TRUE){
+   \   0001C4   9293....     CMP.W   #0x1, &switch_one_pressed
+   \   0001C8   4420         JNE     ??IOT_Menu_1
+    256                      uart_puts("AT+S.GCFG=wifi_mode\r"); //Get SSID to ncsu
+   \   0001CA   3C40....     MOV.W   #`?<Constant "AT+S.GCFG=wifi_mode\\r">`, R12
+   \   0001CE   ........     CALLA   #uart_puts
+    257                      switch_one_pressed=FALSE;
+   \   0001D2   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   0001D6   3D3C         JMP     ??IOT_Menu_1
+    258                  }
+    259              }
+    260              else if((ADC_Thumb >= SECTION_TWO_START) && (ADC_Thumb < SECTION_ONE_START)){
+   \                     ??IOT_Menu_8:
+   \   0001D8   B2903003.... CMP.W   #0x330, &ADC_Thumb
+   \   0001DE   1E28         JNC     ??IOT_Menu_9
+   \   0001E0   B2909603.... CMP.W   #0x396, &ADC_Thumb
+   \   0001E6   1A2C         JC      ??IOT_Menu_9
+    261                  display_1="   Save   ";
+   \   0001E8   B240........ MOV.W   #`?<Constant "   Save   ">`, &display_1
+    262                  display_2=" Settings ";
+   \   0001EE   B240........ MOV.W   #`?<Constant " Settings ">`, &display_2
+    263                  display_3=" On Flash ";
+   \   0001F4   B240........ MOV.W   #`?<Constant " On Flash ">`, &display_3
+    264                  display_4="          ";
+   \   0001FA   B240........ MOV.W   #`?<Constant "          ">`, &display_4
+    265                  if(switch_one_pressed==TRUE){
+   \   000200   9293....     CMP.W   #0x1, &switch_one_pressed
+   \   000204   2620         JNE     ??IOT_Menu_1
+    266                      uart_puts("AT&W\r"); //Get SSID to ncsu
+   \   000206   3C40....     MOV.W   #`?<Constant "AT&W\\r">`, R12
+   \   00020A   ........     CALLA   #uart_puts
+    267                      Five_msec_Delay(200); //delay to allow changed to take effect
+   \   00020E   3C40C800     MOV.W   #0xc8, R12
+   \   000212   ........     CALLA   #Five_msec_Delay
+    268                      switch_one_pressed=FALSE;
+   \   000216   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   00021A   1B3C         JMP     ??IOT_Menu_1
+    269                  }
+    270              }
+    271              else if((ADC_Thumb >= SECTION_ONE_START)){
+   \                     ??IOT_Menu_9:
+   \   00021C   B2909603.... CMP.W   #0x396, &ADC_Thumb
+   \   000222   1728         JNC     ??IOT_Menu_1
+    272                  display_1="  Reset   ";
+   \   000224   B240........ MOV.W   #`?<Constant "  Reset   ">`, &display_1
+    273                  display_2="  Module  ";
+   \   00022A   B240........ MOV.W   #`?<Constant "  Module  ">`, &display_2
+    274                  display_3="          ";
+   \   000230   B240........ MOV.W   #`?<Constant "          ">`, &display_3
+    275                  display_4="          ";
+   \   000236   B240........ MOV.W   #`?<Constant "          ">`, &display_4
+    276                  if(switch_one_pressed==TRUE){
+   \   00023C   9293....     CMP.W   #0x1, &switch_one_pressed
+   \   000240   0820         JNE     ??IOT_Menu_1
+    277                      uart_puts("AT+CFUN=1\r"); //Get SSID to ncsu
+   \   000242   3C40....     MOV.W   #`?<Constant "AT+CFUN=1\\r">`, R12
+   \   000246   ........     CALLA   #uart_puts
+    278                      IOTHardwareReset();
+   \   00024A   ........     CALLA   #IOTHardwareReset
+    279                      switch_one_pressed=FALSE;
+   \   00024E   8243....     MOV.W   #0x0, &switch_one_pressed
+    280                  }
+    281              } 
+    282              if(switch_two_pressed){
+   \                     ??IOT_Menu_1:
+   \   000252   8293....     CMP.W   #0x0, &switch_two_pressed
+   \   000256   0424         JEQ     ??IOT_Menu_10
+    283                switch_one_pressed = FALSE;
+   \   000258   8243....     MOV.W   #0x0, &switch_one_pressed
+    284                switch_two_pressed = FALSE;
+   \   00025C   8243....     MOV.W   #0x0, &switch_two_pressed
+    285              }
+    286          }
+   \                     ??IOT_Menu_10:
+   \   000260   1001         RETA
+
+   \                                 In  segment DATA16_ID, align 1, align-sorted
+   \                     `?<Initializer for lcdBuff>`:
+   \   000000   202020202020 DC8 "         "
+   \            20202000    
+
+   \                                 In  segment DATA16_ID, align 2, align-sorted
+   \                     `?<Initializer for MainFG>`:
+   \   000000   0100         DC16 1
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " A1  Baud ">`:
+   \   000000   204131202042 DC8 " A1  Baud "
+   \            6175642000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Menu   ">`:
+   \   000000   2020204D656E DC8 "   Menu   "
+   \            7520202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "">`:
+   \   000000   00           DC8 ""
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   IOT    ">`:
+   \   000000   202020494F54 DC8 "   IOT    "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   black   ">`:
+   \   000000   202020626C61 DC8 "   black   "
+   \            636B20202000
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "    test   ">`:
+   \   000000   202020207465 DC8 "    test   "
+   \            737420202000
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " A1 Baud  ">`:
+   \   000000   204131204261 DC8 " A1 Baud  "
+   \            7564202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   9600   ">`:
+   \   000000   202020393630 DC8 "   9600   "
+   \            3020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "A1 Baud Rate at 9600\\n">`:
+   \   000000   413120426175 DC8 "A1 Baud Rate at 9600\012"
+   \            642052617465
+   \            206174203936
+   \            30300A00    
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  115200  ">`:
+   \   000000   202031313532 DC8 "  115200  "
+   \            3030202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "A1 Baud Rate at 115200\\n">`:
+   \   000000   413120426175 DC8 "A1 Baud Rate at 115200\012"
+   \            642052617465
+   \            206174203131
+   \            353230300A00
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Set SSID ">`:
+   \   000000   205365742053 DC8 " Set SSID "
+   \            5349442000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "          ">`:
+   \   000000   202020202020 DC8 "          "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+S.SSIDTXT=ncsu\\r">`:
+   \   000000   41542B532E53 DC8 "AT+S.SSIDTXT=ncsu\015"
+   \            534944545854
+   \            3D6E6373750D
+   \            00          
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Get SSID ">`:
+   \   000000   204765742053 DC8 " Get SSID "
+   \            5349442000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+S.SSIDTXT\\r">`:
+   \   000000   41542B532E53 DC8 "AT+S.SSIDTXT\015"
+   \            534944545854
+   \            0D00        
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Set Host ">`:
+   \   000000   205365742048 DC8 " Set Host "
+   \            6F73742000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Name   ">`:
+   \   000000   2020204E616D DC8 "   Name   "
+   \            6520202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+S.SCFG=ip_hostname...">`:
+   \   000000   41542B532E53 DC8 "AT+S.SCFG=ip_hostname,ECE-306_08_C\015"
+   \            4346473D6970
+   \            5F686F73746E
+   \            616D652C4543
+   \            452D3330365F
+   \            30385F430D00
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Get Host ">`:
+   \   000000   204765742048 DC8 " Get Host "
+   \            6F73742000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+S.GCFG=ip_hostname\\r">`:
+   \   000000   41542B532E47 DC8 "AT+S.GCFG=ip_hostname\015"
+   \            4346473D6970
+   \            5F686F73746E
+   \            616D650D00  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Set Net. ">`:
+   \   000000   20536574204E DC8 " Set Net. "
+   \            65742E2000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Privacy  ">`:
+   \   000000   205072697661 DC8 " Privacy  "
+   \            6379202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Mode     ">`:
+   \   000000   204D6F646520 DC8 " Mode     "
+   \            2020202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+S.SCFG=wifi_priv_m...">`:
+   \   000000   41542B532E53 DC8 "AT+S.SCFG=wifi_priv_mode,0\015"
+   \            4346473D7769
+   \            66695F707269
+   \            765F6D6F6465
+   \            2C300D00    
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Get Net. ">`:
+   \   000000   20476574204E DC8 " Get Net. "
+   \            65742E2000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+S.GCFG=wifi_priv_m...">`:
+   \   000000   41542B532E47 DC8 "AT+S.GCFG=wifi_priv_mode\015"
+   \            4346473D7769
+   \            66695F707269
+   \            765F6D6F6465
+   \            0D00        
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Mode   ">`:
+   \   000000   2020204D6F64 DC8 "   Mode   "
+   \            6520202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+S.SCFG=wifi_mode,1\\r">`:
+   \   000000   41542B532E53 DC8 "AT+S.SCFG=wifi_mode,1\015"
+   \            4346473D7769
+   \            66695F6D6F64
+   \            652C310D00  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+S.GCFG=wifi_mode\\r">`:
+   \   000000   41542B532E47 DC8 "AT+S.GCFG=wifi_mode\015"
+   \            4346473D7769
+   \            66695F6D6F64
+   \            650D00      
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "   Save   ">`:
+   \   000000   202020536176 DC8 "   Save   "
+   \            6520202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " Settings ">`:
+   \   000000   205365747469 DC8 " Settings "
+   \            6E67732000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " On Flash ">`:
+   \   000000   204F6E20466C DC8 " On Flash "
+   \            6173682000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT&W\\r">`:
+   \   000000   415426570D00 DC8 "AT&W\015"
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  Reset   ">`:
+   \   000000   202052657365 DC8 "  Reset   "
+   \            7420202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "  Module  ">`:
+   \   000000   20204D6F6475 DC8 "  Module  "
+   \            6C65202000  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "AT+CFUN=1\\r">`:
+   \   000000   41542B434655 DC8 "AT+CFUN=1\015"
+   \            4E3D310D00  
+    287          
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   Baud_Menu
+        4   -> Init_Serial_UCA1
+        4   -> lcd_4line
+        4   -> uart_puts
+      4   IOT_Menu
+        4   -> Five_msec_Delay
+        4   -> IOTHardwareReset
+        4   -> uart_puts
+      4   Menu_Process
+        4   -> lcd_4line
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      11  ?<Constant "          ">
+      12  ?<Constant "    test   ">
+      11  ?<Constant "   9600   ">
+      11  ?<Constant "   IOT    ">
+      11  ?<Constant "   Menu   ">
+      11  ?<Constant "   Mode   ">
+      11  ?<Constant "   Name   ">
+      11  ?<Constant "   Save   ">
+      12  ?<Constant "   black   ">
+      11  ?<Constant "  115200  ">
+      11  ?<Constant "  Module  ">
+      11  ?<Constant "  Reset   ">
+      11  ?<Constant " A1  Baud ">
+      11  ?<Constant " A1 Baud  ">
+      11  ?<Constant " Get Host ">
+      11  ?<Constant " Get Net. ">
+      11  ?<Constant " Get SSID ">
+      11  ?<Constant " Mode     ">
+      11  ?<Constant " On Flash ">
+      11  ?<Constant " Privacy  ">
+      11  ?<Constant " Set Host ">
+      11  ?<Constant " Set Net. ">
+      11  ?<Constant " Set SSID ">
+      11  ?<Constant " Settings ">
+       1  ?<Constant "">
+      24  ?<Constant "A1 Baud Rate at 115200\n">
+      22  ?<Constant "A1 Baud Rate at 9600\n">
+       6  ?<Constant "AT&W\r">
+      11  ?<Constant "AT+CFUN=1\r">
+      23  ?<Constant "AT+S.GCFG=ip_hostname\r">
+      21  ?<Constant "AT+S.GCFG=wifi_mode\r">
+      26  ?<Constant "AT+S.GCFG=wifi_priv_m...">
+      36  ?<Constant "AT+S.SCFG=ip_hostname...">
+      23  ?<Constant "AT+S.SCFG=wifi_mode,1\r">
+      28  ?<Constant "AT+S.SCFG=wifi_priv_m...">
+      19  ?<Constant "AT+S.SSIDTXT=ncsu\r">
+      14  ?<Constant "AT+S.SSIDTXT\r">
+       2  ?<Initializer for MainFG>
+      10  ?<Initializer for lcdBuff>
+       2  BaudMenuFG
+     220  Baud_Menu
+       2  IOTMenuFG
+     610  IOT_Menu
+       2  MainFG
+     266  Menu_Process
+      10  lcdBuff
+
+ 
+ 1 096 bytes in segment CODE
+   520 bytes in segment DATA16_C
+    12 bytes in segment DATA16_I
+    12 bytes in segment DATA16_ID
+     4 bytes in segment DATA16_Z
+ 
+ 1 096 bytes of CODE  memory
+   532 bytes of CONST memory
+    16 bytes of DATA  memory
+
+Errors: none
+Warnings: none

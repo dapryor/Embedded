@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "macros.h"
 #include "functions.h"
 #include "msp430.h"

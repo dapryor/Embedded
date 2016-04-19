@@ -1,0 +1,521 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           18/Apr/2016  23:20:34
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\Documents\ECE 306\Project-08\timers.c
+#    Command line  =  
+#        "C:\Users\David\Documents\ECE 306\Project-08\timers.c" -lC
+#        "C:\Users\David\Documents\ECE 306\Project-08\Debug\List" -o
+#        "C:\Users\David\Documents\ECE 306\Project-08\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\Documents\ECE 306\Project-08\Debug\List\timers.lst
+#    Object file   =  
+#        C:\Users\David\Documents\ECE 306\Project-08\Debug\Obj\timers.r43
+#
+###############################################################################
+
+C:\Users\David\Documents\ECE 306\Project-08\timers.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : timers.c
+      3          //
+      4          //  Description: This file contains the Timing functions (Five_msec_Delay, Timer_code)
+      5          //
+      6          //
+      7          //  David Pryor
+      8          //  Jan 2016
+      9          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+     10          //------------------------------------------------------------------------------
+     11          #include "macros.h"
+     12          #include "functions.h"
+     13          #include "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x340
+   \   unsigned short volatile TA0CTL
+   \                     TA0CTL:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x342
+   \   unsigned short volatile TA0CCTL0
+   \                     TA0CCTL0:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x344
+   \   unsigned short volatile TA0CCTL1
+   \                     TA0CCTL1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x352
+   \   unsigned short volatile TA0CCR0
+   \                     TA0CCR0:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x354
+   \   unsigned short volatile TA0CCR1
+   \                     TA0CCR1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x360
+   \   unsigned short volatile TA0EX0
+   \                     TA0EX0:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x400
+   \   unsigned short volatile TB1CTL
+   \                     TB1CTL:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x404
+   \   unsigned short volatile TB1CCTL1
+   \                     TB1CCTL1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x406
+   \   unsigned short volatile TB1CCTL2
+   \                     TB1CCTL2:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x412
+   \   unsigned short volatile TB1CCR0
+   \                     TB1CCR0:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x414
+   \   unsigned short volatile TB1CCR1
+   \                     TB1CCR1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x416
+   \   unsigned short volatile TB1CCR2
+   \                     TB1CCR2:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x440
+   \   unsigned short volatile TB2CTL
+   \                     TB2CTL:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x444
+   \   unsigned short volatile TB2CCTL1
+   \                     TB2CCTL1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x446
+   \   unsigned short volatile TB2CCTL2
+   \                     TB2CCTL2:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x452
+   \   unsigned short volatile TB2CCR0
+   \                     TB2CCR0:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x454
+   \   unsigned short volatile TB2CCR1
+   \                     TB2CCR1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x456
+   \   unsigned short volatile TB2CCR2
+   \                     TB2CCR2:
+   \   000000                DS8 2
+     14          //------------------------------------------------------------------------------
+     15          // Required defines
+     16          // LCD_HOME_L1	                        (0x80)
+     17          // LCD_HOME_L2         	                (0xA0)
+     18          // LCD_HOME_L3         	                (0xC0)
+     19          // LCD_HOME_L4         	                (0xE0)
+     20          // SWITCH_OFF				(0x00) 
+     21          // SWITCH_ON				(0x01)
+     22          // INCREMENT_ONCE                       (0x01)   // increment by 1
+     23          // MAX_FIVE_MSEC_COUNT                  (0x03E8) //1000
+     24          //------------------------------------------------------------------------------
+     25          //GLOBALS
+     26          extern volatile unsigned int Time_Sequence;
+     27          extern volatile char one_time;
+     28          extern volatile unsigned int five_msec_delay;
+     29          extern char display_line_1[LINE_SIZE];
+     30          extern char display_line_2[LINE_SIZE];
+     31          extern char display_line_3[LINE_SIZE];
+     32          extern char display_line_4[LINE_SIZE];
+     33          extern char *display_1;
+     34          extern char *display_2;
+     35          extern char *display_3;
+     36          extern char *display_4;
+     37          extern char posL1;
+     38          extern char posL2;
+     39          extern char posL3;
+     40          extern char posL4;
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     41          volatile unsigned int right_forward_rate = SWITCH_OFF;
+   \                     right_forward_rate:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     42          volatile unsigned int right_reverse_rate = SWITCH_OFF;
+   \                     right_reverse_rate:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     43          volatile unsigned int left_forward_rate = SWITCH_OFF;
+   \                     left_forward_rate:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     44          volatile unsigned int left_reverse_rate = SWITCH_OFF;
+   \                     left_reverse_rate:
+   \   000000                DS8 2
+     45          
+     46          //------------------------------------------------------------------------------
+
+   \                                 In  segment CODE, align 2
+     47          void Five_msec_Delay(unsigned int fivemsec){
+   \                     Five_msec_Delay:
+     48          //==============================================================================
+     49          // Five msec sleep
+     50          // 
+     51          // Description: Each count passed is at least x times 5 milliseconds
+     52          //
+     53          // Passed : unsigned int fivemsec
+     54          // Locals: no variables declared
+     55          // Returned: no values returned
+     56          // Globals:     volatile unsigned int five_msec_count;
+     57          //
+     58          // Author: David Pryor
+     59          // Date: Feb 2016
+     60          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     61          //==============================================================================
+     62            five_msec_delay = SWITCH_OFF;
+   \   000000   8243....     MOV.W   #0x0, &five_msec_delay
+     63            while(five_msec_delay <= fivemsec);
+   \                     ??Five_msec_Delay_0:
+   \   000004   1C92....     CMP.W   &five_msec_delay, R12
+   \   000008   FD2F         JC      ??Five_msec_Delay_0
+     64          //------------------------------------------------------------------------------
+     65          }
+   \   00000A   1001         RETA
+     66          
+
+   \                                 In  segment CODE, align 2
+     67          void Timer_code(void){
+   \                     Timer_code:
+     68          //==============================================================================
+     69          // Timer A0 interrupt code
+     70          // 
+     71          // Description: Not sure yet...
+     72          //
+     73          // Passed : no variables passed
+     74          // Locals: no variables declared
+     75          // Returned: no values returned
+     76          // Globals:     volatile unsigned int Time_Sequence;
+     77          //              volatile char one_time;
+     78          //              volatile unsigned int five_msec_count;
+     79          //
+     80          // Author: David Pryor
+     81          // Date: Feb 2016
+     82          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     83          //==============================================================================
+     84            Time_Sequence++;
+   \   000000   9253....     ADD.W   #0x1, &Time_Sequence
+     85            one_time = SWITCH_ON;
+   \   000004   D243....     MOV.B   #0x1, &one_time
+     86            if (five_msec_delay < MAX_FIVE_MSEC_COUNT){
+   \   000008   B290E803.... CMP.W   #0x3e8, &five_msec_delay
+   \   00000E   022C         JC      ??Timer_code_0
+     87              five_msec_delay++;
+   \   000010   9253....     ADD.W   #0x1, &five_msec_delay
+     88            }
+     89          //------------------------------------------------------------------------------
+     90          }
+   \                     ??Timer_code_0:
+   \   000014   1001         RETA
+     91          
+
+   \                                 In  segment CODE, align 2
+     92          void Display_Process(void){
+   \                     Display_Process:
+     93          //==============================================================================
+     94          // Display Process interrupt code
+     95          // 
+     96          // Description: This function ends out text for display
+     97          //
+     98          // Passed : no variables passed
+     99          // Locals: no variables declared
+    100          // Returned: no values returned
+    101          // Globals:     char* display_1
+    102          //              char* display_2
+    103          //              char* display_3
+    104          //              char* display_4
+    105          //              char posL1
+    106          //              char posL2
+    107          //              char posL3
+    108          //              char posL4
+    109          //
+    110          // Author: David Pryor
+    111          // Date: Feb 2016
+    112          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    113          //==============================================================================
+    114            ClrDisplay();
+   \   000000   ........     CALLA   #ClrDisplay
+    115            lcd_out(display_1, LCD_HOME_L1, posL1);
+   \   000004   5E42....     MOV.B   &posL1, R14
+   \   000008   7D408000     MOV.B   #0x80, R13
+   \   00000C   1C42....     MOV.W   &display_1, R12
+   \   000010   ........     CALLA   #lcd_out
+    116            lcd_out(display_2, LCD_HOME_L2, posL2);
+   \   000014   5E42....     MOV.B   &posL2, R14
+   \   000018   7D40A000     MOV.B   #0xa0, R13
+   \   00001C   1C42....     MOV.W   &display_2, R12
+   \   000020   ........     CALLA   #lcd_out
+    117            lcd_out(display_3, LCD_HOME_L3, posL3);
+   \   000024   5E42....     MOV.B   &posL3, R14
+   \   000028   7D40C000     MOV.B   #0xc0, R13
+   \   00002C   1C42....     MOV.W   &display_3, R12
+   \   000030   ........     CALLA   #lcd_out
+    118            lcd_out(display_4, LCD_HOME_L4, posL4);
+   \   000034   5E42....     MOV.B   &posL4, R14
+   \   000038   7D40E000     MOV.B   #0xe0, R13
+   \   00003C   1C42....     MOV.W   &display_4, R12
+   \   000040   ........     BRA     #lcd_out
+    119          }
+    120          
+    121          
+
+   \                                 In  segment CODE, align 2
+    122          void Init_Timer_A0(void){
+   \                     Init_Timer_A0:
+    123          //==============================================================================
+    124          // Timer A0 init code
+    125          // 
+    126          // Description: initializes values for timer interrupt
+    127          //
+    128          // Passed : no variables passed
+    129          // Locals: no variables declared
+    130          // Returned: no values returned
+    131          // Globals:     none
+    132          //
+    133          // Author: David Pryor
+    134          // Date: Feb 2016
+    135          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    136          //==============================================================================
+    137          // Timer A0 initialization sets up both A0_0 and A0_1-A0_2
+    138           TA0CTL = TASSEL__SMCLK; // SMCLK source
+   \   000000   B24000024003 MOV.W   #0x200, &0x340
+    139           TA0CTL |= TACLR; // Resets TA0R, clock divider, count direction
+   \   000006   A2D24003     BIS.W   #0x4, &0x340
+    140           TA0CTL |= MC__CONTINOUS; // Continuous up
+   \   00000A   B2D020004003 BIS.W   #0x20, &0x340
+    141           TA0CTL |= ID__2; // Divide clock by 2
+   \   000010   B2D040004003 BIS.W   #0x40, &0x340
+    142           TA0CTL &= ~TAIE; // Disable Overflow Interrupt
+   \   000016   A2C34003     BIC.W   #0x2, &0x340
+    143           TA0CTL &= ~TAIFG; // Clear Overflow Interrupt flag
+   \   00001A   92C34003     BIC.W   #0x1, &0x340
+    144          
+    145           TA0EX0 = TAIDEX_7; // Divide clock by an additional 8
+   \   00001E   B24007006003 MOV.W   #0x7, &0x360
+    146          
+    147           TA0CCR0 = TA0CCR0_INTERVAL; // CCR0
+   \   000024   B240A8615203 MOV.W   #0x61a8, &0x352
+    148           TA0CCTL0 |= CCIE; // CCR0 enable interrupt
+   \   00002A   B2D010004203 BIS.W   #0x10, &0x342
+    149          
+    150           TA0CCR1 = TA0CCR1_INTERVAL; // CCR1
+   \   000030   B240C4095403 MOV.W   #0x9c4, &0x354
+    151           TA0CCTL1 |= CCIE; // CCR1 enable interrupt
+   \   000036   B2D010004403 BIS.W   #0x10, &0x344
+    152          
+    153          // TA0CCR2 = TA0CCR2_INTERVAL; // CCR2
+    154          // TA0CCTL2 |= CCIE; // CCR2 enable interrupt
+    155          }
+   \   00003C   1001         RETA
+   \   00003E                REQUIRE TA0CTL
+   \   00003E                REQUIRE TA0EX0
+   \   00003E                REQUIRE TA0CCR0
+   \   00003E                REQUIRE TA0CCTL0
+   \   00003E                REQUIRE TA0CCR1
+   \   00003E                REQUIRE TA0CCTL1
+    156          //------------------------------------------------------------------------------ 
+    157          
+    158          
+
+   \                                 In  segment CODE, align 2
+    159          void Init_Timer_B1(void) {
+   \                     Init_Timer_B1:
+    160          //==============================================================================
+    161          // Timer B1 init code
+    162          // 
+    163          // Description: initializes values for timer interrupt
+    164          //
+    165          // Passed : no variables passed
+    166          // Locals: no variables declared
+    167          // Returned: no values returned
+    168          // Globals:     right_forward_rate
+    169          //              right_reverse_rate
+    170          //
+    171          // Author: David Pryor
+    172          // Date: March 2016
+    173          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    174          //==============================================================================
+    175          //------------------------------------------------------------------------------
+    176          // SMCLK source, up count mode, PWM Right Side
+    177          //------------------------------------------------------------------------------
+    178          TB1CTL = TBSSEL__SMCLK;         // SMCLK
+   \   000000   B24000020004 MOV.W   #0x200, &0x400
+    179          TB1CTL |= MC_1;                 // Up Mode
+   \   000006   B2D010000004 BIS.W   #0x10, &0x400
+    180          TB1CTL |= TBCLR;                // Clear TAR
+   \   00000C   A2D20004     BIS.W   #0x4, &0x400
+    181          right_forward_rate = SWITCH_OFF;// Set Right Forward Off
+   \   000010   8243....     MOV.W   #0x0, &right_forward_rate
+    182          right_reverse_rate = SWITCH_OFF;// Set Right Reverse Off
+   \   000014   8243....     MOV.W   #0x0, &right_reverse_rate
+    183          TB1CCR0 = WHEEL_PERIOD;         // PWM Period
+   \   000018   B240401F1204 MOV.W   #0x1f40, &0x412
+    184          TB1CCTL1 = OUTMOD_7;            // CCR1 reset/set
+   \   00001E   B240E0000404 MOV.W   #0xe0, &0x404
+    185          TB1CCR1 = right_forward_rate;   // P3.4 Right Forward PWM duty cycle
+   \   000024   9242....1404 MOV.W   &right_forward_rate, &0x414
+    186          TB1CCTL2 = OUTMOD_7;            // CCR2 reset/set
+   \   00002A   B240E0000604 MOV.W   #0xe0, &0x406
+    187          TB1CCR2 = right_reverse_rate;   // P3.5 Right Reverse PWM duty cycle
+   \   000030   9242....1604 MOV.W   &right_reverse_rate, &0x416
+    188          //------------------------------------------------------------------------------
+    189          }
+   \   000036   1001         RETA
+   \   000038                REQUIRE TB1CTL
+   \   000038                REQUIRE TB1CCR0
+   \   000038                REQUIRE TB1CCTL1
+   \   000038                REQUIRE TB1CCR1
+   \   000038                REQUIRE TB1CCTL2
+   \   000038                REQUIRE TB1CCR2
+    190          
+
+   \                                 In  segment CODE, align 2
+    191          void Init_Timer_B2(void) {
+   \                     Init_Timer_B2:
+    192          //==============================================================================
+    193          // Timer B2 init code
+    194          // 
+    195          // Description: initializes values for timer interrupt
+    196          //
+    197          // Passed :     no variables passed
+    198          // Locals:      no variables declared
+    199          // Returned:    no values returned
+    200          // Globals:     left_forward_rate
+    201          //              left_reverse_rate
+    202          //
+    203          // Author: David Pryor
+    204          // Date: March 2016
+    205          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    206          //==============================================================================
+    207          //------------------------------------------------------------------------------
+    208          // SMCLK source, up count mode, PWM Right Side
+    209          //------------------------------------------------------------------------------
+    210          TB2CTL = TBSSEL__SMCLK;         // SMCLK
+   \   000000   B24000024004 MOV.W   #0x200, &0x440
+    211          TB2CTL |= MC_1;                 // Up Mode
+   \   000006   B2D010004004 BIS.W   #0x10, &0x440
+    212          TB2CTL |= TBCLR;                // Clear TAR
+   \   00000C   A2D24004     BIS.W   #0x4, &0x440
+    213          left_forward_rate = SWITCH_OFF; // Set left Forward Off
+   \   000010   8243....     MOV.W   #0x0, &left_forward_rate
+    214          left_reverse_rate = SWITCH_OFF; // Set left Reverse Off
+   \   000014   8243....     MOV.W   #0x0, &left_reverse_rate
+    215          TB2CCR0 = WHEEL_PERIOD;         // PWM Period
+   \   000018   B240401F5204 MOV.W   #0x1f40, &0x452
+    216          TB2CCTL1 = OUTMOD_7;            // CCR1 reset/set
+   \   00001E   B240E0004404 MOV.W   #0xe0, &0x444
+    217          TB2CCR1 = left_forward_rate;   // P3.4 left Forward PWM duty cycle
+   \   000024   9242....5404 MOV.W   &left_forward_rate, &0x454
+    218          TB2CCTL2 = OUTMOD_7;            // CCR2 reset/set
+   \   00002A   B240E0004604 MOV.W   #0xe0, &0x446
+    219          TB2CCR2 = left_reverse_rate;   // P3.5 left Reverse PWM duty cycle
+   \   000030   9242....5604 MOV.W   &left_reverse_rate, &0x456
+    220          //------------------------------------------------------------------------------
+    221          }
+   \   000036   1001         RETA
+   \   000038                REQUIRE TB2CTL
+   \   000038                REQUIRE TB2CCR0
+   \   000038                REQUIRE TB2CCTL1
+   \   000038                REQUIRE TB2CCR1
+   \   000038                REQUIRE TB2CCTL2
+   \   000038                REQUIRE TB2CCR2
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   Display_Process
+        4   -> ClrDisplay
+        0   -> lcd_out
+        4   -> lcd_out
+      4   Five_msec_Delay
+      4   Init_Timer_A0
+      4   Init_Timer_B1
+      4   Init_Timer_B2
+      4   Timer_code
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      68  Display_Process
+      12  Five_msec_Delay
+      62  Init_Timer_A0
+      56  Init_Timer_B1
+      56  Init_Timer_B2
+       2  TA0CCR0
+       2  TA0CCR1
+       2  TA0CCTL0
+       2  TA0CCTL1
+       2  TA0CTL
+       2  TA0EX0
+       2  TB1CCR0
+       2  TB1CCR1
+       2  TB1CCR2
+       2  TB1CCTL1
+       2  TB1CCTL2
+       2  TB1CTL
+       2  TB2CCR0
+       2  TB2CCR1
+       2  TB2CCR2
+       2  TB2CCTL1
+       2  TB2CCTL2
+       2  TB2CTL
+      22  Timer_code
+       2  left_forward_rate
+       2  left_reverse_rate
+       2  right_forward_rate
+       2  right_reverse_rate
+
+ 
+ 276 bytes in segment CODE
+  36 bytes in segment DATA16_AN
+   8 bytes in segment DATA16_Z
+ 
+ 276 bytes of CODE memory
+   8 bytes of DATA memory (+ 36 bytes shared)
+
+Errors: none
+Warnings: none

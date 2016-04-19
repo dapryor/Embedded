@@ -1,0 +1,291 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           18/Apr/2016  23:20:34
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  
+#        C:\Users\David\Documents\ECE 306\Project-08\interrupts_timers.c
+#    Command line  =  
+#        "C:\Users\David\Documents\ECE 306\Project-08\interrupts_timers.c" -lC
+#        "C:\Users\David\Documents\ECE 306\Project-08\Debug\List" -o
+#        "C:\Users\David\Documents\ECE 306\Project-08\Debug\Obj" --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\Documents\ECE
+#        306\Project-08\Debug\List\interrupts_timers.lst
+#    Object file   =  
+#        C:\Users\David\Documents\ECE
+#        306\Project-08\Debug\Obj\interrupts_timers.r43
+#
+###############################################################################
+
+C:\Users\David\Documents\ECE 306\Project-08\interrupts_timers.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : interrupts_timers.c
+      3          //
+      4          //  Description: This file contains the interrupts used for timers
+      5          //
+      6          //
+      7          //  David Pryor
+      8          //  Feb 2016
+      9          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+     10          //------------------------------------------------------------------------------
+     11          #include "macros.h"
+     12          #include "functions.h"
+     13          #include "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x23a
+   \   union <unnamed> _A_PBIE_L
+   \                     _A_PBIE_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x23c
+   \   union <unnamed> _A_PBIFG_L
+   \                     _A_PBIFG_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x342
+   \   unsigned short volatile TA0CCTL0
+   \                     TA0CCTL0:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x352
+   \   unsigned short volatile TA0CCR0
+   \                     TA0CCR0:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x354
+   \   unsigned short volatile TA0CCR1
+   \                     TA0CCR1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x36e
+   \   unsigned short volatile TA0IV
+   \                     TA0IV:
+   \   000000                DS8 2
+     14          extern volatile unsigned int five_msec_delay;
+     15          extern volatile unsigned int switch_one_pressed;
+     16          extern volatile unsigned int switch_two_pressed;
+     17          extern volatile unsigned int switch_one_debounce;
+     18          extern volatile unsigned int switch_two_debounce;
+     19          extern volatile unsigned int debounce_count_one;
+     20          extern volatile unsigned int debounce_count_two;
+     21          extern char *display_4;
+     22          extern volatile unsigned int display_count;
+     23          extern volatile unsigned int P5_counter;
+     24          //------------------------------------------------------------------------------
+     25          // TimerA0 0 Interrupt handler
+     26          #pragma vector = TIMER0_A0_VECTOR
+
+   \                                 In  segment ISR_CODE, align 2
+     27          __interrupt void Timer0_A0_ISR(void){
+   \                     Timer0_A0_ISR:
+     28            //==============================================================================
+     29            // Timer A0 interrupt CCR0
+     30            // 
+     31            // Description: creates the interrupt for the timer CCR0
+     32            //
+     33            // Passed : no variables passed
+     34            // Locals: no variables declared
+     35            // Returned: no values returned
+     36            // Globals:     extern volatile unsigned int switch_one_pressed;
+     37            //              extern volatile unsigned int switch_two_pressed;
+     38            //              extern volatile unsigned int switch_one_debounce;
+     39            //              extern volatile unsigned int switch_two_debounce;
+     40            //              extern volatile unsigned int debounce_count_one;
+     41            //              extern volatile unsigned int debounce_count_two;
+     42            //
+     43            // Author: David Pryor
+     44            // Date: Feb 2016
+     45            // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     46            //============================================================================
+     47          
+     48            if(debounce_count_one < DEBOUNCE_MAX){
+   \   000000   B2900A00.... CMP.W   #0xa, &debounce_count_one
+   \   000006   022C         JC      ??Timer0_A0_ISR_0
+     49              debounce_count_one++;       //if # of overflows is less than required increment
+   \   000008   9253....     ADD.W   #0x1, &debounce_count_one
+     50            }
+     51            if(debounce_count_two < DEBOUNCE_MAX){
+   \                     ??Timer0_A0_ISR_0:
+   \   00000C   B2900A00.... CMP.W   #0xa, &debounce_count_two
+   \   000012   022C         JC      ??Timer0_A0_ISR_1
+     52              debounce_count_two++;       //if # of overflows is less than required increment
+   \   000014   9253....     ADD.W   #0x1, &debounce_count_two
+     53            }
+     54            if(debounce_count_one >= DEBOUNCE_MAX){
+   \                     ??Timer0_A0_ISR_1:
+   \   000018   B2900A00.... CMP.W   #0xa, &debounce_count_one
+   \   00001E   0628         JNC     ??Timer0_A0_ISR_2
+     55              P4IFG &= ~SW1;              //clear interrupts
+   \   000020   D2C33D02     BIC.B   #0x1, &0x23d
+     56              P4IE |= SW1;                //enable switch interrupts
+   \   000024   D2D33B02     BIS.B   #0x1, &0x23b
+     57              switch_one_debounce = SWITCH_OFF;
+   \   000028   8243....     MOV.W   #0x0, &switch_one_debounce
+     58            }
+     59            if(debounce_count_two >= DEBOUNCE_MAX){
+   \                     ??Timer0_A0_ISR_2:
+   \   00002C   B2900A00.... CMP.W   #0xa, &debounce_count_two
+   \   000032   0628         JNC     ??Timer0_A0_ISR_3
+     60              P4IFG &= ~SW2;              //clear interrupts
+   \   000034   E2C33D02     BIC.B   #0x2, &0x23d
+     61              P4IE |= SW2;                //enable switch interrupts
+   \   000038   E2D33B02     BIS.B   #0x2, &0x23b
+     62              switch_two_debounce = SWITCH_OFF;
+   \   00003C   8243....     MOV.W   #0x0, &switch_two_debounce
+     63            }
+     64            if(!switch_two_debounce && !switch_one_debounce){ //if no debounces
+   \                     ??Timer0_A0_ISR_3:
+   \   000040   8293....     CMP.W   #0x0, &switch_two_debounce
+   \   000044   0620         JNE     ??Timer0_A0_ISR_4
+   \   000046   8293....     CMP.W   #0x0, &switch_one_debounce
+   \   00004A   0320         JNE     ??Timer0_A0_ISR_4
+     65              TA0CCTL0 &= ~CCIE;          //turn off interrupt
+   \   00004C   B2C010004203 BIC.W   #0x10, &0x342
+     66            }
+     67            
+     68            TA0CCR0 += TA0CCR0_INTERVAL;  // Add Offset to TACCR0
+   \                     ??Timer0_A0_ISR_4:
+   \   000052   B250A8615203 ADD.W   #0x61a8, &0x352
+     69          }
+   \   000058   0013         RETI
+   \   00005A                REQUIRE _A_PBIFG_L
+   \   00005A                REQUIRE _A_PBIE_L
+   \   00005A                REQUIRE TA0CCTL0
+   \   00005A                REQUIRE TA0CCR0
+     70          //----------------------------------------------------------------------------
+     71          
+     72          // TimerA0 1-2, Overflow Interrupt Vector (TAIV) handler
+     73          #pragma vector = TIMER0_A1_VECTOR
+
+   \                                 In  segment ISR_CODE, align 2
+     74          __interrupt void TIMER0_A1_ISR(void){
+   \                     TIMER0_A1_ISR:
+   \   000000   3F15         PUSHM.W #0x4, R15
+     75            //==============================================================================
+     76            // Timer A0 interrupt CCR1 and 2
+     77            // 
+     78            // Description: creates the interrupt for the timer CCR1 and CCR2
+     79            //
+     80            // Passed : no variables passed
+     81            // Locals: no variables declared
+     82            // Returned: no values returned
+     83            // Globals:     extern volatile unsigned int switch_one_pressed;
+     84            //              extern volatile unsigned int switch_two_pressed;
+     85            //              extern volatile unsigned int switch_one_debounce;
+     86            //              extern volatile unsigned int switch_two_debounce;
+     87            //              volatile unsigned int LED_Count
+     88            //
+     89            // Author: David Pryor
+     90            // Date: Feb 2016
+     91            // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     92            //============================================================================
+     93           switch(__even_in_range(TA0IV,OVERFLOW)){
+   \   000002   1F426E03     MOV.W   &0x36e, R15
+   \   000006   E00F         ADDA    R15, PC
+   \                     `?<Jumptable for TIMER0_A1_ISR>_0`:
+   \   000008   183C         JMP     ??TIMER0_A1_ISR_0
+   \   00000A   063C         JMP     ??TIMER0_A1_ISR_2
+   \   00000C   163C         JMP     ??TIMER0_A1_ISR_0
+   \   00000E   153C         JMP     ??TIMER0_A1_ISR_0
+   \   000010   143C         JMP     ??TIMER0_A1_ISR_0
+   \   000012   133C         JMP     ??TIMER0_A1_ISR_0
+   \   000014   123C         JMP     ??TIMER0_A1_ISR_0
+   \   000016   113C         JMP     ??TIMER0_A1_ISR_0
+     94           case SWITCH_OFF: break;                 // No interrupt
+     95           
+     96           case CCR1:                     // CCR1 not used
+     97           five_msec_delay++;
+   \                     ??TIMER0_A1_ISR_2:
+   \   000018   9253....     ADD.W   #0x1, &five_msec_delay
+     98           display_count++;
+   \   00001C   9253....     ADD.W   #0x1, &display_count
+     99           P5_counter++;
+   \   000020   9253....     ADD.W   #0x1, &P5_counter
+    100           if(display_count >= FOR_150_MSEC){    // update screen every 250 msec
+   \   000024   B2901E00.... CMP.W   #0x1e, &display_count
+   \   00002A   0428         JNC     ??TIMER0_A1_ISR_1
+    101                Display_Process();
+   \   00002C   ........     CALLA   #Display_Process
+    102                display_count = SWITCH_OFF;
+   \   000030   8243....     MOV.W   #0x0, &display_count
+    103           }
+    104           TA0CCR1 += TA0CCR1_INTERVAL;   // Add Offset to TACCR1
+   \                     ??TIMER0_A1_ISR_1:
+   \   000034   B250C4095403 ADD.W   #0x9c4, &0x354
+    105           break;
+    106           
+    107           //case CCR2: // CCR2 not used
+    108           //...... Add What you need happen in the interrupt ......
+    109           //TA0CCR2 += TA0CCR2_INTERVAL; // Add Offset to TACCR2
+    110           //break;
+    111           //case OVERFLOW: // overflow
+    112           //...... Add What you need happen in the interrupt ......
+    113           //break;
+    114           default: break;
+    115           }
+    116          }
+   \                     ??TIMER0_A1_ISR_0:
+   \   00003A   3C17         POPM.W  #0x4, R15
+   \   00003C   0013         RETI
+   \   00003E                REQUIRE TA0CCR1
+   \   00003E                REQUIRE TA0IV
+
+   \                                 In  segment INTVEC, offset 0x58, root
+   \                     `??TIMER0_A1_ISR::??INTVEC 88`:
+   \   000058   ....         DC16    TIMER0_A1_ISR
+
+   \                                 In  segment INTVEC, offset 0x5a, root
+   \                     `??Timer0_A0_ISR::??INTVEC 90`:
+   \   00005A   ....         DC16    Timer0_A0_ISR
+    117          //----------------------------------------------------------------------------
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+     12   TIMER0_A1_ISR
+       12   -> Display_Process
+      4   Timer0_A0_ISR
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       2  TA0CCR0
+       2  TA0CCR1
+       2  TA0CCTL0
+       2  TA0IV
+      62  TIMER0_A1_ISR
+       2  TIMER0_A1_ISR::??INTVEC 88
+      90  Timer0_A0_ISR
+       2  Timer0_A0_ISR::??INTVEC 90
+       2  _A_PBIE_L
+       2  _A_PBIFG_L
+
+ 
+  12 bytes in segment DATA16_AN
+   4 bytes in segment INTVEC
+ 152 bytes in segment ISR_CODE
+ 
+ 152 bytes of CODE  memory
+   0 bytes of CONST memory (+  4 bytes shared)
+   0 bytes of DATA  memory (+ 12 bytes shared)
+
+Errors: none
+Warnings: none

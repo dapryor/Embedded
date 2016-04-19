@@ -90,6 +90,15 @@
       <file>$PROJ_DIR$\Debug\Obj\command_Structure.__cstat.et</file>
       <file>$PROJ_DIR$\command_Structure.c</file>
       <file>$PROJ_DIR$\Debug\List\command_Structure.lst</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\stdlib.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Product.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\xencoding_limits.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\ycheck.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\ysizet.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Threads.h</file>
+      <file>$TOOLKIT_DIR$\lib\dlib\dl430xlsfn.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\yvals.h</file>
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
@@ -493,7 +502,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 51 46 6 39 7 27</file>
+          <file> 88 87 89 86 51 7 91 92 27 6 85 90 39 46 84</file>
         </tool>
       </inputs>
     </file>
