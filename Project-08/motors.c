@@ -150,6 +150,22 @@ void right_wheel_reverse_off(void){
   //}
 }
 
-void toggle_IR_LED(void){
-  P1OUT   ^= IR_LED;     // P1 IR_LED Port Pin toggle
+void IR_LED_ON(void){
+  P1OUT   |= IR_LED;     // P1 IR_LED Port Pin toggle
+}
+
+void IR_LED_OFF(void){
+  P1OUT   |= IR_LED;     // P1 IR_LED Port Pin toggle
+}
+
+void active_breaking_left(void){
+  left_wheel_reverse_on();
+  Five_msec_Delay(1);
+  left_wheel_reverse_off();
+}
+
+void active_breaking_right(void){
+  right_wheel_reverse_on();
+  Five_msec_Delay(1);
+  right_wheel_reverse_off();
 }

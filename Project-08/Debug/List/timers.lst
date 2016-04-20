@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           18/Apr/2016  23:20:34
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           19/Apr/2016  21:44:30
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -59,6 +59,11 @@ C:\Users\David\Documents\ECE 306\Project-08\timers.c
    \                     TA0CCTL1:
    \   000000                DS8 2
 
+   \                                 In  segment DATA16_AN, at 0x346
+   \   unsigned short volatile TA0CCTL2
+   \                     TA0CCTL2:
+   \   000000                DS8 2
+
    \                                 In  segment DATA16_AN, at 0x352
    \   unsigned short volatile TA0CCR0
    \                     TA0CCR0:
@@ -67,6 +72,11 @@ C:\Users\David\Documents\ECE 306\Project-08\timers.c
    \                                 In  segment DATA16_AN, at 0x354
    \   unsigned short volatile TA0CCR1
    \                     TA0CCR1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x356
+   \   unsigned short volatile TA0CCR2
+   \                     TA0CCR2:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_AN, at 0x360
@@ -344,16 +354,20 @@ C:\Users\David\Documents\ECE 306\Project-08\timers.c
     151           TA0CCTL1 |= CCIE; // CCR1 enable interrupt
    \   000036   B2D010004403 BIS.W   #0x10, &0x344
     152          
-    153          // TA0CCR2 = TA0CCR2_INTERVAL; // CCR2
-    154          // TA0CCTL2 |= CCIE; // CCR2 enable interrupt
+    153           TA0CCR2 = TA0CCR2_INTERVAL; // CCR2
+   \   00003C   B240FA005603 MOV.W   #0xfa, &0x356
+    154           TA0CCTL2 |= CCIE; // CCR2 enable interrupt
+   \   000042   B2D010004603 BIS.W   #0x10, &0x346
     155          }
-   \   00003C   1001         RETA
-   \   00003E                REQUIRE TA0CTL
-   \   00003E                REQUIRE TA0EX0
-   \   00003E                REQUIRE TA0CCR0
-   \   00003E                REQUIRE TA0CCTL0
-   \   00003E                REQUIRE TA0CCR1
-   \   00003E                REQUIRE TA0CCTL1
+   \   000048   1001         RETA
+   \   00004A                REQUIRE TA0CTL
+   \   00004A                REQUIRE TA0EX0
+   \   00004A                REQUIRE TA0CCR0
+   \   00004A                REQUIRE TA0CCTL0
+   \   00004A                REQUIRE TA0CCR1
+   \   00004A                REQUIRE TA0CCTL1
+   \   00004A                REQUIRE TA0CCR2
+   \   00004A                REQUIRE TA0CCTL2
     156          //------------------------------------------------------------------------------ 
     157          
     158          
@@ -482,13 +496,15 @@ C:\Users\David\Documents\ECE 306\Project-08\timers.c
    -----  --------------
       68  Display_Process
       12  Five_msec_Delay
-      62  Init_Timer_A0
+      74  Init_Timer_A0
       56  Init_Timer_B1
       56  Init_Timer_B2
        2  TA0CCR0
        2  TA0CCR1
+       2  TA0CCR2
        2  TA0CCTL0
        2  TA0CCTL1
+       2  TA0CCTL2
        2  TA0CTL
        2  TA0EX0
        2  TB1CCR0
@@ -510,12 +526,12 @@ C:\Users\David\Documents\ECE 306\Project-08\timers.c
        2  right_reverse_rate
 
  
- 276 bytes in segment CODE
-  36 bytes in segment DATA16_AN
+ 288 bytes in segment CODE
+  40 bytes in segment DATA16_AN
    8 bytes in segment DATA16_Z
  
- 276 bytes of CODE memory
-   8 bytes of DATA memory (+ 36 bytes shared)
+ 288 bytes of CODE memory
+   8 bytes of DATA memory (+ 40 bytes shared)
 
 Errors: none
 Warnings: none

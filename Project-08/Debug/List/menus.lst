@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           18/Apr/2016  23:20:34
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           19/Apr/2016  22:03:40
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -78,196 +78,399 @@ C:\Users\David\Documents\ECE 306\Project-08\menus.c
    \   000000                DS8 2
    \   000002                REQUIRE `?<Initializer for MainFG>`
      26          
-     27          
+     27          //testing black line
+     28          extern volatile unsigned int ADC_Left_Detector;
+     29          extern volatile unsigned int ADC_Right_Detector;
+     30          extern volatile unsigned int right_forward_rate;
+     31          extern volatile unsigned int right_reverse_rate;
+     32          extern volatile unsigned int left_forward_rate;
+     33          extern volatile unsigned int left_reverse_rate;
+     34          extern unsigned int thresholdR;
+     35          extern unsigned int thresholdL;
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     36          unsigned int start_on_whiteFG = FALSE;
+   \                     start_on_whiteFG:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     37          unsigned int errorR=FALSE;
+   \                     errorR:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     38          unsigned int errorL=FALSE;
+   \                     errorL:
+   \   000000                DS8 2
+     39          extern volatile unsigned int motor_time;
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     40          unsigned int white_val;
+   \                     white_val:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     41          unsigned int black_val;
+   \                     black_val:
+   \   000000                DS8 2
+     42          
 
    \                                 In  segment CODE, align 2
-     28          void Menu_Process(void){
+     43          void Menu_Process(void){
    \                     Menu_Process:
-     29          // Menu Process
-     30          // 
-     31          // Description: This function creates the main menu.
-     32          //
-     33          // Passed : no variables passed
-     34          // Locals: no variables declared
-     35          // Returned: no values returned
-     36          // Globals:    
-     37          //              char* display_1
-     38          //              char* display_2
-     39          //              char* display_3
-     40          //              char* display_4
-     41          //              unsigned int menu_items;
-     42          //              volatile unsigned int ADC_Thumb;
-     43          //              volatile unsigned int switch_one_pressed;
-     44          //              volatile unsigned int switch_two_pressed;
-     45          //
-     46          // Author: David Pryor
-     47          // Date: April 2016
-     48          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
-     49          //==============================================================================
-     50            lcd_4line();// going to default lcd screen size
-   \   000000   ........     CALLA   #lcd_4line
-     51            //---------------------RESISTOR MENU------------------------------------------
-     52            if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_THREE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_TWO || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_ONE )){
-   \   000004   8293....     CMP.W   #0x0, &menu_items
-   \   000008   2A24         JEQ     ??Menu_Process_2
-   \   00000A   1F42....     MOV.W   &ADC_Thumb, R15
-   \   00000E   3FF080FF     AND.W   #0xff80, R15
-   \   000012   3F900001     CMP.W   #0x100, R15
-   \   000016   0B24         JEQ     ??Menu_Process_3
-   \   000018   1F42....     MOV.W   &ADC_Thumb, R15
-   \   00001C   3FF080FF     AND.W   #0xff80, R15
-   \   000020   3F908000     CMP.W   #0x80, R15
-   \   000024   0424         JEQ     ??Menu_Process_3
-   \   000026   B2B080FF.... BIT.W   #0xff80, &ADC_Thumb
-   \   00002C   1820         JNE     ??Menu_Process_2
-     53              display_1 = " A1  Baud ";
-   \                     ??Menu_Process_3:
-   \   00002E   B240........ MOV.W   #`?<Constant " A1  Baud ">`, &display_1
-     54              display_2 = "   Menu   ";  
-   \   000034   B240........ MOV.W   #`?<Constant "   Menu   ">`, &display_2
-     55              display_3 = "";
-   \   00003A   B240........ MOV.W   #`?<Constant "">`, &display_3
-     56              display_4 = "";
-   \   000040   B240........ MOV.W   #`?<Constant "">`, &display_4
-     57              while(switch_one_pressed){
+   \   000000   3B15         PUSHM.W #0x4, R11
+     44          // Menu Process
+     45          // 
+     46          // Description: This function creates the main menu.
+     47          //
+     48          // Passed : no variables passed
+     49          // Locals: no variables declared
+     50          // Returned: no values returned
+     51          // Globals:    
+     52          //              char* display_1
+     53          //              char* display_2
+     54          //              char* display_3
+     55          //              char* display_4
+     56          //              unsigned int menu_items;
+     57          //              volatile unsigned int ADC_Thumb;
+     58          //              volatile unsigned int switch_one_pressed;
+     59          //              volatile unsigned int switch_two_pressed;
+     60          //
+     61          // Author: David Pryor
+     62          // Date: April 2016
+     63          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     64          //==============================================================================
+     65            unsigned int motor_time_prev=RESET;
+   \   000002   0A43         MOV.W   #0x0, R10
+     66            
+     67            lcd_4line();// going to default lcd screen size
+   \   000004   ........     CALLA   #lcd_4line
+     68            //---------------------RESISTOR MENU------------------------------------------
+     69            if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_THREE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_TWO || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_ONE )){
+   \   000008   8293....     CMP.W   #0x0, &menu_items
+   \   00000C   2A24         JEQ     ??Menu_Process_10
+   \   00000E   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000012   3FF080FF     AND.W   #0xff80, R15
+   \   000016   3F900001     CMP.W   #0x100, R15
+   \   00001A   0B24         JEQ     ??Menu_Process_11
+   \   00001C   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000020   3FF080FF     AND.W   #0xff80, R15
+   \   000024   3F908000     CMP.W   #0x80, R15
+   \   000028   0424         JEQ     ??Menu_Process_11
+   \   00002A   B2B080FF.... BIT.W   #0xff80, &ADC_Thumb
+   \   000030   1820         JNE     ??Menu_Process_10
+     70              display_1 = " A1  Baud ";
+   \                     ??Menu_Process_11:
+   \   000032   B240........ MOV.W   #`?<Constant " A1  Baud ">`, &display_1
+     71              display_2 = "   Menu   ";  
+   \   000038   B240........ MOV.W   #`?<Constant "   Menu   ">`, &display_2
+     72              display_3 = "";
+   \   00003E   B240........ MOV.W   #`?<Constant "">`, &display_3
+     73              display_4 = "";
+   \   000044   B240........ MOV.W   #`?<Constant "">`, &display_4
+     74              while(switch_one_pressed){
    \                     ??Menu_Process_0:
-   \   000046   8293....     CMP.W   #0x0, &switch_one_pressed
-   \   00004A   5E24         JEQ     ??Menu_Process_4
-     58                switch_two_pressed = FALSE;
-   \   00004C   8243....     MOV.W   #0x0, &switch_two_pressed
-     59                BaudMenuFG = TRUE;
-   \   000050   9243....     MOV.W   #0x1, &BaudMenuFG
-     60                MainFG = FALSE;
-   \   000054   8243....     MOV.W   #0x0, &MainFG
-     61                switch_one_pressed = FALSE;
-   \   000058   8243....     MOV.W   #0x0, &switch_one_pressed
-   \   00005C   F43F         JMP     ??Menu_Process_0
-     62              }  
-     63            }
-     64            //---------------------SHAPES MENU--------------------------------------------
-     65            else if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SIX || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FIVE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FOUR )){
-   \                     ??Menu_Process_2:
-   \   00005E   8293....     CMP.W   #0x0, &menu_items
-   \   000062   2D24         JEQ     ??Menu_Process_5
-   \   000064   1F42....     MOV.W   &ADC_Thumb, R15
-   \   000068   3FF080FF     AND.W   #0xff80, R15
-   \   00006C   3F908002     CMP.W   #0x280, R15
-   \   000070   0E24         JEQ     ??Menu_Process_6
-   \   000072   1F42....     MOV.W   &ADC_Thumb, R15
-   \   000076   3FF080FF     AND.W   #0xff80, R15
-   \   00007A   3F900002     CMP.W   #0x200, R15
-   \   00007E   0724         JEQ     ??Menu_Process_6
-   \   000080   1F42....     MOV.W   &ADC_Thumb, R15
-   \   000084   3FF080FF     AND.W   #0xff80, R15
-   \   000088   3F908001     CMP.W   #0x180, R15
-   \   00008C   1820         JNE     ??Menu_Process_5
-     66              display_1 = "   IOT    ";
-   \                     ??Menu_Process_6:
-   \   00008E   B240........ MOV.W   #`?<Constant "   IOT    ">`, &display_1
-     67              display_2 = "   Menu   ";  
-   \   000094   B240........ MOV.W   #`?<Constant "   Menu   ">`, &display_2
-     68              display_3 = "";
-   \   00009A   B240........ MOV.W   #`?<Constant "">`, &display_3
-     69              display_4 = "";
-   \   0000A0   B240........ MOV.W   #`?<Constant "">`, &display_4
-     70              if(switch_one_pressed){
-   \   0000A6   8293....     CMP.W   #0x0, &switch_one_pressed
-   \   0000AA   2E24         JEQ     ??Menu_Process_4
-     71                switch_two_pressed = FALSE;
-   \   0000AC   8243....     MOV.W   #0x0, &switch_two_pressed
-     72                IOTMenuFG = TRUE;
-   \   0000B0   9243....     MOV.W   #0x1, &IOTMenuFG
-     73                MainFG = FALSE;
-   \   0000B4   8243....     MOV.W   #0x0, &MainFG
-     74                switch_one_pressed = FALSE;
-   \   0000B8   8243....     MOV.W   #0x0, &switch_one_pressed
-   \   0000BC   1001         RETA
-     75          
-     76              }  
-     77            }
-     78            //---------------------SONG MENU----------------------------------------------
-     79            else if(menu_items  && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_EIGHT || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SEVEN)){
-   \                     ??Menu_Process_5:
-   \   0000BE   8293....     CMP.W   #0x0, &menu_items
-   \   0000C2   2224         JEQ     ??Menu_Process_4
-   \   0000C4   1F42....     MOV.W   &ADC_Thumb, R15
-   \   0000C8   3FF080FF     AND.W   #0xff80, R15
-   \   0000CC   3F908003     CMP.W   #0x380, R15
-   \   0000D0   0724         JEQ     ??Menu_Process_7
-   \   0000D2   1F42....     MOV.W   &ADC_Thumb, R15
-   \   0000D6   3FF080FF     AND.W   #0xff80, R15
-   \   0000DA   3F900003     CMP.W   #0x300, R15
-   \   0000DE   1420         JNE     ??Menu_Process_4
-     80              display_1 = "   black   ";
-   \                     ??Menu_Process_7:
-   \   0000E0   B240........ MOV.W   #`?<Constant "   black   ">`, &display_1
-     81              display_2 = "    test   ";  
-   \   0000E6   B240........ MOV.W   #`?<Constant "    test   ">`, &display_2
-     82              display_3 = "";
-   \   0000EC   B240........ MOV.W   #`?<Constant "">`, &display_3
-     83              display_4 = "";
-   \   0000F2   B240........ MOV.W   #`?<Constant "">`, &display_4
-     84              if(switch_one_pressed){
-   \   0000F8   8293....     CMP.W   #0x0, &switch_one_pressed
-   \   0000FC   0524         JEQ     ??Menu_Process_4
-     85                switch_two_pressed = FALSE;
-   \   0000FE   8243....     MOV.W   #0x0, &switch_two_pressed
-     86                switch_one_pressed = FALSE;
-   \   000102   8243....     MOV.W   #0x0, &switch_one_pressed
-     87                //some declarations (wheel rate, etc)
-     88                //check if starting on white
-     89                
-     90                while(ALWAYS){ //doing black line detection until done with the black line
+   \   00004A   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   00004E   FB24         JEQ     ??Menu_Process_12
+     75                switch_two_pressed = FALSE;
+   \   000050   8243....     MOV.W   #0x0, &switch_two_pressed
+     76                BaudMenuFG = TRUE;
+   \   000054   9243....     MOV.W   #0x1, &BaudMenuFG
+     77                MainFG = FALSE;
+   \   000058   8243....     MOV.W   #0x0, &MainFG
+     78                switch_one_pressed = FALSE;
+   \   00005C   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   000060   F43F         JMP     ??Menu_Process_0
+     79              }  
+     80            }
+     81            //---------------------SHAPES MENU--------------------------------------------
+     82            else if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SIX || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FIVE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FOUR )){
+   \                     ??Menu_Process_10:
+   \   000062   8293....     CMP.W   #0x0, &menu_items
+   \   000066   2D24         JEQ     ??Menu_Process_13
+   \   000068   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00006C   3FF080FF     AND.W   #0xff80, R15
+   \   000070   3F908002     CMP.W   #0x280, R15
+   \   000074   0E24         JEQ     ??Menu_Process_14
+   \   000076   1F42....     MOV.W   &ADC_Thumb, R15
+   \   00007A   3FF080FF     AND.W   #0xff80, R15
+   \   00007E   3F900002     CMP.W   #0x200, R15
+   \   000082   0724         JEQ     ??Menu_Process_14
+   \   000084   1F42....     MOV.W   &ADC_Thumb, R15
+   \   000088   3FF080FF     AND.W   #0xff80, R15
+   \   00008C   3F908001     CMP.W   #0x180, R15
+   \   000090   1820         JNE     ??Menu_Process_13
+     83              display_1 = "   IOT    ";
+   \                     ??Menu_Process_14:
+   \   000092   B240........ MOV.W   #`?<Constant "   IOT    ">`, &display_1
+     84              display_2 = "   Menu   ";  
+   \   000098   B240........ MOV.W   #`?<Constant "   Menu   ">`, &display_2
+     85              display_3 = "";
+   \   00009E   B240........ MOV.W   #`?<Constant "">`, &display_3
+     86              display_4 = "";
+   \   0000A4   B240........ MOV.W   #`?<Constant "">`, &display_4
+     87              if(switch_one_pressed){
+   \   0000AA   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   0000AE   CB24         JEQ     ??Menu_Process_12
+     88                switch_two_pressed = FALSE;
+   \   0000B0   8243....     MOV.W   #0x0, &switch_two_pressed
+     89                IOTMenuFG = TRUE;
+   \   0000B4   9243....     MOV.W   #0x1, &IOTMenuFG
+     90                MainFG = FALSE;
+   \   0000B8   8243....     MOV.W   #0x0, &MainFG
+     91                switch_one_pressed = FALSE;
+   \   0000BC   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   0000C0   C23C         JMP     ??Menu_Process_12
+     92          
+     93              }  
+     94            }
+     95            //---------------------SONG MENU----------------------------------------------
+     96            else if(menu_items  && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_EIGHT || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SEVEN)){
+   \                     ??Menu_Process_13:
+   \   0000C2   8293....     CMP.W   #0x0, &menu_items
+   \   0000C6   BF24         JEQ     ??Menu_Process_12
+   \   0000C8   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000CC   3FF080FF     AND.W   #0xff80, R15
+   \   0000D0   3F908003     CMP.W   #0x380, R15
+   \   0000D4   0724         JEQ     ??Menu_Process_15
+   \   0000D6   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000DA   3FF080FF     AND.W   #0xff80, R15
+   \   0000DE   3F900003     CMP.W   #0x300, R15
+   \   0000E2   B120         JNE     ??Menu_Process_12
+     97              display_1 = "   black   ";
+   \                     ??Menu_Process_15:
+   \   0000E4   B240........ MOV.W   #`?<Constant "   black   ">`, &display_1
+     98              display_2 = "    test   ";  
+   \   0000EA   B240........ MOV.W   #`?<Constant "    test   ">`, &display_2
+     99              display_3 = "";
+   \   0000F0   B240........ MOV.W   #`?<Constant "">`, &display_3
+    100              display_4 = "";
+   \   0000F6   B240........ MOV.W   #`?<Constant "">`, &display_4
+    101              if(switch_one_pressed){
+   \   0000FC   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   000100   A224         JEQ     ??Menu_Process_12
+    102                switch_two_pressed = FALSE;
+   \   000102   8243....     MOV.W   #0x0, &switch_two_pressed
+    103                switch_one_pressed = FALSE;
+   \   000106   8243....     MOV.W   #0x0, &switch_one_pressed
+    104                //some declarations (wheel rate, IR ON, etc)
+    105                IR_LED_ON();
+   \   00010A   ........     CALLA   #IR_LED_ON
+    106                Five_msec_Delay(FOR_TENTH_SECOND);
+   \   00010E   3C401400     MOV.W   #0x14, R12
+   \   000112   ........     CALLA   #Five_msec_Delay
+    107                left_forward_rate = 1800;
+   \   000116   B2400807.... MOV.W   #0x708, &left_forward_rate
+    108                right_forward_rate = 1800;
+   \   00011C   B2400807.... MOV.W   #0x708, &right_forward_rate
+    109                left_reverse_rate = 2500;
+   \   000122   B240C409.... MOV.W   #0x9c4, &left_reverse_rate
+    110                right_reverse_rate = 2500;
+   \   000128   B240C409.... MOV.W   #0x9c4, &right_reverse_rate
+    111                start_on_whiteFG = FALSE;
+   \   00012E   8243....     MOV.W   #0x0, &start_on_whiteFG
+    112                int errorR=FALSE;
+   \   000132   0B43         MOV.W   #0x0, R11
+    113                int errorL=FALSE;
+   \   000134   0843         MOV.W   #0x0, R8
+    114          
+    115                //check if starting on white
+    116                if((ADC_Left_Detector) < thresholdL && ADC_Right_Detector < thresholdR){
+   \   000136   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
+   \   00013C   062C         JC      ??Menu_Process_8
+   \   00013E   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
+   \   000144   022C         JC      ??Menu_Process_8
+    117                  start_on_whiteFG = TRUE;
+   \   000146   9243....     MOV.W   #0x1, &start_on_whiteFG
+    118                }
+    119                
+    120                while(ALWAYS){ //doing black line detection until done with the black line
+    121                  if(start_on_whiteFG){
+   \                     ??Menu_Process_8:
+   \   00014A   8293....     CMP.W   #0x0, &start_on_whiteFG
+   \   00014E   1224         JEQ     ??Menu_Process_16
+    122                    start_on_whiteFG = FALSE; //only want this first time
+   \   000150   8243....     MOV.W   #0x0, &start_on_whiteFG
+    123                    left_wheel_forward_on(); //go forward
+   \   000154   ........     CALLA   #left_wheel_forward_on
+    124                    right_wheel_forward_on();
+   \   000158   ........     CALLA   #right_wheel_forward_on
+    125                    while(ADC_Left_Detector < thresholdL && ADC_Right_Detector < thresholdR); //do this until on black line
    \                     ??Menu_Process_1:
-   \   000106   FF3F         JMP     ??Menu_Process_1
-     91                  //clear time counter to zero
-     92                  //while loop for pivot correcting back from right sensor leaving
-     93                  //assign current time count to temp time count for error correcting
-     94                  //if statement checking if left spin correction needed from correcting right pivot
-     95                
-     96                  //clear time counter to zero
-     97                  //while loop for pivot correcting back from left sensor leaving
-     98                  //assign current time count to temp time count for error correcting
-     99                  //if statement checking if right spin correction needed from correcting right pivot
-    100                
-    101                  //if both sensors on black then go forward (WHILE)
-    102                  
-    103                  //if statement checking if wheel have left to right (work in progress)
-    104                }
-    105              }  
-    106            }
-    107          }
+   \   00015C   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
+   \   000162   042C         JC      ??Menu_Process_17
+   \   000164   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
+   \   00016A   F82B         JNC     ??Menu_Process_1
+    126                    left_wheel_forward_off();
+   \                     ??Menu_Process_17:
+   \   00016C   ........     CALLA   #left_wheel_forward_off
+    127                    right_wheel_forward_off();
+   \   000170   ........     CALLA   #right_wheel_forward_off
+    128                  }
+    129                  motor_time = RESET; //clear time counter to zero
+   \                     ??Menu_Process_16:
+   \   000174   8243....     MOV.W   #0x0, &motor_time
+    130                  
+    131                  while(ADC_Right_Detector < thresholdR){//while loop for pivot correcting back from right sensor leaving
+   \                     ??Menu_Process_3:
+   \   000178   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
+   \   00017E   0E2C         JC      ??Menu_Process_18
+    132                    left_wheel_forward_off();
+   \   000180   ........     CALLA   #left_wheel_forward_off
+    133                    right_wheel_forward_on();
+   \   000184   ........     CALLA   #right_wheel_forward_on
+    134                    while(ADC_Right_Detector < thresholdR); //do this until right sensor back on line
+   \                     ??Menu_Process_2:
+   \   000188   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
+   \   00018E   FC2B         JNC     ??Menu_Process_2
+    135                    right_wheel_forward_off();
+   \   000190   ........     CALLA   #right_wheel_forward_off
+    136                    active_breaking_right();
+   \   000194   ........     CALLA   #active_breaking_right
+    137                    errorR = TRUE;
+   \   000198   1B43         MOV.W   #0x1, R11
+   \   00019A   EE3F         JMP     ??Menu_Process_3
+    138                  }
+    139                  motor_time_prev = motor_time/3;//assign current time/2 count to temp time count for error correcting
+   \                     ??Menu_Process_18:
+   \   00019C   1C42....     MOV.W   &motor_time, R12
+   \   0001A0   3E400300     MOV.W   #0x3, R14
+   \   0001A4   ........     CALLA   #?DivMod16u
+   \   0001A8   0A4C         MOV.W   R12, R10
+    140                  if(errorR){//if statement checking if left spin correction needed from correcting right pivot
+   \   0001AA   0B93         CMP.W   #0x0, R11
+   \   0001AC   1124         JEQ     ??Menu_Process_19
+    141                    
+    142                    left_wheel_forward_on();
+   \   0001AE   ........     CALLA   #left_wheel_forward_on
+    143                    right_wheel_reverse_on();
+   \   0001B2   ........     CALLA   #right_wheel_reverse_on
+    144                    motor_time = RESET; //to count back up to previous time;
+   \   0001B6   8243....     MOV.W   #0x0, &motor_time
+    145                    while(motor_time < motor_time_prev && motor_time <= 500); //turn until time reached
    \                     ??Menu_Process_4:
-   \   000108   1001         RETA
-    108          
+   \   0001BA   829A....     CMP.W   R10, &motor_time
+   \   0001BE   042C         JC      ??Menu_Process_20
+   \   0001C0   B290F501.... CMP.W   #0x1f5, &motor_time
+   \   0001C6   F92B         JNC     ??Menu_Process_4
+    146                    right_wheel_reverse_off();
+   \                     ??Menu_Process_20:
+   \   0001C8   ........     CALLA   #right_wheel_reverse_off
+    147                    left_wheel_forward_off();
+   \   0001CC   ........     CALLA   #left_wheel_forward_off
+    148                  }
+    149                  
+    150                  motor_time = RESET; //clear time counter to zero
+   \                     ??Menu_Process_19:
+   \   0001D0   8243....     MOV.W   #0x0, &motor_time
+    151                  
+    152                  while((ADC_Left_Detector) < thresholdL){//while loop for pivot correcting back from left sensor leaving
+   \                     ??Menu_Process_6:
+   \   0001D4   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
+   \   0001DA   0E2C         JC      ??Menu_Process_21
+    153                    right_wheel_forward_off();
+   \   0001DC   ........     CALLA   #right_wheel_forward_off
+    154                    left_wheel_forward_on();
+   \   0001E0   ........     CALLA   #left_wheel_forward_on
+    155                    while(ADC_Left_Detector < thresholdL); //do this until left sensor back on line
+   \                     ??Menu_Process_5:
+   \   0001E4   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
+   \   0001EA   FC2B         JNC     ??Menu_Process_5
+    156                    left_wheel_forward_off();
+   \   0001EC   ........     CALLA   #left_wheel_forward_off
+    157                    active_breaking_left();
+   \   0001F0   ........     CALLA   #active_breaking_left
+    158                    errorL = TRUE;
+   \   0001F4   1843         MOV.W   #0x1, R8
+   \   0001F6   EE3F         JMP     ??Menu_Process_6
+    159                  }
+    160                  motor_time_prev = motor_time/3;//assign current time/2 count to temp time count for error correcting
+   \                     ??Menu_Process_21:
+   \   0001F8   1C42....     MOV.W   &motor_time, R12
+   \   0001FC   3E400300     MOV.W   #0x3, R14
+   \   000200   ........     CALLA   #?DivMod16u
+   \   000204   0A4C         MOV.W   R12, R10
+    161                  if(errorL){//if statement checking if right spin correction needed from correcting left pivot
+   \   000206   0893         CMP.W   #0x0, R8
+   \   000208   1124         JEQ     ??Menu_Process_9
+    162                    
+    163                    right_wheel_forward_on();
+   \   00020A   ........     CALLA   #right_wheel_forward_on
+    164                    left_wheel_reverse_on();
+   \   00020E   ........     CALLA   #left_wheel_reverse_on
+    165                    motor_time = RESET; //to count back up to previous time;
+   \   000212   8243....     MOV.W   #0x0, &motor_time
+    166                    while(motor_time < motor_time_prev && motor_time <= 500); //turn until time reached
+   \                     ??Menu_Process_7:
+   \   000216   829A....     CMP.W   R10, &motor_time
+   \   00021A   042C         JC      ??Menu_Process_22
+   \   00021C   B290F501.... CMP.W   #0x1f5, &motor_time
+   \   000222   F92B         JNC     ??Menu_Process_7
+    167                    left_wheel_reverse_off();
+   \                     ??Menu_Process_22:
+   \   000224   ........     CALLA   #left_wheel_reverse_off
+    168                    right_wheel_forward_off();
+   \   000228   ........     CALLA   #right_wheel_forward_off
+    169                  }
+    170                  
+    171                
+    172                  while((ADC_Left_Detector) >= thresholdL && ADC_Right_Detector >= thresholdR){//if both sensors on black then go forward (WHILE)
+   \                     ??Menu_Process_9:
+   \   00022C   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
+   \   000232   8B2B         JNC     ??Menu_Process_8
+   \   000234   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
+   \   00023A   872B         JNC     ??Menu_Process_8
+    173                    left_wheel_forward_on(); //go forward
+   \   00023C   ........     CALLA   #left_wheel_forward_on
+    174                    right_wheel_forward_on();
+   \   000240   ........     CALLA   #right_wheel_forward_on
+   \   000244   F33F         JMP     ??Menu_Process_9
+    175                  }
+    176                  //if statement checking if wheel have left to right (work in progress)
+    177                }
+    178                IR_LED_OFF();
+                       ^
+Warning[Pe111]: statement is unreachable
+    179              }  
+    180            }
+    181          }
+   \                     ??Menu_Process_12:
+   \   000246   3817         POPM.W  #0x4, R11
+   \   000248   1001         RETA
+    182          
 
    \                                 In  segment CODE, align 2
-    109          void Baud_Menu(void){
+    183          void Baud_Menu(void){
    \                     Baud_Menu:
-    110            // Resistor Menu
-    111          // 
-    112          // Description: This function creates the menu for the resistor values and colors.
-    113          //
-    114          // Passed : no variables passed
-    115          // Locals: no variables declared
-    116          // Returned: no values returned
-    117          // Globals:    
-    118          //              char* display_1
-    119          //              char* display_2
-    120          //              char* display_3
-    121          //              char* display_4
-    122          //              volatile unsigned int ADC_Thumb;
-    123          //              volatile unsigned int switch_one_pressed;
-    124          //              volatile unsigned int switch_two_pressed;
-    125          //
-    126          // Author: David Pryor
-    127          // Date: April 2016
-    128          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
-    129          //==============================================================================
-    130              lcd_4line();// going to default lcd screen size
+    184            // Resistor Menu
+    185          // 
+    186          // Description: This function creates the menu for the resistor values and colors.
+    187          //
+    188          // Passed : no variables passed
+    189          // Locals: no variables declared
+    190          // Returned: no values returned
+    191          // Globals:    
+    192          //              char* display_1
+    193          //              char* display_2
+    194          //              char* display_3
+    195          //              char* display_4
+    196          //              volatile unsigned int ADC_Thumb;
+    197          //              volatile unsigned int switch_one_pressed;
+    198          //              volatile unsigned int switch_two_pressed;
+    199          //
+    200          // Author: David Pryor
+    201          // Date: April 2016
+    202          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    203          //==============================================================================
+    204              lcd_4line();// going to default lcd screen size
    \   000000   ........     CALLA   #lcd_4line
-    131            //---------------------RESISTOR MENU------------------------------------------
-    132              if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_ONE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_TWO || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_THREE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FOUR )){
+    205            //---------------------RESISTOR MENU------------------------------------------
+    206              if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_ONE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_TWO || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_THREE || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FOUR )){
    \   000004   8293....     CMP.W   #0x0, &menu_items
    \   000008   2C24         JEQ     ??Baud_Menu_0
    \   00000A   B2B080FF.... BIT.W   #0xff80, &ADC_Thumb
@@ -284,364 +487,384 @@ C:\Users\David\Documents\ECE 306\Project-08\menus.c
    \   000032   3FF080FF     AND.W   #0xff80, R15
    \   000036   3F908001     CMP.W   #0x180, R15
    \   00003A   1320         JNE     ??Baud_Menu_0
-    133                  display_1=" A1 Baud  ";
+    207                  display_1=" A1 Baud  ";
    \                     ??Baud_Menu_1:
    \   00003C   B240........ MOV.W   #`?<Constant " A1 Baud  ">`, &display_1
-    134                  display_2="   9600   ";
+    208                  display_2="   9600   ";
    \   000042   B240........ MOV.W   #`?<Constant "   9600   ">`, &display_2
-    135                  if(switch_one_pressed){
+    209                  if(switch_one_pressed){
    \   000048   8293....     CMP.W   #0x0, &switch_one_pressed
-   \   00004C   3B24         JEQ     ??Baud_Menu_2
-    136                      Init_Serial_UCA1(1);
+   \   00004C   4C24         JEQ     ??Baud_Menu_2
+    210                      Init_Serial_UCA1(1);
    \   00004E   1C43         MOV.W   #0x1, R12
    \   000050   ........     CALLA   #Init_Serial_UCA1
-    137                      uart_puts("A1 Baud Rate at 9600\n");
+    211                      uart_puts("A1 Baud Rate at 9600\n");
    \   000054   3C40....     MOV.W   #`?<Constant "A1 Baud Rate at 9600\\n">`, R12
    \   000058   ........     CALLA   #uart_puts
-    138                      switch_one_pressed=FALSE;
+    212                      switch_one_pressed=FALSE;
    \   00005C   8243....     MOV.W   #0x0, &switch_one_pressed
-   \   000060   313C         JMP     ??Baud_Menu_2
-    139                  }
-    140            }
-    141            //---------------------SHAPES MENU--------------------------------------------
-    142              else if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FIVE  || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SIX || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SEVEN || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_EIGHT )){
+   \   000060   423C         JMP     ??Baud_Menu_2
+    213                  }
+    214            }
+    215            //---------------------SHAPES MENU--------------------------------------------
+    216              else if(menu_items && (BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_FIVE  || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SIX)){
    \                     ??Baud_Menu_0:
    \   000062   8293....     CMP.W   #0x0, &menu_items
-   \   000066   2E24         JEQ     ??Baud_Menu_2
+   \   000066   2124         JEQ     ??Baud_Menu_3
    \   000068   1F42....     MOV.W   &ADC_Thumb, R15
    \   00006C   3FF080FF     AND.W   #0xff80, R15
    \   000070   3F900002     CMP.W   #0x200, R15
-   \   000074   1524         JEQ     ??Baud_Menu_3
+   \   000074   0724         JEQ     ??Baud_Menu_4
    \   000076   1F42....     MOV.W   &ADC_Thumb, R15
    \   00007A   3FF080FF     AND.W   #0xff80, R15
    \   00007E   3F908002     CMP.W   #0x280, R15
-   \   000082   0E24         JEQ     ??Baud_Menu_3
-   \   000084   1F42....     MOV.W   &ADC_Thumb, R15
-   \   000088   3FF080FF     AND.W   #0xff80, R15
-   \   00008C   3F900003     CMP.W   #0x300, R15
-   \   000090   0724         JEQ     ??Baud_Menu_3
-   \   000092   1F42....     MOV.W   &ADC_Thumb, R15
-   \   000096   3FF080FF     AND.W   #0xff80, R15
-   \   00009A   3F908003     CMP.W   #0x380, R15
-   \   00009E   1220         JNE     ??Baud_Menu_2
-    143                  display_1=" A1 Baud  ";
-   \                     ??Baud_Menu_3:
-   \   0000A0   B240........ MOV.W   #`?<Constant " A1 Baud  ">`, &display_1
-    144                  display_2="  115200  ";
-   \   0000A6   B240........ MOV.W   #`?<Constant "  115200  ">`, &display_2
-    145                  if(switch_one_pressed){
-   \   0000AC   8293....     CMP.W   #0x0, &switch_one_pressed
-   \   0000B0   0924         JEQ     ??Baud_Menu_2
-    146                      uart_puts("A1 Baud Rate at 115200\n");
-   \   0000B2   3C40....     MOV.W   #`?<Constant "A1 Baud Rate at 115200\\n">`, R12
-   \   0000B6   ........     CALLA   #uart_puts
-    147                      Init_Serial_UCA1(0);
-   \   0000BA   0C43         MOV.W   #0x0, R12
-   \   0000BC   ........     CALLA   #Init_Serial_UCA1
-    148                      switch_one_pressed=FALSE;
-   \   0000C0   8243....     MOV.W   #0x0, &switch_one_pressed
-    149                  } 
-    150            }
-    151              if(switch_two_pressed){
-   \                     ??Baud_Menu_2:
-   \   0000C4   8293....     CMP.W   #0x0, &switch_two_pressed
-   \   0000C8   0824         JEQ     ??Baud_Menu_4
-    152                  switch_one_pressed = FALSE;
-   \   0000CA   8243....     MOV.W   #0x0, &switch_one_pressed
-    153                  switch_two_pressed = FALSE;
-   \   0000CE   8243....     MOV.W   #0x0, &switch_two_pressed
-    154                  BaudMenuFG=FALSE;
-   \   0000D2   8243....     MOV.W   #0x0, &BaudMenuFG
-    155                  MainFG=TRUE;
-   \   0000D6   9243....     MOV.W   #0x1, &MainFG
-    156              }
-    157          }
+   \   000082   1320         JNE     ??Baud_Menu_3
+    217                  display_1=" A1 Baud  ";
    \                     ??Baud_Menu_4:
-   \   0000DA   1001         RETA
-    158          
+   \   000084   B240........ MOV.W   #`?<Constant " A1 Baud  ">`, &display_1
+    218                  display_2="  115200  ";
+   \   00008A   B240........ MOV.W   #`?<Constant "  115200  ">`, &display_2
+    219                  if(switch_one_pressed){
+   \   000090   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   000094   2824         JEQ     ??Baud_Menu_2
+    220                      uart_puts("A1 Baud Rate at 115200\n");
+   \   000096   3C40....     MOV.W   #`?<Constant "A1 Baud Rate at 115200\\n">`, R12
+   \   00009A   ........     CALLA   #uart_puts
+    221                      Init_Serial_UCA1(0);
+   \   00009E   0C43         MOV.W   #0x0, R12
+   \   0000A0   ........     CALLA   #Init_Serial_UCA1
+    222                      switch_one_pressed=FALSE;
+   \   0000A4   8243....     MOV.W   #0x0, &switch_one_pressed
+   \   0000A8   1E3C         JMP     ??Baud_Menu_2
+    223                  } 
+    224              }
+    225              else if(menu_items && BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_SEVEN || BITSHIFT_R_SEVEN(ADC_Thumb) == MENU_ITEM_EIGHT ){
+   \                     ??Baud_Menu_3:
+   \   0000AA   8293....     CMP.W   #0x0, &menu_items
+   \   0000AE   0724         JEQ     ??Baud_Menu_5
+   \   0000B0   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000B4   3FF080FF     AND.W   #0xff80, R15
+   \   0000B8   3F900003     CMP.W   #0x300, R15
+   \   0000BC   0724         JEQ     ??Baud_Menu_6
+   \                     ??Baud_Menu_5:
+   \   0000BE   1F42....     MOV.W   &ADC_Thumb, R15
+   \   0000C2   3FF080FF     AND.W   #0xff80, R15
+   \   0000C6   3F908003     CMP.W   #0x380, R15
+   \   0000CA   0D20         JNE     ??Baud_Menu_2
+    226                  display_1=" calibrate";
+   \                     ??Baud_Menu_6:
+   \   0000CC   B240........ MOV.W   #`?<Constant " calibrate">`, &display_1
+    227                  display_2="";
+   \   0000D2   B240........ MOV.W   #`?<Constant "">`, &display_2
+    228                  if(switch_one_pressed){
+   \   0000D8   8293....     CMP.W   #0x0, &switch_one_pressed
+   \   0000DC   0424         JEQ     ??Baud_Menu_2
+    229                      IR_Calibration();
+   \   0000DE   ........     CALLA   #IR_Calibration
+    230                      switch_one_pressed=FALSE;
+   \   0000E2   8243....     MOV.W   #0x0, &switch_one_pressed
+    231                  } 
+    232              }
+    233              if(switch_two_pressed){
+   \                     ??Baud_Menu_2:
+   \   0000E6   8293....     CMP.W   #0x0, &switch_two_pressed
+   \   0000EA   0824         JEQ     ??Baud_Menu_7
+    234                  switch_one_pressed = FALSE;
+   \   0000EC   8243....     MOV.W   #0x0, &switch_one_pressed
+    235                  switch_two_pressed = FALSE;
+   \   0000F0   8243....     MOV.W   #0x0, &switch_two_pressed
+    236                  BaudMenuFG=FALSE;
+   \   0000F4   8243....     MOV.W   #0x0, &BaudMenuFG
+    237                  MainFG=TRUE;
+   \   0000F8   9243....     MOV.W   #0x1, &MainFG
+    238              }
+    239          }
+   \                     ??Baud_Menu_7:
+   \   0000FC   1001         RETA
+    240          
 
    \                                 In  segment CODE, align 2
-    159          void IOT_Menu(void){
+    241          void IOT_Menu(void){
    \                     IOT_Menu:
-    160          // Shape Menu
-    161          // 
-    162          // Description: This function creates the menu for the shapes.
-    163          //
-    164          // Passed : no variables passed
-    165          // Locals: no variables declared
-    166          // Returned: no values returned
-    167          // Globals:    
-    168          //              char* display_1
-    169          //              char* display_2
-    170          //              char* display_3
-    171          //              volatile unsigned int ADC_Thumb;
-    172          //              volatile unsigned int switch_one_pressed;
-    173          //              volatile unsigned int switch_two_pressed;
-    174          //
-    175          // Author: David Pryor
-    176          // Date: April 2016
-    177          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
-    178          //==============================================================================
-    179            
-    180              if((ADC_Thumb < SECTION_NINE_START)){
+    242          // Shape Menu
+    243          // 
+    244          // Description: This function creates the menu for the shapes.
+    245          //
+    246          // Passed : no variables passed
+    247          // Locals: no variables declared
+    248          // Returned: no values returned
+    249          // Globals:    
+    250          //              char* display_1
+    251          //              char* display_2
+    252          //              char* display_3
+    253          //              volatile unsigned int ADC_Thumb;
+    254          //              volatile unsigned int switch_one_pressed;
+    255          //              volatile unsigned int switch_two_pressed;
+    256          //
+    257          // Author: David Pryor
+    258          // Date: April 2016
+    259          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    260          //==============================================================================
+    261            
+    262              if((ADC_Thumb < SECTION_NINE_START)){
    \   000000   B2906600.... CMP.W   #0x66, &ADC_Thumb
    \   000006   162C         JC      ??IOT_Menu_0
-    181                  display_1=" Set SSID ";
+    263                  display_1=" Set SSID ";
    \   000008   B240........ MOV.W   #`?<Constant " Set SSID ">`, &display_1
-    182                  display_2="          ";
+    264                  display_2="          ";
    \   00000E   B240........ MOV.W   #`?<Constant "          ">`, &display_2
-    183                  display_3="          ";
+    265                  display_3="          ";
    \   000014   B240........ MOV.W   #`?<Constant "          ">`, &display_3
-    184                  display_4="          ";
+    266                  display_4="          ";
    \   00001A   B240........ MOV.W   #`?<Constant "          ">`, &display_4
-    185                  if(switch_one_pressed==TRUE){
+    267                  if(switch_one_pressed==TRUE){
    \   000020   9293....     CMP.W   #0x1, &switch_one_pressed
    \   000024   1621         JNE     ??IOT_Menu_1
-    186                      uart_puts("AT+S.SSIDTXT=ncsu\r"); //Set SSID to ncsu
+    268                      uart_puts("AT+S.SSIDTXT=ncsu\r"); //Set SSID to ncsu
    \   000026   3C40....     MOV.W   #`?<Constant "AT+S.SSIDTXT=ncsu\\r">`, R12
    \   00002A   ........     CALLA   #uart_puts
-    187                      switch_one_pressed=FALSE;
+    269                      switch_one_pressed=FALSE;
    \   00002E   8243....     MOV.W   #0x0, &switch_one_pressed
    \   000032   0F3D         JMP     ??IOT_Menu_1
-    188                  }
-    189              }
-    190              else if((ADC_Thumb >= SECTION_NINE_START) && (ADC_Thumb < SECTION_EIGHT_START)){
+    270                  }
+    271              }
+    272              else if((ADC_Thumb >= SECTION_NINE_START) && (ADC_Thumb < SECTION_EIGHT_START)){
    \                     ??IOT_Menu_0:
    \   000034   B2906600.... CMP.W   #0x66, &ADC_Thumb
    \   00003A   1A28         JNC     ??IOT_Menu_2
    \   00003C   B290CC00.... CMP.W   #0xcc, &ADC_Thumb
    \   000042   162C         JC      ??IOT_Menu_2
-    191                  display_1=" Get SSID ";
+    273                  display_1=" Get SSID ";
    \   000044   B240........ MOV.W   #`?<Constant " Get SSID ">`, &display_1
-    192                  display_2="          ";
+    274                  display_2="          ";
    \   00004A   B240........ MOV.W   #`?<Constant "          ">`, &display_2
-    193                  display_3="          ";
+    275                  display_3="          ";
    \   000050   B240........ MOV.W   #`?<Constant "          ">`, &display_3
-    194                  display_4="          ";
+    276                  display_4="          ";
    \   000056   B240........ MOV.W   #`?<Constant "          ">`, &display_4
-    195                  if(switch_one_pressed==TRUE){
+    277                  if(switch_one_pressed==TRUE){
    \   00005C   9293....     CMP.W   #0x1, &switch_one_pressed
    \   000060   F820         JNE     ??IOT_Menu_1
-    196                      uart_puts("AT+S.SSIDTXT\r"); //Get SSID to ncsu
+    278                      uart_puts("AT+S.SSIDTXT\r"); //Get SSID to ncsu
    \   000062   3C40....     MOV.W   #`?<Constant "AT+S.SSIDTXT\\r">`, R12
    \   000066   ........     CALLA   #uart_puts
-    197                      switch_one_pressed=FALSE;
+    279                      switch_one_pressed=FALSE;
    \   00006A   8243....     MOV.W   #0x0, &switch_one_pressed
    \   00006E   F13C         JMP     ??IOT_Menu_1
-    198                  }
-    199              }
-    200              else if((ADC_Thumb >= SECTION_EIGHT_START) && (ADC_Thumb < SECTION_SEVEN_START)){
+    280                  }
+    281              }
+    282              else if((ADC_Thumb >= SECTION_EIGHT_START) && (ADC_Thumb < SECTION_SEVEN_START)){
    \                     ??IOT_Menu_2:
    \   000070   B290CC00.... CMP.W   #0xcc, &ADC_Thumb
    \   000076   1A28         JNC     ??IOT_Menu_3
    \   000078   B2903201.... CMP.W   #0x132, &ADC_Thumb
    \   00007E   162C         JC      ??IOT_Menu_3
-    201                  display_1=" Set Host ";
+    283                  display_1=" Set Host ";
    \   000080   B240........ MOV.W   #`?<Constant " Set Host ">`, &display_1
-    202                  display_2="   Name   ";
+    284                  display_2="   Name   ";
    \   000086   B240........ MOV.W   #`?<Constant "   Name   ">`, &display_2
-    203                  display_3="          ";
+    285                  display_3="          ";
    \   00008C   B240........ MOV.W   #`?<Constant "          ">`, &display_3
-    204                  display_4="          ";
+    286                  display_4="          ";
    \   000092   B240........ MOV.W   #`?<Constant "          ">`, &display_4
-    205                  if(switch_one_pressed==TRUE){
+    287                  if(switch_one_pressed==TRUE){
    \   000098   9293....     CMP.W   #0x1, &switch_one_pressed
    \   00009C   DA20         JNE     ??IOT_Menu_1
-    206                      uart_puts("AT+S.SCFG=ip_hostname,ECE-306_08_C\r"); //Get SSID to ncsu
+    288                      uart_puts("AT+S.SCFG=ip_hostname,ECE-306_08_C\r"); //Get SSID to ncsu
    \   00009E   3C40....     MOV.W   #`?<Constant "AT+S.SCFG=ip_hostname...">`, R12
    \   0000A2   ........     CALLA   #uart_puts
-    207                      switch_one_pressed=FALSE;
+    289                      switch_one_pressed=FALSE;
    \   0000A6   8243....     MOV.W   #0x0, &switch_one_pressed
    \   0000AA   D33C         JMP     ??IOT_Menu_1
-    208                  }
-    209              }
-    210              else if((ADC_Thumb >= SECTION_SEVEN_START) && (ADC_Thumb < SECTION_SIX_START)){
+    290                  }
+    291              }
+    292              else if((ADC_Thumb >= SECTION_SEVEN_START) && (ADC_Thumb < SECTION_SIX_START)){
    \                     ??IOT_Menu_3:
    \   0000AC   B2903201.... CMP.W   #0x132, &ADC_Thumb
    \   0000B2   1A28         JNC     ??IOT_Menu_4
    \   0000B4   B2909801.... CMP.W   #0x198, &ADC_Thumb
    \   0000BA   162C         JC      ??IOT_Menu_4
-    211                  display_1=" Get Host ";
+    293                  display_1=" Get Host ";
    \   0000BC   B240........ MOV.W   #`?<Constant " Get Host ">`, &display_1
-    212                  display_2="   Name   ";
+    294                  display_2="   Name   ";
    \   0000C2   B240........ MOV.W   #`?<Constant "   Name   ">`, &display_2
-    213                  display_3="          ";
+    295                  display_3="          ";
    \   0000C8   B240........ MOV.W   #`?<Constant "          ">`, &display_3
-    214                  display_4="          ";
+    296                  display_4="          ";
    \   0000CE   B240........ MOV.W   #`?<Constant "          ">`, &display_4
-    215                  if(switch_one_pressed==TRUE){
+    297                  if(switch_one_pressed==TRUE){
    \   0000D4   9293....     CMP.W   #0x1, &switch_one_pressed
    \   0000D8   BC20         JNE     ??IOT_Menu_1
-    216                      uart_puts("AT+S.GCFG=ip_hostname\r"); //Get SSID to ncsu
+    298                      uart_puts("AT+S.GCFG=ip_hostname\r"); //Get SSID to ncsu
    \   0000DA   3C40....     MOV.W   #`?<Constant "AT+S.GCFG=ip_hostname\\r">`, R12
    \   0000DE   ........     CALLA   #uart_puts
-    217                      switch_one_pressed=FALSE;
+    299                      switch_one_pressed=FALSE;
    \   0000E2   8243....     MOV.W   #0x0, &switch_one_pressed
    \   0000E6   B53C         JMP     ??IOT_Menu_1
-    218                  }
-    219              }
-    220              else if((ADC_Thumb >= SECTION_SIX_START) && (ADC_Thumb < SECTION_FIVE_START)){
+    300                  }
+    301              }
+    302              else if((ADC_Thumb >= SECTION_SIX_START) && (ADC_Thumb < SECTION_FIVE_START)){
    \                     ??IOT_Menu_4:
    \   0000E8   B2909801.... CMP.W   #0x198, &ADC_Thumb
    \   0000EE   1A28         JNC     ??IOT_Menu_5
    \   0000F0   B290FE01.... CMP.W   #0x1fe, &ADC_Thumb
    \   0000F6   162C         JC      ??IOT_Menu_5
-    221                  display_1=" Set Net. ";
+    303                  display_1=" Set Net. ";
    \   0000F8   B240........ MOV.W   #`?<Constant " Set Net. ">`, &display_1
-    222                  display_2=" Privacy  ";
+    304                  display_2=" Privacy  ";
    \   0000FE   B240........ MOV.W   #`?<Constant " Privacy  ">`, &display_2
-    223                  display_3=" Mode     ";
+    305                  display_3=" Mode     ";
    \   000104   B240........ MOV.W   #`?<Constant " Mode     ">`, &display_3
-    224                  display_4="          ";
+    306                  display_4="          ";
    \   00010A   B240........ MOV.W   #`?<Constant "          ">`, &display_4
-    225                  if(switch_one_pressed==TRUE){
+    307                  if(switch_one_pressed==TRUE){
    \   000110   9293....     CMP.W   #0x1, &switch_one_pressed
    \   000114   9E20         JNE     ??IOT_Menu_1
-    226                      uart_puts("AT+S.SCFG=wifi_priv_mode,0\r"); //Get SSID to ncsu
+    308                      uart_puts("AT+S.SCFG=wifi_priv_mode,0\r"); //Get SSID to ncsu
    \   000116   3C40....     MOV.W   #`?<Constant "AT+S.SCFG=wifi_priv_m...">`, R12
    \   00011A   ........     CALLA   #uart_puts
-    227                      switch_one_pressed=FALSE;
+    309                      switch_one_pressed=FALSE;
    \   00011E   8243....     MOV.W   #0x0, &switch_one_pressed
    \   000122   973C         JMP     ??IOT_Menu_1
-    228                  }
-    229              }
-    230              else if((ADC_Thumb >= SECTION_FIVE_START) && (ADC_Thumb < SECTION_FOUR_START)){
+    310                  }
+    311              }
+    312              else if((ADC_Thumb >= SECTION_FIVE_START) && (ADC_Thumb < SECTION_FOUR_START)){
    \                     ??IOT_Menu_5:
    \   000124   B290FE01.... CMP.W   #0x1fe, &ADC_Thumb
    \   00012A   1A28         JNC     ??IOT_Menu_6
    \   00012C   B2906402.... CMP.W   #0x264, &ADC_Thumb
    \   000132   162C         JC      ??IOT_Menu_6
-    231                  display_1=" Get Net. ";
+    313                  display_1=" Get Net. ";
    \   000134   B240........ MOV.W   #`?<Constant " Get Net. ">`, &display_1
-    232                  display_2=" Privacy  ";
+    314                  display_2=" Privacy  ";
    \   00013A   B240........ MOV.W   #`?<Constant " Privacy  ">`, &display_2
-    233                  display_3=" Mode     ";
+    315                  display_3=" Mode     ";
    \   000140   B240........ MOV.W   #`?<Constant " Mode     ">`, &display_3
-    234                  display_4="          ";
+    316                  display_4="          ";
    \   000146   B240........ MOV.W   #`?<Constant "          ">`, &display_4
-    235                  if(switch_one_pressed==TRUE){
+    317                  if(switch_one_pressed==TRUE){
    \   00014C   9293....     CMP.W   #0x1, &switch_one_pressed
    \   000150   8020         JNE     ??IOT_Menu_1
-    236                      uart_puts("AT+S.GCFG=wifi_priv_mode\r"); //Get SSID to ncsu
+    318                      uart_puts("AT+S.GCFG=wifi_priv_mode\r"); //Get SSID to ncsu
    \   000152   3C40....     MOV.W   #`?<Constant "AT+S.GCFG=wifi_priv_m...">`, R12
    \   000156   ........     CALLA   #uart_puts
-    237                      switch_one_pressed=FALSE;
+    319                      switch_one_pressed=FALSE;
    \   00015A   8243....     MOV.W   #0x0, &switch_one_pressed
    \   00015E   793C         JMP     ??IOT_Menu_1
-    238                  }
-    239              }
-    240              else if((ADC_Thumb >= SECTION_FOUR_START) && (ADC_Thumb < SECTION_THREE_START)){
+    320                  }
+    321              }
+    322              else if((ADC_Thumb >= SECTION_FOUR_START) && (ADC_Thumb < SECTION_THREE_START)){
    \                     ??IOT_Menu_6:
    \   000160   B2906402.... CMP.W   #0x264, &ADC_Thumb
    \   000166   1A28         JNC     ??IOT_Menu_7
    \   000168   B290CA02.... CMP.W   #0x2ca, &ADC_Thumb
    \   00016E   162C         JC      ??IOT_Menu_7
-    241                display_1=" Set Net. ";
+    323                display_1=" Set Net. ";
    \   000170   B240........ MOV.W   #`?<Constant " Set Net. ">`, &display_1
-    242                  display_2="   Mode   ";
+    324                  display_2="   Mode   ";
    \   000176   B240........ MOV.W   #`?<Constant "   Mode   ">`, &display_2
-    243                  display_3="          ";
+    325                  display_3="          ";
    \   00017C   B240........ MOV.W   #`?<Constant "          ">`, &display_3
-    244                  display_4="          ";
+    326                  display_4="          ";
    \   000182   B240........ MOV.W   #`?<Constant "          ">`, &display_4
-    245                  if(switch_one_pressed==TRUE){
+    327                  if(switch_one_pressed==TRUE){
    \   000188   9293....     CMP.W   #0x1, &switch_one_pressed
    \   00018C   6220         JNE     ??IOT_Menu_1
-    246                      uart_puts("AT+S.SCFG=wifi_mode,1\r"); //Get SSID to ncsu
+    328                      uart_puts("AT+S.SCFG=wifi_mode,1\r"); //Get SSID to ncsu
    \   00018E   3C40....     MOV.W   #`?<Constant "AT+S.SCFG=wifi_mode,1\\r">`, R12
    \   000192   ........     CALLA   #uart_puts
-    247                      switch_one_pressed=FALSE;
+    329                      switch_one_pressed=FALSE;
    \   000196   8243....     MOV.W   #0x0, &switch_one_pressed
    \   00019A   5B3C         JMP     ??IOT_Menu_1
-    248                  }
-    249              }
-    250              else if((ADC_Thumb >= SECTION_THREE_START) && (ADC_Thumb < SECTION_TWO_START)){
+    330                  }
+    331              }
+    332              else if((ADC_Thumb >= SECTION_THREE_START) && (ADC_Thumb < SECTION_TWO_START)){
    \                     ??IOT_Menu_7:
    \   00019C   B290CA02.... CMP.W   #0x2ca, &ADC_Thumb
    \   0001A2   1A28         JNC     ??IOT_Menu_8
    \   0001A4   B2903003.... CMP.W   #0x330, &ADC_Thumb
    \   0001AA   162C         JC      ??IOT_Menu_8
-    251                  display_1=" Get Net. ";
+    333                  display_1=" Get Net. ";
    \   0001AC   B240........ MOV.W   #`?<Constant " Get Net. ">`, &display_1
-    252                  display_2="   Mode   ";
+    334                  display_2="   Mode   ";
    \   0001B2   B240........ MOV.W   #`?<Constant "   Mode   ">`, &display_2
-    253                  display_3="          ";
+    335                  display_3="          ";
    \   0001B8   B240........ MOV.W   #`?<Constant "          ">`, &display_3
-    254                  display_4="          ";
+    336                  display_4="          ";
    \   0001BE   B240........ MOV.W   #`?<Constant "          ">`, &display_4
-    255                  if(switch_one_pressed==TRUE){
+    337                  if(switch_one_pressed==TRUE){
    \   0001C4   9293....     CMP.W   #0x1, &switch_one_pressed
    \   0001C8   4420         JNE     ??IOT_Menu_1
-    256                      uart_puts("AT+S.GCFG=wifi_mode\r"); //Get SSID to ncsu
+    338                      uart_puts("AT+S.GCFG=wifi_mode\r"); //Get SSID to ncsu
    \   0001CA   3C40....     MOV.W   #`?<Constant "AT+S.GCFG=wifi_mode\\r">`, R12
    \   0001CE   ........     CALLA   #uart_puts
-    257                      switch_one_pressed=FALSE;
+    339                      switch_one_pressed=FALSE;
    \   0001D2   8243....     MOV.W   #0x0, &switch_one_pressed
    \   0001D6   3D3C         JMP     ??IOT_Menu_1
-    258                  }
-    259              }
-    260              else if((ADC_Thumb >= SECTION_TWO_START) && (ADC_Thumb < SECTION_ONE_START)){
+    340                  }
+    341              }
+    342              else if((ADC_Thumb >= SECTION_TWO_START) && (ADC_Thumb < SECTION_ONE_START)){
    \                     ??IOT_Menu_8:
    \   0001D8   B2903003.... CMP.W   #0x330, &ADC_Thumb
    \   0001DE   1E28         JNC     ??IOT_Menu_9
    \   0001E0   B2909603.... CMP.W   #0x396, &ADC_Thumb
    \   0001E6   1A2C         JC      ??IOT_Menu_9
-    261                  display_1="   Save   ";
+    343                  display_1="   Save   ";
    \   0001E8   B240........ MOV.W   #`?<Constant "   Save   ">`, &display_1
-    262                  display_2=" Settings ";
+    344                  display_2=" Settings ";
    \   0001EE   B240........ MOV.W   #`?<Constant " Settings ">`, &display_2
-    263                  display_3=" On Flash ";
+    345                  display_3=" On Flash ";
    \   0001F4   B240........ MOV.W   #`?<Constant " On Flash ">`, &display_3
-    264                  display_4="          ";
+    346                  display_4="          ";
    \   0001FA   B240........ MOV.W   #`?<Constant "          ">`, &display_4
-    265                  if(switch_one_pressed==TRUE){
+    347                  if(switch_one_pressed==TRUE){
    \   000200   9293....     CMP.W   #0x1, &switch_one_pressed
    \   000204   2620         JNE     ??IOT_Menu_1
-    266                      uart_puts("AT&W\r"); //Get SSID to ncsu
+    348                      uart_puts("AT&W\r"); //Get SSID to ncsu
    \   000206   3C40....     MOV.W   #`?<Constant "AT&W\\r">`, R12
    \   00020A   ........     CALLA   #uart_puts
-    267                      Five_msec_Delay(200); //delay to allow changed to take effect
+    349                      Five_msec_Delay(200); //delay to allow changed to take effect
    \   00020E   3C40C800     MOV.W   #0xc8, R12
    \   000212   ........     CALLA   #Five_msec_Delay
-    268                      switch_one_pressed=FALSE;
+    350                      switch_one_pressed=FALSE;
    \   000216   8243....     MOV.W   #0x0, &switch_one_pressed
    \   00021A   1B3C         JMP     ??IOT_Menu_1
-    269                  }
-    270              }
-    271              else if((ADC_Thumb >= SECTION_ONE_START)){
+    351                  }
+    352              }
+    353              else if((ADC_Thumb >= SECTION_ONE_START)){
    \                     ??IOT_Menu_9:
    \   00021C   B2909603.... CMP.W   #0x396, &ADC_Thumb
    \   000222   1728         JNC     ??IOT_Menu_1
-    272                  display_1="  Reset   ";
+    354                  display_1="  Reset   ";
    \   000224   B240........ MOV.W   #`?<Constant "  Reset   ">`, &display_1
-    273                  display_2="  Module  ";
+    355                  display_2="  Module  ";
    \   00022A   B240........ MOV.W   #`?<Constant "  Module  ">`, &display_2
-    274                  display_3="          ";
+    356                  display_3="          ";
    \   000230   B240........ MOV.W   #`?<Constant "          ">`, &display_3
-    275                  display_4="          ";
+    357                  display_4="          ";
    \   000236   B240........ MOV.W   #`?<Constant "          ">`, &display_4
-    276                  if(switch_one_pressed==TRUE){
+    358                  if(switch_one_pressed==TRUE){
    \   00023C   9293....     CMP.W   #0x1, &switch_one_pressed
    \   000240   0820         JNE     ??IOT_Menu_1
-    277                      uart_puts("AT+CFUN=1\r"); //Get SSID to ncsu
+    359                      uart_puts("AT+CFUN=1\r"); //Get SSID to ncsu
    \   000242   3C40....     MOV.W   #`?<Constant "AT+CFUN=1\\r">`, R12
    \   000246   ........     CALLA   #uart_puts
-    278                      IOTHardwareReset();
+    360                      IOTHardwareReset();
    \   00024A   ........     CALLA   #IOTHardwareReset
-    279                      switch_one_pressed=FALSE;
+    361                      switch_one_pressed=FALSE;
    \   00024E   8243....     MOV.W   #0x0, &switch_one_pressed
-    280                  }
-    281              } 
-    282              if(switch_two_pressed){
+    362                  }
+    363              } 
+    364              if(switch_two_pressed){
    \                     ??IOT_Menu_1:
    \   000252   8293....     CMP.W   #0x0, &switch_two_pressed
    \   000256   0424         JEQ     ??IOT_Menu_10
-    283                switch_one_pressed = FALSE;
+    365                switch_one_pressed = FALSE;
    \   000258   8243....     MOV.W   #0x0, &switch_one_pressed
-    284                switch_two_pressed = FALSE;
+    366                switch_two_pressed = FALSE;
    \   00025C   8243....     MOV.W   #0x0, &switch_two_pressed
-    285              }
-    286          }
+    367              }
+    368          }
    \                     ??IOT_Menu_10:
    \   000260   1001         RETA
 
@@ -711,6 +934,11 @@ C:\Users\David\Documents\ECE 306\Project-08\menus.c
    \            642052617465
    \            206174203131
    \            353230300A00
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant " calibrate">`:
+   \   000000   2063616C6962 DC8 " calibrate"
+   \            7261746500  
 
    \                                 In  segment DATA16_C, align 1, align-sorted
    \                     `?<Constant " Set SSID ">`:
@@ -859,13 +1087,14 @@ C:\Users\David\Documents\ECE 306\Project-08\menus.c
    \                     `?<Constant "AT+CFUN=1\\r">`:
    \   000000   41542B434655 DC8 "AT+CFUN=1\015"
    \            4E3D310D00  
-    287          
+    369          
 
    Maximum stack usage in bytes:
 
    CSTACK Function
    ------ --------
       4   Baud_Menu
+        4   -> IR_Calibration
         4   -> Init_Serial_UCA1
         4   -> lcd_4line
         4   -> uart_puts
@@ -873,8 +1102,21 @@ C:\Users\David\Documents\ECE 306\Project-08\menus.c
         4   -> Five_msec_Delay
         4   -> IOTHardwareReset
         4   -> uart_puts
-      4   Menu_Process
-        4   -> lcd_4line
+     12   Menu_Process
+       12   -> Five_msec_Delay
+       12   -> IR_LED_ON
+       12   -> active_breaking_left
+       12   -> active_breaking_right
+       12   -> lcd_4line
+       12   -> left_wheel_forward_off
+       12   -> left_wheel_forward_on
+       12   -> left_wheel_reverse_off
+       12   -> left_wheel_reverse_on
+       12   -> right_wheel_forward_off
+       12   -> right_wheel_forward_on
+       12   -> right_wheel_reverse_off
+       12   -> right_wheel_reverse_on
+       12 ?DivMod16u
 
 
    Segment part sizes:
@@ -905,6 +1147,7 @@ C:\Users\David\Documents\ECE 306\Project-08\menus.c
       11  ?<Constant " Set Net. ">
       11  ?<Constant " Set SSID ">
       11  ?<Constant " Settings ">
+      11  ?<Constant " calibrate">
        1  ?<Constant "">
       24  ?<Constant "A1 Baud Rate at 115200\n">
       22  ?<Constant "A1 Baud Rate at 9600\n">
@@ -921,23 +1164,28 @@ C:\Users\David\Documents\ECE 306\Project-08\menus.c
        2  ?<Initializer for MainFG>
       10  ?<Initializer for lcdBuff>
        2  BaudMenuFG
-     220  Baud_Menu
+     254  Baud_Menu
        2  IOTMenuFG
      610  IOT_Menu
        2  MainFG
-     266  Menu_Process
+     586  Menu_Process
+       2  black_val
+       2  errorL
+       2  errorR
       10  lcdBuff
+       2  start_on_whiteFG
+       2  white_val
 
  
- 1 096 bytes in segment CODE
-   520 bytes in segment DATA16_C
+ 1 450 bytes in segment CODE
+   531 bytes in segment DATA16_C
     12 bytes in segment DATA16_I
     12 bytes in segment DATA16_ID
-     4 bytes in segment DATA16_Z
+    14 bytes in segment DATA16_Z
  
- 1 096 bytes of CODE  memory
-   532 bytes of CONST memory
-    16 bytes of DATA  memory
+ 1 450 bytes of CODE  memory
+   543 bytes of CONST memory
+    26 bytes of DATA  memory
 
 Errors: none
-Warnings: none
+Warnings: 1

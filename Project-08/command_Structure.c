@@ -1,4 +1,4 @@
-#include <stdlib.h>
+//#include <stdlib.h>
 #include "macros.h"
 #include "functions.h"
 #include "msp430.h"
@@ -146,7 +146,7 @@ void commandTree(void){
               Five_msec_Delay(1);
             }
         }
-        else if(commandBuffer[i+4]=='L'){ // (HARDWARE RESET) or turn right command
+        else if(commandBuffer[i+4]=='L'){ // (HARDWARE RESET) or turn left command
             k=0;
             j=i+5;
             for(;commandBuffer[j]!='\r' &&  commandBuffer[j]!='\n' && commandBuffer[j]!='.';j++){
@@ -165,7 +165,7 @@ void commandTree(void){
               Five_msec_Delay(1);
             }
         }   
-        else if(commandBuffer[i+4]=='C'){ //FIFTH COMMAND (Configure)
+        else if(commandBuffer[i+4]=='C'){ //Configure IOT
             if(commandBuffer[i+5]=='\r' || commandBuffer[i+5]=='.' || commandBuffer[i+5]=='\n'){ //check for end of a command line
                 Init_Serial_UCA1(0); //Set A1 to 115200. TEMPORARILY SET TO 9600 SO IOT RESPONSE CAN BE SEEN ON TERMINAL
                 uart_puts("AT+S.SCFG=console1_speed,9600\r"); //set IOT baud rate to 9600
@@ -180,10 +180,10 @@ void commandTree(void){
             }
         }
         
-        else if(commandBuffer[i+4]=='M'){ //SIXTH COMMAND (Get MAC Address)
+        else if(commandBuffer[i+4]=='M'){ //Get MAC Address
             if(commandBuffer[i+5]=='\r' || commandBuffer[i+5]=='.' || commandBuffer[i+5]=='\n'){ //check for end of a command line
-                uart_puts("AT+S.GCFG=nv_wifi_macaddr\r");//get MAC address
-                //print address to display (code to do this is in main)
+                uart_puts("AT+S.GCFG=nv_wifi_macaddr\r");//getting MAC address
+                //print address to display
                 macFG=TRUE;
 
                 StartCommandFG=FALSE;
@@ -192,8 +192,7 @@ void commandTree(void){
         
 
         for(;commandBuffer[i]!='\r' &&  commandBuffer[i]!='\n' && commandBuffer[i]!='.';i++){
-            //this for loop is for incrementing i to the next period, or incrementing i to the point where
-            //it breaks out of the while loop
+            //this for loop is for incrementing i to the next period
         }
         if(commandBuffer[i]=='.'){ //if not breaking out of while loop, increment i to skip the period part of the next command
             i++;

@@ -12,7 +12,8 @@
 #include "functions.h"
 #include "msp430.h"
 extern char adc_char[5];
-extern unsigned int threshold;
+extern unsigned int thresholdR;
+extern unsigned int thresholdL;
 extern unsigned int left_calibration_black;
 extern unsigned int right_calibration_black;
 extern unsigned int left_calibration_white;
@@ -24,7 +25,6 @@ extern volatile unsigned int right_forward_rate;
 extern volatile unsigned int right_reverse_rate;
 extern volatile unsigned int left_forward_rate;
 extern volatile unsigned int left_reverse_rate;
-volatile unsigned int P5_counter;
 extern char *display_1;
 extern char *display_2;
 extern char *display_3;
@@ -141,120 +141,6 @@ void HEXtoBCD(int hex_value){
 //******************************************************************************
 //------------------------------------------------------------------------------
 
-void Project5(void){
- //==============================================================================
- // Project 5
- // 
- // Description: does specified task for project 5
- //
- // Passed :     no variables passed
- // Locals:      int count
- // Returned:    no values returned
- // Globals:     right_forward_rate
- //              left_forward_rate
- //              display_1
- //              display_2
- //              display_3
- //              display_4
- //              P5_counter
- //
- // Author: David Pryor
- // Date: March 2016
- // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
- //==============================================================================
-  int count = SWITCH_OFF;
-  toggle_IR_LED();
-  Five_msec_Delay(FOR_TWO_SECOND);
-  right_forward_rate = FIFTY_PERCENT; // turn ON RIGHT wheel forward
-  left_forward_rate = FORTYSEVEN_PERCENT; // turn ON LEFT wheel forward
-  right_wheel_forward_on();
-  left_wheel_forward_on();
-  
-  display_1 = "Forward";
-  display_2 = "";
-  display_3 = "";
-  display_4 = "";
-  Display_Process();
-  
-  while(TRUE){
-    ADC_Process();
-    if(ADC_Right_Detector >= threshold){
-      right_wheel_forward_off();
-      left_wheel_forward_off();
-      break;
-    }
-  }  
-  Five_msec_Delay(FOR_TWO_SECOND);
-  P5_counter=SWITCH_OFF;
-  
-  display_1 = "Reverse";
-  display_2 = "";
-  display_3 = "";
-  display_4 = "";
-  Display_Process();
-  
-  right_reverse_rate = FIFTY_PERCENT;
-  left_reverse_rate = FIFTY_PERCENT;
-  right_wheel_reverse_on();
-  left_wheel_reverse_on();
-  Five_msec_Delay(FOR_ONE_SECOND);
-  
-  while(TRUE){
-    ADC_Process();
-    if(ADC_Right_Detector >= threshold){
-      right_wheel_reverse_off();
-      left_wheel_reverse_off();
-      break;
-    }  
-  }
-  count = P5_counter / HALF;
-  HEXtoBCD(P5_counter*FIVE_MSEC);
-  display_1 = "";
-  display_2 = "";
-  display_3 = "";
-  display_4 = adc_char;
-  Display_Process();
-  Five_msec_Delay(FOR_FIVE_SECONDS);
-  
-  display_1 = "Forward";
-  display_2 = "";
-  display_3 = "";
-  display_4 = "";
-  Display_Process();
-  
-  right_forward_rate = FIFTY_PERCENT; // turn ON RIGHT wheel forward
-  left_forward_rate = FORTYSEVEN_PERCENT; // turn ON LEFT wheel forward
-  right_wheel_forward_on();
-  left_wheel_forward_on();
-  Five_msec_Delay(count);
-  right_wheel_forward_off();
-  left_wheel_forward_off();
-  
-  Five_msec_Delay(FOR_TWO_SECOND);
-  
-  display_1 = "CW";
-  display_2 = "";
-  display_3 = "";
-  display_4 = "";
-  Display_Process();
-  
-  clockwise_spin();
-  clockwise_spin();
-  Five_msec_Delay(FOR_ONE_SECOND);
-  
-  display_1 = "CCW";
-  display_2 = "";
-  display_3 = "";
-  display_4 = "";
-  Display_Process();
-  
-  counterclockwise_spin();
-  counterclockwise_spin();
-  counterclockwise_spin();
-  
-  
-  toggle_IR_LED();
-}
 
 void IR_Calibration(void){
   int proceed = 0;
@@ -275,8 +161,8 @@ void IR_Calibration(void){
   left_calibration_ambient = ADC_Left_Detector;
   proceed = 0;
   
-  toggle_IR_LED();
-  Five_msec_Delay(30);
+  IR_LED_ON();
+  Five_msec_Delay(200);
   display_1 = "White Test";
   display_2 = "Press SW2";
   display_3 = "";  
@@ -308,8 +194,9 @@ void IR_Calibration(void){
   right_calibration_black = ADC_Right_Detector;
   left_calibration_black = ADC_Left_Detector;
     
-  toggle_IR_LED();
-  threshold = right_calibration_ambient - right_calibration_black + 50;
+  IR_LED_OFF();
+  thresholdR = ((right_calibration_black + right_calibration_white)/2)+200;
+  thresholdL = ((left_calibration_black + left_calibration_white)/2)+200;
   
 }
 

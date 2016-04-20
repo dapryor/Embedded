@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           18/Apr/2016  23:20:34
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           19/Apr/2016  21:44:30
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -138,8 +138,8 @@ C:\Users\David\Documents\ECE 306\Project-08\interrupt_adc.c
      54                    ADC10MCTL0 = ADC10INCH_1; // Next channel A1
    \                     ??ADC10_ISR_2:
    \   00002C   92430A07     MOV.W   #0x1, &0x70a
-     55                    ADC_Right_Detector = ADC10MEM0; // Current Channel result for A0
-   \   000030   92421207.... MOV.W   &0x712, &ADC_Right_Detector
+     55                    ADC_Left_Detector = ADC10MEM0; // Current Channel result for A0
+   \   000030   92421207.... MOV.W   &0x712, &ADC_Left_Detector
      56                    channel++;
    \   000036   9253....     ADD.W   #0x1, &channel
      57                    break;
@@ -148,8 +148,8 @@ C:\Users\David\Documents\ECE 306\Project-08\interrupt_adc.c
      59                    ADC10MCTL0 = ADC10INCH_3; // Next channel A3
    \                     ??ADC10_ISR_3:
    \   00003C   B24003000A07 MOV.W   #0x3, &0x70a
-     60                    ADC_Left_Detector = ADC10MEM0; // Current Channel result for A1
-   \   000042   92421207.... MOV.W   &0x712, &ADC_Left_Detector
+     60                    ADC_Right_Detector = ADC10MEM0; // Current Channel result for A1
+   \   000042   92421207.... MOV.W   &0x712, &ADC_Right_Detector
      61                    channel++;
    \   000048   9253....     ADD.W   #0x1, &channel
      62                    break;

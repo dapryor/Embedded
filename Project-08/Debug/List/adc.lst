@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           18/Apr/2016  23:20:34
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           19/Apr/2016  21:44:30
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -69,24 +69,19 @@ C:\Users\David\Documents\ECE 306\Project-08\adc.c
    \                     _A_ADC10IE_L:
    \   000000                DS8 2
      14          extern char adc_char[5];
-     15          extern unsigned int threshold;
-     16          extern unsigned int left_calibration_black;
-     17          extern unsigned int right_calibration_black;
-     18          extern unsigned int left_calibration_white;
-     19          extern unsigned int right_calibration_white;
-     20          extern unsigned int left_calibration_ambient;
-     21          extern unsigned int right_calibration_ambient;
-     22          extern volatile unsigned int ADC_Right_Detector;
-     23          extern volatile unsigned int right_forward_rate;
-     24          extern volatile unsigned int right_reverse_rate;
-     25          extern volatile unsigned int left_forward_rate;
-     26          extern volatile unsigned int left_reverse_rate;
-
-   \                                 In  segment DATA16_Z, align 2, align-sorted
-   \   000000                REQUIRE ?cstart_init_zero
-     27          volatile unsigned int P5_counter;
-   \                     P5_counter:
-   \   000000                DS8 2
+     15          extern unsigned int thresholdR;
+     16          extern unsigned int thresholdL;
+     17          extern unsigned int left_calibration_black;
+     18          extern unsigned int right_calibration_black;
+     19          extern unsigned int left_calibration_white;
+     20          extern unsigned int right_calibration_white;
+     21          extern unsigned int left_calibration_ambient;
+     22          extern unsigned int right_calibration_ambient;
+     23          extern volatile unsigned int ADC_Right_Detector;
+     24          extern volatile unsigned int right_forward_rate;
+     25          extern volatile unsigned int right_reverse_rate;
+     26          extern volatile unsigned int left_forward_rate;
+     27          extern volatile unsigned int left_reverse_rate;
      28          extern char *display_1;
      29          extern char *display_2;
      30          extern char *display_3;
@@ -288,360 +283,138 @@ C:\Users\David\Documents\ECE 306\Project-08\adc.c
     141          //******************************************************************************
     142          //------------------------------------------------------------------------------
     143          
+    144          
 
    \                                 In  segment CODE, align 2
-    144          void Project5(void){
-   \                     Project5:
-   \   000000   0A12         PUSH.W  R10
-    145           //==============================================================================
-    146           // Project 5
-    147           // 
-    148           // Description: does specified task for project 5
-    149           //
-    150           // Passed :     no variables passed
-    151           // Locals:      int count
-    152           // Returned:    no values returned
-    153           // Globals:     right_forward_rate
-    154           //              left_forward_rate
-    155           //              display_1
-    156           //              display_2
-    157           //              display_3
-    158           //              display_4
-    159           //              P5_counter
-    160           //
-    161           // Author: David Pryor
-    162           // Date: March 2016
-    163           // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
-    164           //==============================================================================
-    165            int count = SWITCH_OFF;
-   \   000002   0A43         MOV.W   #0x0, R10
-    166            toggle_IR_LED();
-   \   000004   ........     CALLA   #toggle_IR_LED
-    167            Five_msec_Delay(FOR_TWO_SECOND);
-   \   000008   3C409001     MOV.W   #0x190, R12
-   \   00000C   ........     CALLA   #Five_msec_Delay
-    168            right_forward_rate = FIFTY_PERCENT; // turn ON RIGHT wheel forward
-   \   000010   B240A00F.... MOV.W   #0xfa0, &right_forward_rate
-    169            left_forward_rate = FORTYSEVEN_PERCENT; // turn ON LEFT wheel forward
-   \   000016   B240A60E.... MOV.W   #0xea6, &left_forward_rate
-    170            right_wheel_forward_on();
-   \   00001C   ........     CALLA   #right_wheel_forward_on
-    171            left_wheel_forward_on();
-   \   000020   ........     CALLA   #left_wheel_forward_on
-    172            
-    173            display_1 = "Forward";
-   \   000024   B240........ MOV.W   #`?<Constant "Forward">`, &display_1
-    174            display_2 = "";
-   \   00002A   B240........ MOV.W   #`?<Constant "">`, &display_2
-    175            display_3 = "";
-   \   000030   B240........ MOV.W   #`?<Constant "">`, &display_3
-    176            display_4 = "";
-   \   000036   B240........ MOV.W   #`?<Constant "">`, &display_4
-    177            Display_Process();
-   \   00003C   ........     CALLA   #Display_Process
-    178            
-    179            while(TRUE){
-    180              ADC_Process();
-   \                     ??Project5_0:
-   \   000040   ........     CALLA   #ADC_Process
-    181              if(ADC_Right_Detector >= threshold){
-   \   000044   9292........ CMP.W   &threshold, &ADC_Right_Detector
-   \   00004A   FA2B         JNC     ??Project5_0
-    182                right_wheel_forward_off();
-   \   00004C   ........     CALLA   #right_wheel_forward_off
-    183                left_wheel_forward_off();
-   \   000050   ........     CALLA   #left_wheel_forward_off
-    184                break;
-    185              }
-    186            }  
-    187            Five_msec_Delay(FOR_TWO_SECOND);
-   \   000054   3C409001     MOV.W   #0x190, R12
-   \   000058   ........     CALLA   #Five_msec_Delay
-    188            P5_counter=SWITCH_OFF;
-   \   00005C   8243....     MOV.W   #0x0, &P5_counter
-    189            
-    190            display_1 = "Reverse";
-   \   000060   B240........ MOV.W   #`?<Constant "Reverse">`, &display_1
-    191            display_2 = "";
-   \   000066   B240........ MOV.W   #`?<Constant "">`, &display_2
-    192            display_3 = "";
-   \   00006C   B240........ MOV.W   #`?<Constant "">`, &display_3
-    193            display_4 = "";
-   \   000072   B240........ MOV.W   #`?<Constant "">`, &display_4
-    194            Display_Process();
-   \   000078   ........     CALLA   #Display_Process
-    195            
-    196            right_reverse_rate = FIFTY_PERCENT;
-   \   00007C   B240A00F.... MOV.W   #0xfa0, &right_reverse_rate
-    197            left_reverse_rate = FIFTY_PERCENT;
-   \   000082   B240A00F.... MOV.W   #0xfa0, &left_reverse_rate
-    198            right_wheel_reverse_on();
-   \   000088   ........     CALLA   #right_wheel_reverse_on
-    199            left_wheel_reverse_on();
-   \   00008C   ........     CALLA   #left_wheel_reverse_on
-    200            Five_msec_Delay(FOR_ONE_SECOND);
-   \   000090   3C40C800     MOV.W   #0xc8, R12
-   \   000094   ........     CALLA   #Five_msec_Delay
-    201            
-    202            while(TRUE){
-    203              ADC_Process();
-   \                     ??Project5_1:
-   \   000098   ........     CALLA   #ADC_Process
-    204              if(ADC_Right_Detector >= threshold){
-   \   00009C   9292........ CMP.W   &threshold, &ADC_Right_Detector
-   \   0000A2   FA2B         JNC     ??Project5_1
-    205                right_wheel_reverse_off();
-   \   0000A4   ........     CALLA   #right_wheel_reverse_off
-    206                left_wheel_reverse_off();
-   \   0000A8   ........     CALLA   #left_wheel_reverse_off
-    207                break;
-    208              }  
-    209            }
-    210            count = P5_counter / HALF;
-   \   0000AC   1F42....     MOV.W   &P5_counter, R15
-   \   0000B0   5F03         RRUM.W  #0x1, R15
-   \   0000B2   0A4F         MOV.W   R15, R10
-    211            HEXtoBCD(P5_counter*FIVE_MSEC);
-   \   0000B4   1C42....     MOV.W   &P5_counter, R12
-   \   0000B8   0F4C         MOV.W   R12, R15
-   \   0000BA   5C06         RLAM.W  #0x2, R12
-   \   0000BC   0C5F         ADD.W   R15, R12
-   \   0000BE   ........     CALLA   #HEXtoBCD
-    212            display_1 = "";
-   \   0000C2   B240........ MOV.W   #`?<Constant "">`, &display_1
-    213            display_2 = "";
-   \   0000C8   B240........ MOV.W   #`?<Constant "">`, &display_2
-    214            display_3 = "";
-   \   0000CE   B240........ MOV.W   #`?<Constant "">`, &display_3
-    215            display_4 = adc_char;
-   \   0000D4   B240........ MOV.W   #adc_char, &display_4
-    216            Display_Process();
-   \   0000DA   ........     CALLA   #Display_Process
-    217            Five_msec_Delay(FOR_FIVE_SECONDS);
-   \   0000DE   3C40E803     MOV.W   #0x3e8, R12
-   \   0000E2   ........     CALLA   #Five_msec_Delay
-    218            
-    219            display_1 = "Forward";
-   \   0000E6   B240........ MOV.W   #`?<Constant "Forward">`, &display_1
-    220            display_2 = "";
-   \   0000EC   B240........ MOV.W   #`?<Constant "">`, &display_2
-    221            display_3 = "";
-   \   0000F2   B240........ MOV.W   #`?<Constant "">`, &display_3
-    222            display_4 = "";
-   \   0000F8   B240........ MOV.W   #`?<Constant "">`, &display_4
-    223            Display_Process();
-   \   0000FE   ........     CALLA   #Display_Process
-    224            
-    225            right_forward_rate = FIFTY_PERCENT; // turn ON RIGHT wheel forward
-   \   000102   B240A00F.... MOV.W   #0xfa0, &right_forward_rate
-    226            left_forward_rate = FORTYSEVEN_PERCENT; // turn ON LEFT wheel forward
-   \   000108   B240A60E.... MOV.W   #0xea6, &left_forward_rate
-    227            right_wheel_forward_on();
-   \   00010E   ........     CALLA   #right_wheel_forward_on
-    228            left_wheel_forward_on();
-   \   000112   ........     CALLA   #left_wheel_forward_on
-    229            Five_msec_Delay(count);
-   \   000116   0C4A         MOV.W   R10, R12
-   \   000118   ........     CALLA   #Five_msec_Delay
-    230            right_wheel_forward_off();
-   \   00011C   ........     CALLA   #right_wheel_forward_off
-    231            left_wheel_forward_off();
-   \   000120   ........     CALLA   #left_wheel_forward_off
-    232            
-    233            Five_msec_Delay(FOR_TWO_SECOND);
-   \   000124   3C409001     MOV.W   #0x190, R12
-   \   000128   ........     CALLA   #Five_msec_Delay
-    234            
-    235            display_1 = "CW";
-   \   00012C   B240........ MOV.W   #`?<Constant "CW">`, &display_1
-    236            display_2 = "";
-   \   000132   B240........ MOV.W   #`?<Constant "">`, &display_2
-    237            display_3 = "";
-   \   000138   B240........ MOV.W   #`?<Constant "">`, &display_3
-    238            display_4 = "";
-   \   00013E   B240........ MOV.W   #`?<Constant "">`, &display_4
-    239            Display_Process();
-   \   000144   ........     CALLA   #Display_Process
-    240            
-    241            clockwise_spin();
-   \   000148   ........     CALLA   #clockwise_spin
-    242            clockwise_spin();
-   \   00014C   ........     CALLA   #clockwise_spin
-    243            Five_msec_Delay(FOR_ONE_SECOND);
-   \   000150   3C40C800     MOV.W   #0xc8, R12
-   \   000154   ........     CALLA   #Five_msec_Delay
-    244            
-    245            display_1 = "CCW";
-   \   000158   B240........ MOV.W   #`?<Constant "CCW">`, &display_1
-    246            display_2 = "";
-   \   00015E   B240........ MOV.W   #`?<Constant "">`, &display_2
-    247            display_3 = "";
-   \   000164   B240........ MOV.W   #`?<Constant "">`, &display_3
-    248            display_4 = "";
-   \   00016A   B240........ MOV.W   #`?<Constant "">`, &display_4
-    249            Display_Process();
-   \   000170   ........     CALLA   #Display_Process
-    250            
-    251            counterclockwise_spin();
-   \   000174   ........     CALLA   #counterclockwise_spin
-    252            counterclockwise_spin();
-   \   000178   ........     CALLA   #counterclockwise_spin
-    253            counterclockwise_spin();
-   \   00017C   ........     CALLA   #counterclockwise_spin
-    254            
-    255            
-    256            toggle_IR_LED();
-   \   000180   ........     CALLA   #toggle_IR_LED
-    257          }
-   \   000184   3A41         POP.W   R10
-   \   000186   1001         RETA
-    258          
-
-   \                                 In  segment CODE, align 2
-    259          void IR_Calibration(void){
+    145          void IR_Calibration(void){
    \                     IR_Calibration:
    \   000000   0A12         PUSH.W  R10
-    260            int proceed = 0;
+    146            int proceed = 0;
    \   000002   0A43         MOV.W   #0x0, R10
-    261            display_1 = "Ambient Test";
+    147            display_1 = "Ambient Test";
    \   000004   B240........ MOV.W   #`?<Constant "Ambient Test">`, &display_1
-    262            display_2 = "Press SW2";
+    148            display_2 = "Press SW2";
    \   00000A   B240........ MOV.W   #`?<Constant "Press SW2">`, &display_2
-    263            display_3 = "";  
+    149            display_3 = "";  
    \   000010   B240........ MOV.W   #`?<Constant "">`, &display_3
-    264            display_4 = "";
+    150            display_4 = "";
    \   000016   B240........ MOV.W   #`?<Constant "">`, &display_4
-    265            Display_Process();
+    151            Display_Process();
    \   00001C   ........     CALLA   #Display_Process
-    266            while(proceed == 0){
+    152            while(proceed == 0){
    \                     ??IR_Calibration_0:
    \   000020   0A93         CMP.W   #0x0, R10
    \   000022   0720         JNE     ??IR_Calibration_3
-    267              if(switch_two_pressed){
+    153              if(switch_two_pressed){
    \   000024   8293....     CMP.W   #0x0, &switch_two_pressed
    \   000028   FB27         JEQ     ??IR_Calibration_0
-    268                proceed = 1;
+    154                proceed = 1;
    \   00002A   1A43         MOV.W   #0x1, R10
-    269                switch_two_pressed = FALSE;
+    155                switch_two_pressed = FALSE;
    \   00002C   8243....     MOV.W   #0x0, &switch_two_pressed
    \   000030   F73F         JMP     ??IR_Calibration_0
-    270              }
-    271            }
-    272          
-    273            ADC_Process();              // call sampling function
+    156              }
+    157            }
+    158          
+    159            ADC_Process();              // call sampling function
    \                     ??IR_Calibration_3:
    \   000032   ........     CALLA   #ADC_Process
-    274            right_calibration_ambient = ADC_Right_Detector;
+    160            right_calibration_ambient = ADC_Right_Detector;
    \   000036   9242........ MOV.W   &ADC_Right_Detector, &right_calibration_ambient
-    275            left_calibration_ambient = ADC_Left_Detector;
+    161            left_calibration_ambient = ADC_Left_Detector;
    \   00003C   9242........ MOV.W   &ADC_Left_Detector, &left_calibration_ambient
-    276            proceed = 0;
+    162            proceed = 0;
    \   000042   0A43         MOV.W   #0x0, R10
-    277            
-    278            toggle_IR_LED();
-   \   000044   ........     CALLA   #toggle_IR_LED
-    279            Five_msec_Delay(30);
-   \   000048   3C401E00     MOV.W   #0x1e, R12
+    163            
+    164            IR_LED_ON();
+   \   000044   ........     CALLA   #IR_LED_ON
+    165            Five_msec_Delay(200);
+   \   000048   3C40C800     MOV.W   #0xc8, R12
    \   00004C   ........     CALLA   #Five_msec_Delay
-    280            display_1 = "White Test";
+    166            display_1 = "White Test";
    \   000050   B240........ MOV.W   #`?<Constant "White Test">`, &display_1
-    281            display_2 = "Press SW2";
+    167            display_2 = "Press SW2";
    \   000056   B240........ MOV.W   #`?<Constant "Press SW2">`, &display_2
-    282            display_3 = "";  
+    168            display_3 = "";  
    \   00005C   B240........ MOV.W   #`?<Constant "">`, &display_3
-    283            display_4 = "";
+    169            display_4 = "";
    \   000062   B240........ MOV.W   #`?<Constant "">`, &display_4
-    284            Display_Process();
+    170            Display_Process();
    \   000068   ........     CALLA   #Display_Process
-    285            while(proceed == 0){
+    171            while(proceed == 0){
    \                     ??IR_Calibration_1:
    \   00006C   0A93         CMP.W   #0x0, R10
    \   00006E   0720         JNE     ??IR_Calibration_4
-    286              if(switch_two_pressed){
+    172              if(switch_two_pressed){
    \   000070   8293....     CMP.W   #0x0, &switch_two_pressed
    \   000074   FB27         JEQ     ??IR_Calibration_1
-    287                proceed = 1;
+    173                proceed = 1;
    \   000076   1A43         MOV.W   #0x1, R10
-    288                switch_two_pressed = FALSE;
+    174                switch_two_pressed = FALSE;
    \   000078   8243....     MOV.W   #0x0, &switch_two_pressed
    \   00007C   F73F         JMP     ??IR_Calibration_1
-    289              }
-    290            }
-    291            ADC_Process();              // call sampling function
+    175              }
+    176            }
+    177            ADC_Process();              // call sampling function
    \                     ??IR_Calibration_4:
    \   00007E   ........     CALLA   #ADC_Process
-    292            right_calibration_white = ADC_Right_Detector;
+    178            right_calibration_white = ADC_Right_Detector;
    \   000082   9242........ MOV.W   &ADC_Right_Detector, &right_calibration_white
-    293            left_calibration_white = ADC_Left_Detector;
+    179            left_calibration_white = ADC_Left_Detector;
    \   000088   9242........ MOV.W   &ADC_Left_Detector, &left_calibration_white
-    294            proceed = 0;
+    180            proceed = 0;
    \   00008E   0A43         MOV.W   #0x0, R10
-    295            
-    296            display_1 = "Black Test";
+    181            
+    182            display_1 = "Black Test";
    \   000090   B240........ MOV.W   #`?<Constant "Black Test">`, &display_1
-    297            display_2 = "Press SW2";
+    183            display_2 = "Press SW2";
    \   000096   B240........ MOV.W   #`?<Constant "Press SW2">`, &display_2
-    298            display_3 = "";  
+    184            display_3 = "";  
    \   00009C   B240........ MOV.W   #`?<Constant "">`, &display_3
-    299            display_4 = "";
+    185            display_4 = "";
    \   0000A2   B240........ MOV.W   #`?<Constant "">`, &display_4
-    300            Display_Process();
+    186            Display_Process();
    \   0000A8   ........     CALLA   #Display_Process
-    301            while(proceed == 0){
+    187            while(proceed == 0){
    \                     ??IR_Calibration_2:
    \   0000AC   0A93         CMP.W   #0x0, R10
    \   0000AE   0720         JNE     ??IR_Calibration_5
-    302              if(switch_two_pressed){
+    188              if(switch_two_pressed){
    \   0000B0   8293....     CMP.W   #0x0, &switch_two_pressed
    \   0000B4   FB27         JEQ     ??IR_Calibration_2
-    303                proceed = 1;
+    189                proceed = 1;
    \   0000B6   1A43         MOV.W   #0x1, R10
-    304                switch_two_pressed = FALSE;
+    190                switch_two_pressed = FALSE;
    \   0000B8   8243....     MOV.W   #0x0, &switch_two_pressed
    \   0000BC   F73F         JMP     ??IR_Calibration_2
-    305              }
-    306            }
-    307            ADC_Process();              // call sampling function
+    191              }
+    192            }
+    193            ADC_Process();              // call sampling function
    \                     ??IR_Calibration_5:
    \   0000BE   ........     CALLA   #ADC_Process
-    308            right_calibration_black = ADC_Right_Detector;
+    194            right_calibration_black = ADC_Right_Detector;
    \   0000C2   9242........ MOV.W   &ADC_Right_Detector, &right_calibration_black
-    309            left_calibration_black = ADC_Left_Detector;
+    195            left_calibration_black = ADC_Left_Detector;
    \   0000C8   9242........ MOV.W   &ADC_Left_Detector, &left_calibration_black
-    310              
-    311            toggle_IR_LED();
-   \   0000CE   ........     CALLA   #toggle_IR_LED
-    312            threshold = right_calibration_ambient - right_calibration_black + 50;
-   \   0000D2   1F42....     MOV.W   &right_calibration_ambient, R15
-   \   0000D6   1F82....     SUB.W   &right_calibration_black, R15
-   \   0000DA   3F503200     ADD.W   #0x32, R15
-   \   0000DE   824F....     MOV.W   R15, &threshold
-    313            
-    314          }
-   \   0000E2   3A41         POP.W   R10
-   \   0000E4   1001         RETA
-
-   \                                 In  segment DATA16_C, align 1, align-sorted
-   \                     `?<Constant "Forward">`:
-   \   000000   466F72776172 DC8 "Forward"
-   \            6400        
-
-   \                                 In  segment DATA16_C, align 1, align-sorted
-   \                     `?<Constant "">`:
-   \   000000   00           DC8 ""
-
-   \                                 In  segment DATA16_C, align 1, align-sorted
-   \                     `?<Constant "Reverse">`:
-   \   000000   526576657273 DC8 "Reverse"
-   \            6500        
-
-   \                                 In  segment DATA16_C, align 1, align-sorted
-   \                     `?<Constant "CW">`:
-   \   000000   435700       DC8 "CW"
-
-   \                                 In  segment DATA16_C, align 1, align-sorted
-   \                     `?<Constant "CCW">`:
-   \   000000   43435700     DC8 "CCW"
+    196              
+    197            IR_LED_OFF();
+   \   0000CE   ........     CALLA   #IR_LED_OFF
+    198            thresholdR = ((right_calibration_black + right_calibration_white)/2)+200;
+   \   0000D2   1F42....     MOV.W   &right_calibration_black, R15
+   \   0000D6   1F52....     ADD.W   &right_calibration_white, R15
+   \   0000DA   5F03         RRUM.W  #0x1, R15
+   \   0000DC   3F50C800     ADD.W   #0xc8, R15
+   \   0000E0   824F....     MOV.W   R15, &thresholdR
+    199            thresholdL = ((left_calibration_black + left_calibration_white)/2)+200;
+   \   0000E4   1F42....     MOV.W   &left_calibration_black, R15
+   \   0000E8   1F52....     ADD.W   &left_calibration_white, R15
+   \   0000EC   5F03         RRUM.W  #0x1, R15
+   \   0000EE   3F50C800     ADD.W   #0xc8, R15
+   \   0000F2   824F....     MOV.W   R15, &thresholdL
+    200            
+    201          }
+   \   0000F6   3A41         POP.W   R10
+   \   0000F8   1001         RETA
 
    \                                 In  segment DATA16_C, align 1, align-sorted
    \                     `?<Constant "Ambient Test">`:
@@ -655,6 +428,10 @@ C:\Users\David\Documents\ECE 306\Project-08\adc.c
    \            53573200    
 
    \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "">`:
+   \   000000   00           DC8 ""
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
    \                     `?<Constant "White Test">`:
    \   000000   576869746520 DC8 "White Test"
    \            5465737400  
@@ -663,7 +440,7 @@ C:\Users\David\Documents\ECE 306\Project-08\adc.c
    \                     `?<Constant "Black Test">`:
    \   000000   426C61636B20 DC8 "Black Test"
    \            5465737400  
-    315          
+    202          
 
    Maximum stack usage in bytes:
 
@@ -675,24 +452,9 @@ C:\Users\David\Documents\ECE 306\Project-08\adc.c
         6   -> ADC_Process
         6   -> Display_Process
         6   -> Five_msec_Delay
-        6   -> toggle_IR_LED
+        6   -> IR_LED_OFF
+        6   -> IR_LED_ON
       4   Init_ADC
-      6   Project5
-        6   -> ADC_Process
-        6   -> Display_Process
-        6   -> Five_msec_Delay
-        6   -> HEXtoBCD
-        6   -> clockwise_spin
-        6   -> counterclockwise_spin
-        6   -> left_wheel_forward_off
-        6   -> left_wheel_forward_on
-        6   -> left_wheel_reverse_off
-        6   -> left_wheel_reverse_on
-        6   -> right_wheel_forward_off
-        6   -> right_wheel_forward_on
-        6   -> right_wheel_reverse_off
-        6   -> right_wheel_reverse_on
-        6   -> toggle_IR_LED
 
 
    Segment part sizes:
@@ -702,18 +464,12 @@ C:\Users\David\Documents\ECE 306\Project-08\adc.c
        1  ?<Constant "">
       13  ?<Constant "Ambient Test">
       11  ?<Constant "Black Test">
-       4  ?<Constant "CCW">
-       3  ?<Constant "CW">
-       8  ?<Constant "Forward">
       10  ?<Constant "Press SW2">
-       8  ?<Constant "Reverse">
       11  ?<Constant "White Test">
       26  ADC_Process
      122  HEXtoBCD
-     230  IR_Calibration
+     250  IR_Calibration
      108  Init_ADC
-       2  P5_counter
-     392  Project5
        2  _A_ADC10CTL0_L
        2  _A_ADC10CTL1_L
        2  _A_ADC10CTL2_L
@@ -721,14 +477,13 @@ C:\Users\David\Documents\ECE 306\Project-08\adc.c
        2  _A_ADC10MCTL0_L
 
  
- 878 bytes in segment CODE
+ 506 bytes in segment CODE
   10 bytes in segment DATA16_AN
-  69 bytes in segment DATA16_C
-   2 bytes in segment DATA16_Z
+  46 bytes in segment DATA16_C
  
- 878 bytes of CODE  memory
-  69 bytes of CONST memory
-   2 bytes of DATA  memory (+ 10 bytes shared)
+ 506 bytes of CODE  memory
+  46 bytes of CONST memory
+   0 bytes of DATA  memory (+ 10 bytes shared)
 
 Errors: none
 Warnings: none

@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           18/Apr/2016  23:20:34
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           19/Apr/2016  21:44:30
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -33,7 +33,7 @@
 ###############################################################################
 
 C:\Users\David\Documents\ECE 306\Project-08\command_Structure.c
-      1          #include <stdlib.h>
+      1          //#include <stdlib.h>
       2          #include "macros.h"
       3          #include "functions.h"
       4          #include "msp430.h"
@@ -561,7 +561,7 @@ C:\Users\David\Documents\ECE 306\Project-08\command_Structure.c
    \   00050C   E63C         JMP     ??commandTree_6
     147                      }
     148                  }
-    149                  else if(commandBuffer[i+4]=='L'){ // (HARDWARE RESET) or turn right command
+    149                  else if(commandBuffer[i+4]=='L'){ // (HARDWARE RESET) or turn left command
    \                     ??commandTree_27:
    \   00050E   1F42....     MOV.W   &i, R15
    \   000512   FF904C00.... CMP.B   #0x4c, commandBuffer + 4(R15)
@@ -658,7 +658,7 @@ C:\Users\David\Documents\ECE 306\Project-08\command_Structure.c
    \   00062A   573C         JMP     ??commandTree_6
     166                      }
     167                  }   
-    168                  else if(commandBuffer[i+4]=='C'){ //FIFTH COMMAND (Configure)
+    168                  else if(commandBuffer[i+4]=='C'){ //Configure IOT
    \                     ??commandTree_33:
    \   00062C   1F42....     MOV.W   &i, R15
    \   000630   FF904300.... CMP.B   #0x43, commandBuffer + 4(R15)
@@ -704,7 +704,7 @@ C:\Users\David\Documents\ECE 306\Project-08\command_Structure.c
     180                      }
     181                  }
     182                  
-    183                  else if(commandBuffer[i+4]=='M'){ //SIXTH COMMAND (Get MAC Address)
+    183                  else if(commandBuffer[i+4]=='M'){ //Get MAC Address
    \                     ??commandTree_37:
    \   00069A   1F42....     MOV.W   &i, R15
    \   00069E   FF904D00.... CMP.B   #0x4d, commandBuffer + 4(R15)
@@ -719,11 +719,11 @@ C:\Users\David\Documents\ECE 306\Project-08\command_Structure.c
    \   0006BE   1F42....     MOV.W   &i, R15
    \   0006C2   FF900A00.... CMP.B   #0xa, commandBuffer + 5(R15)
    \   0006C8   0820         JNE     ??commandTree_6
-    185                          uart_puts("AT+S.GCFG=nv_wifi_macaddr\r");//get MAC address
+    185                          uart_puts("AT+S.GCFG=nv_wifi_macaddr\r");//getting MAC address
    \                     ??commandTree_39:
    \   0006CA   3C40....     MOV.W   #`?<Constant "AT+S.GCFG=nv_wifi_mac...">`, R12
    \   0006CE   ........     CALLA   #uart_puts
-    186                          //print address to display (code to do this is in main)
+    186                          //print address to display
     187                          macFG=TRUE;
    \   0006D2   9243....     MOV.W   #0x1, &macFG
     188          
@@ -746,60 +746,59 @@ C:\Users\David\Documents\ECE 306\Project-08\command_Structure.c
    \   0006FC   0324         JEQ     ??commandTree_40
    \   0006FE   9253....     ADD.W   #0x1, &i
    \   000702   EB3F         JMP     ??commandTree_6
-    195                      //this for loop is for incrementing i to the next period, or incrementing i to the point where
-    196                      //it breaks out of the while loop
-    197                  }
-    198                  if(commandBuffer[i]=='.'){ //if not breaking out of while loop, increment i to skip the period part of the next command
+    195                      //this for loop is for incrementing i to the next period
+    196                  }
+    197                  if(commandBuffer[i]=='.'){ //if not breaking out of while loop, increment i to skip the period part of the next command
    \                     ??commandTree_40:
    \   000704   1F42....     MOV.W   &i, R15
    \   000708   FF902E00.... CMP.B   #0x2e, commandBuffer(R15)
    \   00070E   ....         JEQ     $+6
    \   000710   ........     BRA     #??commandTree_7
-    199                      i++;
+    198                      i++;
    \   000714   9253....     ADD.W   #0x1, &i
    \   000718   ........     BRA     #??commandTree_7
-    200                  }
-    201              }
-    202              StartCommandFG=FALSE;
+    199                  }
+    200              }
+    201              StartCommandFG=FALSE;
    \                     ??commandTree_9:
    \   00071C   8243....     MOV.W   #0x0, &StartCommandFG
-    203              writeCommandFG=FALSE; //command has been executed.
+    202              writeCommandFG=FALSE; //command has been executed.
    \   000720   8243....     MOV.W   #0x0, &writeCommandFG
-    204          }
+    203          }
    \   000724   1001         RETA
-    205          
+    204          
 
    \                                 In  segment CODE, align 2
-    206          void uart_puts(const char *str){
+    205          void uart_puts(const char *str){
    \                     uart_puts:
    \   000000   0A12         PUSH.W  R10
    \   000002   0A4C         MOV.W   R12, R10
-    207              if (str != '\0') {
+    206              if (str != '\0') {
    \   000004   0A93         CMP.W   #0x0, R10
    \   000006   1024         JEQ     ??uart_puts_1
-    208                  while (*str != '\0') {
+    207                  while (*str != '\0') {
    \                     ??uart_puts_0:
    \   000008   CA930000     CMP.B   #0x0, 0(R10)
    \   00000C   0D24         JEQ     ??uart_puts_1
-    209                      /* give time for the transmit buffer to be ready */
-    210                      Five_msec_Delay(1);
+    208                      /* give time for the transmit buffer to be ready */
+    209                      Five_msec_Delay(1);
    \   00000E   1C43         MOV.W   #0x1, R12
    \   000010   ........     CALLA   #Five_msec_Delay
-    211                      /* Transmit data */
-    212                      UCA1TXBUF = *str; //send to IOT
+    210                      /* Transmit data */
+    211                      UCA1TXBUF = *str; //send to IOT
    \   000014   6F4A         MOV.B   @R10, R15
    \   000016   4F4F         MOV.B   R15, R15
    \   000018   824FEE05     MOV.W   R15, &0x5ee
-    213                      UCA0TXBUF = *str; //echo to PC
+    212                      UCA0TXBUF = *str; //echo to PC
    \   00001C   6F4A         MOV.B   @R10, R15
    \   00001E   4F4F         MOV.B   R15, R15
    \   000020   824FCE05     MOV.W   R15, &0x5ce
-    214                      str++;
+    213                      str++;
    \   000024   1A53         ADD.W   #0x1, R10
    \   000026   F03F         JMP     ??uart_puts_0
-    215                  }
-    216              }
-    217          }
+    214                  }
+    215              }
+    216          }
    \                     ??uart_puts_1:
    \   000028   3A41         POP.W   R10
    \   00002A   1001         RETA

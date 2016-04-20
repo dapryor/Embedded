@@ -63,7 +63,6 @@ char posL2;
 char posL3;
 char posL4;
 char size_count;
-char big;
 volatile unsigned int do_this = FALSE;
 volatile unsigned int display_count = 0; //used to write display every 250ms
 char adc_char[5];
@@ -79,7 +78,8 @@ unsigned int right_calibration_ambient;
 extern volatile unsigned int switch_one_pressed;
 extern volatile unsigned int switch_two_pressed;
 unsigned int menu_items = FALSE;
-unsigned int threshold;
+unsigned int thresholdR;
+unsigned int thresholdL;
 extern volatile char USB_Char_Rx0[SMALL_RING_SIZE];
 extern volatile char USB_Char_Rx1[SMALL_RING_SIZE];
 extern unsigned int BaudMenuFG;
@@ -152,10 +152,10 @@ void main(void){
   Init_Serial_UCA0(1);                      // BAUD rate 9600
   Five_msec_Delay(1);
   PJOUT |= IOT_STA_MINIAP; //turning on miniap (only works this way)
-  
+  IR_LED_OFF();
   lcd_BIG_mid();
   display_1 = "  David   ";
-  display_2 = "Project  7";  
+  display_2 = "Project  8";  
   display_3 = "  Pryor   ";
   display_4 = "";
   Display_Process();
@@ -302,6 +302,14 @@ void parseIOTData(void){
     }
 }
 
+int atoi(char *string){
+  int l, converted;
+  converted = RESET;
+  for(l=RESET; string[l] != '\0'; ++l){
+    converted = converted*10 + string[l] - '0';
+  }
+  return converted;
+}
 
 
 

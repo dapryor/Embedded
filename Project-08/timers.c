@@ -150,8 +150,8 @@ void Init_Timer_A0(void){
  TA0CCR1 = TA0CCR1_INTERVAL; // CCR1
  TA0CCTL1 |= CCIE; // CCR1 enable interrupt
 
-// TA0CCR2 = TA0CCR2_INTERVAL; // CCR2
-// TA0CCTL2 |= CCIE; // CCR2 enable interrupt
+ TA0CCR2 = TA0CCR2_INTERVAL; // CCR2
+ TA0CCTL2 |= CCIE; // CCR2 enable interrupt
 }
 //------------------------------------------------------------------------------ 
 

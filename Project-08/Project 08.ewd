@@ -231,7 +231,7 @@
         </option>
         <option>
           <name>UsbComPort</name>
-          <state>HID0023:COM3</state>
+          <state>HID0008:COM3</state>
         </option>
         <option>
           <name>FetConnection</name>

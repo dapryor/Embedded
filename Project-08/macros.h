@@ -27,7 +27,8 @@
 #define USE_SMCLK                               (0x01)
 #define TRUE                                    (1)
 #define FALSE                                   (0)
-#define POSITIVE                                (0)  
+#define POSITIVE                                (0) 
+#define RESET                                   (0)
 #define PREVIOUS                                (1)
 #define WRITING_INDEX                           (9)
 #define THRESHOLD                               (-30)
@@ -175,7 +176,8 @@
 #define FLLN_255                                (0x00ffu)
 #define CSLOCK                                  (0x01) // Any incorrect password locks registers
 #define TA0CCR0_INTERVAL                        (25000) //50ms
-#define TA0CCR1_INTERVAL                        (2500) //50ms
+#define TA0CCR1_INTERVAL                        (2500) //5ms
+#define TA0CCR2_INTERVAL                        (250) // ~1msec
 #define DEBOUNCE_MAX                            (10)
 #define CCR1                                    (2)
 #define CCR2                                    (4)

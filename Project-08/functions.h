@@ -84,7 +84,10 @@ void left_wheel_reverse_on(void);
 void left_wheel_reverse_off(void);
 void right_wheel_reverse_on(void);
 void right_wheel_reverse_off(void);
-void toggle_IR_LED(void);
+void IR_LED_ON(void);
+void IR_LED_OFF(void);
+void active_breaking_right(void);
+void active_breaking_left(void);
 
 // Routines
 void straight_line(void);
@@ -99,6 +102,7 @@ void counterclockwise_spin(void);
 
 //conversions
 void HEXtoBCD(int hex_value);
+int atoi(char *string);
 
 //ADC
 void ADC_Process(void);

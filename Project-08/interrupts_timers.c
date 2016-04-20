@@ -21,6 +21,7 @@ extern volatile unsigned int debounce_count_two;
 extern char *display_4;
 extern volatile unsigned int display_count;
 extern volatile unsigned int P5_counter;
+volatile unsigned int motor_time=RESET;
 //------------------------------------------------------------------------------
 // TimerA0 0 Interrupt handler
 #pragma vector = TIMER0_A0_VECTOR
@@ -96,7 +97,6 @@ __interrupt void TIMER0_A1_ISR(void){
  case CCR1:                     // CCR1 not used
  five_msec_delay++;
  display_count++;
- P5_counter++;
  if(display_count >= FOR_150_MSEC){    // update screen every 250 msec
       Display_Process();
       display_count = SWITCH_OFF;
@@ -104,10 +104,11 @@ __interrupt void TIMER0_A1_ISR(void){
  TA0CCR1 += TA0CCR1_INTERVAL;   // Add Offset to TACCR1
  break;
  
- //case CCR2: // CCR2 not used
+ case CCR2: // CCR2 for 1msec
  //...... Add What you need happen in the interrupt ......
- //TA0CCR2 += TA0CCR2_INTERVAL; // Add Offset to TACCR2
- //break;
+ motor_time++;
+ TA0CCR2 += TA0CCR2_INTERVAL; // Add Offset to TACCR2
+ break;
  //case OVERFLOW: // overflow
  //...... Add What you need happen in the interrupt ......
  //break;

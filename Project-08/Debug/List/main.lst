@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           18/Apr/2016  23:20:34
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           19/Apr/2016  21:44:30
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -156,96 +156,96 @@ C:\Users\David\Documents\ECE 306\Project-08\main.c
    \                     size_count:
    \   000000                DS8 1
 
-   \                                 In  segment DATA16_Z, align 1, align-sorted
-   \   000000                REQUIRE ?cstart_init_zero
-     66          char big;
-   \                     big:
-   \   000000                DS8 1
-
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     67          volatile unsigned int do_this = FALSE;
+     66          volatile unsigned int do_this = FALSE;
    \                     do_this:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     68          volatile unsigned int display_count = 0; //used to write display every 250ms
+     67          volatile unsigned int display_count = 0; //used to write display every 250ms
    \                     display_count:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 1, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     69          char adc_char[5];
+     68          char adc_char[5];
    \                     adc_char:
    \   000000                DS8 5
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     70          volatile unsigned int ADC_Left_Detector;
+     69          volatile unsigned int ADC_Left_Detector;
    \                     ADC_Left_Detector:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     71          volatile unsigned int ADC_Right_Detector;
+     70          volatile unsigned int ADC_Right_Detector;
    \                     ADC_Right_Detector:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     72          volatile unsigned int ADC_Thumb;
+     71          volatile unsigned int ADC_Thumb;
    \                     ADC_Thumb:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     73          unsigned int left_calibration_black;
+     72          unsigned int left_calibration_black;
    \                     left_calibration_black:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     74          unsigned int right_calibration_black;
+     73          unsigned int right_calibration_black;
    \                     right_calibration_black:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     75          unsigned int left_calibration_white;
+     74          unsigned int left_calibration_white;
    \                     left_calibration_white:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     76          unsigned int right_calibration_white;
+     75          unsigned int right_calibration_white;
    \                     right_calibration_white:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     77          unsigned int left_calibration_ambient;
+     76          unsigned int left_calibration_ambient;
    \                     left_calibration_ambient:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     78          unsigned int right_calibration_ambient;
+     77          unsigned int right_calibration_ambient;
    \                     right_calibration_ambient:
    \   000000                DS8 2
-     79          extern volatile unsigned int switch_one_pressed;
-     80          extern volatile unsigned int switch_two_pressed;
+     78          extern volatile unsigned int switch_one_pressed;
+     79          extern volatile unsigned int switch_two_pressed;
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     81          unsigned int menu_items = FALSE;
+     80          unsigned int menu_items = FALSE;
    \                     menu_items:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     82          unsigned int threshold;
-   \                     threshold:
+     81          unsigned int thresholdR;
+   \                     thresholdR:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+     82          unsigned int thresholdL;
+   \                     thresholdL:
    \   000000                DS8 2
      83          extern volatile char USB_Char_Rx0[SMALL_RING_SIZE];
      84          extern volatile char USB_Char_Rx1[SMALL_RING_SIZE];
@@ -458,19 +458,20 @@ C:\Users\David\Documents\ECE 306\Project-08\main.c
    \   00002E   ........     CALLA   #Five_msec_Delay
     154            PJOUT |= IOT_STA_MINIAP; //turning on miniap (only works this way)
    \   000032   A2D22203     BIS.W   #0x4, &0x322
-    155            
+    155            IR_LED_OFF();
+   \   000036   ........     CALLA   #IR_LED_OFF
     156            lcd_BIG_mid();
-   \   000036   ........     CALLA   #lcd_BIG_mid
+   \   00003A   ........     CALLA   #lcd_BIG_mid
     157            display_1 = "  David   ";
-   \   00003A   B240........ MOV.W   #`?<Constant "  David   ">`, &display_1
-    158            display_2 = "Project  7";  
-   \   000040   B240........ MOV.W   #`?<Constant "Project  7">`, &display_2
+   \   00003E   B240........ MOV.W   #`?<Constant "  David   ">`, &display_1
+    158            display_2 = "Project  8";  
+   \   000044   B240........ MOV.W   #`?<Constant "Project  8">`, &display_2
     159            display_3 = "  Pryor   ";
-   \   000046   B240........ MOV.W   #`?<Constant "  Pryor   ">`, &display_3
+   \   00004A   B240........ MOV.W   #`?<Constant "  Pryor   ">`, &display_3
     160            display_4 = "";
-   \   00004C   B240........ MOV.W   #`?<Constant "">`, &display_4
+   \   000050   B240........ MOV.W   #`?<Constant "">`, &display_4
     161            Display_Process();
-   \   000052   ........     CALLA   #Display_Process
+   \   000056   ........     CALLA   #Display_Process
     162          
     163          
     164          
@@ -481,49 +482,49 @@ C:\Users\David\Documents\ECE 306\Project-08\main.c
     169              
     170              ADC_Process();              // call sampling function
    \                     ??main_0:
-   \   000056   ........     CALLA   #ADC_Process
+   \   00005A   ........     CALLA   #ADC_Process
     171              if(MainFG){
-   \   00005A   8293....     CMP.W   #0x0, &MainFG
-   \   00005E   0324         JEQ     ??main_1
+   \   00005E   8293....     CMP.W   #0x0, &MainFG
+   \   000062   0324         JEQ     ??main_1
     172                  Menu_Process();
-   \   000060   ........     CALLA   #Menu_Process
-   \   000064   0B3C         JMP     ??main_2
+   \   000064   ........     CALLA   #Menu_Process
+   \   000068   0B3C         JMP     ??main_2
     173              }
     174              else if(BaudMenuFG==TRUE){
    \                     ??main_1:
-   \   000066   9293....     CMP.W   #0x1, &BaudMenuFG
-   \   00006A   0320         JNE     ??main_3
+   \   00006A   9293....     CMP.W   #0x1, &BaudMenuFG
+   \   00006E   0320         JNE     ??main_3
     175                  Baud_Menu(); 
-   \   00006C   ........     CALLA   #Baud_Menu
-   \   000070   053C         JMP     ??main_2
+   \   000070   ........     CALLA   #Baud_Menu
+   \   000074   053C         JMP     ??main_2
     176              }
     177              else if(IOTMenuFG==TRUE){
    \                     ??main_3:
-   \   000072   9293....     CMP.W   #0x1, &IOTMenuFG
-   \   000076   0220         JNE     ??main_2
+   \   000076   9293....     CMP.W   #0x1, &IOTMenuFG
+   \   00007A   0220         JNE     ??main_2
     178                  IOT_Menu();
-   \   000078   ........     CALLA   #IOT_Menu
+   \   00007C   ........     CALLA   #IOT_Menu
     179              }
     180              
     181              if(StartCommandFG){ //StartCommandFG is true once "." has been received
    \                     ??main_2:
-   \   00007C   8293....     CMP.W   #0x0, &StartCommandFG
-   \   000080   0224         JEQ     ??main_4
+   \   000080   8293....     CMP.W   #0x0, &StartCommandFG
+   \   000084   0224         JEQ     ??main_4
     182                  commandTree();
-   \   000082   ........     CALLA   #commandTree
+   \   000086   ........     CALLA   #commandTree
     183              }
     184              printMacAddress(); //prints mac address to screen
    \                     ??main_4:
-   \   000086   ........     CALLA   #printMacAddress
+   \   00008A   ........     CALLA   #printMacAddress
     185              macFG=FALSE; //turn off command to print mac address
-   \   00008A   8243....     MOV.W   #0x0, &macFG
+   \   00008E   8243....     MOV.W   #0x0, &macFG
     186              clearReceiveBuffer();
-   \   00008E   ........     CALLA   #clearReceiveBuffer
+   \   000092   ........     CALLA   #clearReceiveBuffer
     187              parseIOTData();
-   \   000092   ........     CALLA   #parseIOTData
-   \   000096   DF3F         JMP     ??main_0
-   \   000098   0343         NOP
-   \   00009A                REQUIRE _A_PJOUT_L
+   \   000096   ........     CALLA   #parseIOTData
+   \   00009A   DF3F         JMP     ??main_0
+   \   00009C   0343         NOP
+   \   00009E                REQUIRE _A_PJOUT_L
     188            }
     189          //------------------------------------------------------------------------------
     190          }
@@ -850,6 +851,38 @@ C:\Users\David\Documents\ECE 306\Project-08\main.c
    \                     ??parseIOTData_6:
    \   0001EA   1001         RETA
    \   0001EC                REQUIRE _A_PJOUT_L
+    304          
+
+   \                                 In  segment CODE, align 2
+    305          int atoi(char *string){
+   \                     atoi:
+   \   000000   0E4C         MOV.W   R12, R14
+    306            int l, converted;
+    307            converted = RESET;
+   \   000002   0C43         MOV.W   #0x0, R12
+    308            for(l=RESET; string[l] != '\0'; ++l){
+   \   000004   0D43         MOV.W   #0x0, R13
+   \                     ??atoi_0:
+   \   000006   0F4E         MOV.W   R14, R15
+   \   000008   0F5D         ADD.W   R13, R15
+   \   00000A   CF930000     CMP.B   #0x0, 0(R15)
+   \   00000E   0B24         JEQ     ??atoi_1
+    309              converted = converted*10 + string[l] - '0';
+   \   000010   0F4E         MOV.W   R14, R15
+   \   000012   0F5D         ADD.W   R13, R15
+   \   000014   6F4F         MOV.B   @R15, R15
+   \   000016   4F4F         MOV.B   R15, R15
+   \   000018                RPT     #0xa
+   \   000018   49180F5C     ADDX.W  R12, R15
+   \   00001C   0C4F         MOV.W   R15, R12
+   \   00001E   3C50D0FF     ADD.W   #0xffd0, R12
+    310            }
+   \   000022   1D53         ADD.W   #0x1, R13
+   \   000024   F03F         JMP     ??atoi_0
+    311            return converted;
+   \                     ??atoi_1:
+   \   000026   1001         RETA
+    312          }
 
    \                                 In  segment DATA16_ID, align 2, align-sorted
    \                     `?<Initializer for transmitFG>`:
@@ -861,9 +894,9 @@ C:\Users\David\Documents\ECE 306\Project-08\main.c
    \            6420202000  
 
    \                                 In  segment DATA16_C, align 1, align-sorted
-   \                     `?<Constant "Project  7">`:
-   \   000000   50726F6A6563 DC8 "Project  7"
-   \            7420203700  
+   \                     `?<Constant "Project  8">`:
+   \   000000   50726F6A6563 DC8 "Project  8"
+   \            7420203800  
 
    \                                 In  segment DATA16_C, align 1, align-sorted
    \                     `?<Constant "  Pryor   ">`:
@@ -898,20 +931,20 @@ C:\Users\David\Documents\ECE 306\Project-08\main.c
    \                     `?<Constant "AT+CFUN=1\\r">`:
    \   000000   41542B434655 DC8 "AT+CFUN=1\015"
    \            4E3D310D00  
-    304          
-    305          
-    306          
-    307          
-    308          
-    309          
-    310          
-    311          
-    312          
+    313          
+    314          
+    315          
+    316          
+    317          
+    318          
+    319          
+    320          
 
    Maximum stack usage in bytes:
 
    CSTACK Function
    ------ --------
+      4   atoi
       4   clearReceiveBuffer
       4   main
         4   -> ADC_Process
@@ -919,6 +952,7 @@ C:\Users\David\Documents\ECE 306\Project-08\main.c
         4   -> Display_Process
         4   -> Five_msec_Delay
         4   -> IOT_Menu
+        4   -> IR_LED_OFF
         4   -> Init_ADC
         4   -> Init_Clocks
         4   -> Init_Conditions
@@ -955,7 +989,7 @@ C:\Users\David\Documents\ECE 306\Project-08\main.c
        1  ?<Constant "">
       11  ?<Constant "AT+CFUN=1\r">
       10  ?<Constant "Mac Addr:">
-      11  ?<Constant "Project  7">
+      11  ?<Constant "Project  8">
        9  ?<Constant "Scanning">
        2  ?<Initializer for transmitFG>
        2  ADC_Left_Detector
@@ -971,7 +1005,7 @@ C:\Users\David\Documents\ECE 306\Project-08\main.c
        2  _A_PJOUT_L
        2  _A_UCA1BRW_L
        5  adc_char
-       1  big
+      40  atoi
       42  clearReceiveBuffer
       30  commandBuffer
        2  commandIndex
@@ -992,7 +1026,7 @@ C:\Users\David\Documents\ECE 306\Project-08\main.c
        2  left_calibration_white
        2  macFG
        2  macPtr
-     154  main
+     158  main
        2  menu_items
        2  newLineFG
        1  one_time
@@ -1010,21 +1044,22 @@ C:\Users\David\Documents\ECE 306\Project-08\main.c
       11  secondMacBuff
       11  secondipBuff
        1  size_count
-       2  threshold
+       2  thresholdL
+       2  thresholdR
        2  transmitFG
        2  writeCommandFG
 
  
- 856 bytes in segment CODE
+ 900 bytes in segment CODE
    4 bytes in segment DATA16_AN
   86 bytes in segment DATA16_C
    2 bytes in segment DATA16_I
    2 bytes in segment DATA16_ID
- 361 bytes in segment DATA16_Z
+ 362 bytes in segment DATA16_Z
  
- 856 bytes of CODE  memory
+ 900 bytes of CODE  memory
   88 bytes of CONST memory
- 363 bytes of DATA  memory (+ 4 bytes shared)
+ 364 bytes of DATA  memory (+ 4 bytes shared)
 
 Errors: none
 Warnings: none

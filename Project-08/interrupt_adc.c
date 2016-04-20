@@ -52,12 +52,12 @@ __interrupt void ADC10_ISR(void){
       switch (channel){
         case MENU_ITEM_ONE:
           ADC10MCTL0 = ADC10INCH_1; // Next channel A1
-          ADC_Right_Detector = ADC10MEM0; // Current Channel result for A0
+          ADC_Left_Detector = ADC10MEM0; // Current Channel result for A0
           channel++;
           break;
         case MENU_ITEM_TWO:
           ADC10MCTL0 = ADC10INCH_3; // Next channel A3
-          ADC_Left_Detector = ADC10MEM0; // Current Channel result for A1
+          ADC_Right_Detector = ADC10MEM0; // Current Channel result for A1
           channel++;
           break;
         case MENU_ITEM_THREE:

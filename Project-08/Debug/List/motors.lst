@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           18/Apr/2016  23:20:34
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           19/Apr/2016  21:44:30
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -315,18 +315,64 @@ C:\Users\David\Documents\ECE 306\Project-08\motors.c
     152          
 
    \                                 In  segment CODE, align 2
-    153          void toggle_IR_LED(void){
-   \                     toggle_IR_LED:
-    154            P1OUT   ^= IR_LED;     // P1 IR_LED Port Pin toggle
-   \   000000   E2E20202     XOR.B   #0x4, &0x202
+    153          void IR_LED_ON(void){
+   \                     IR_LED_ON:
+    154            P1OUT   |= IR_LED;     // P1 IR_LED Port Pin toggle
+   \   000000   E2D20202     BIS.B   #0x4, &0x202
     155          }
    \   000004   1001         RETA
    \   000006                REQUIRE _A_PAOUT_L
+    156          
+
+   \                                 In  segment CODE, align 2
+    157          void IR_LED_OFF(void){
+   \                     IR_LED_OFF:
+    158            P1OUT   |= IR_LED;     // P1 IR_LED Port Pin toggle
+   \   000000   E2D20202     BIS.B   #0x4, &0x202
+    159          }
+   \   000004   1001         RETA
+   \   000006                REQUIRE _A_PAOUT_L
+    160          
+
+   \                                 In  segment CODE, align 2
+    161          void active_breaking_left(void){
+   \                     active_breaking_left:
+    162            left_wheel_reverse_on();
+   \   000000   ........     CALLA   #left_wheel_reverse_on
+    163            Five_msec_Delay(1);
+   \   000004   1C43         MOV.W   #0x1, R12
+   \   000006   ........     CALLA   #Five_msec_Delay
+    164            left_wheel_reverse_off();
+   \   00000A   ........     BRA     #left_wheel_reverse_off
+    165          }
+    166          
+
+   \                                 In  segment CODE, align 2
+    167          void active_breaking_right(void){
+   \                     active_breaking_right:
+    168            right_wheel_reverse_on();
+   \   000000   ........     CALLA   #right_wheel_reverse_on
+    169            Five_msec_Delay(1);
+   \   000004   1C43         MOV.W   #0x1, R12
+   \   000006   ........     CALLA   #Five_msec_Delay
+    170            right_wheel_reverse_off();
+   \   00000A   ........     BRA     #right_wheel_reverse_off
+    171          }
 
    Maximum stack usage in bytes:
 
    CSTACK Function
    ------ --------
+      4   IR_LED_OFF
+      4   IR_LED_ON
+      4   active_breaking_left
+        4   -> Five_msec_Delay
+        0   -> left_wheel_reverse_off
+        4   -> left_wheel_reverse_on
+      4   active_breaking_right
+        4   -> Five_msec_Delay
+        0   -> right_wheel_reverse_off
+        4   -> right_wheel_reverse_on
       4   left_wheel_forward_off
       4   left_wheel_forward_on
         4   -> left_wheel_reverse_off
@@ -339,13 +385,14 @@ C:\Users\David\Documents\ECE 306\Project-08\motors.c
       4   right_wheel_reverse_off
       4   right_wheel_reverse_on
         4   -> right_wheel_forward_off
-      4   toggle_IR_LED
 
 
    Segment part sizes:
 
    Bytes  Function/Label
    -----  --------------
+       6  IR_LED_OFF
+       6  IR_LED_ON
        2  TB1CCR1
        2  TB1CCR2
        2  TB2CCR1
@@ -353,6 +400,8 @@ C:\Users\David\Documents\ECE 306\Project-08\motors.c
        2  _A_PAOUT_L
        2  _A_PBSEL0_L
        2  _A_PBSEL1_L
+      14  active_breaking_left
+      14  active_breaking_right
       18  left_wheel_forward_off
       30  left_wheel_forward_on
       18  left_wheel_reverse_off
@@ -361,13 +410,12 @@ C:\Users\David\Documents\ECE 306\Project-08\motors.c
       32  right_wheel_forward_on
       18  right_wheel_reverse_off
       32  right_wheel_reverse_on
-       6  toggle_IR_LED
 
  
- 204 bytes in segment CODE
+ 238 bytes in segment CODE
   14 bytes in segment DATA16_AN
  
- 204 bytes of CODE memory
+ 238 bytes of CODE memory
    0 bytes of DATA memory (+ 14 bytes shared)
 
 Errors: none
