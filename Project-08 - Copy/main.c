@@ -148,7 +148,7 @@ void main(void){
 // Author: David Pryor
 // Date: Feb 2016
 // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
-//==============================================================================
+//=========================================10.138.6=====================================
   Init_Ports();                             // Initialize Ports
   Init_Clocks();                            // Initialize Clock System 
   Init_Conditions();
@@ -188,7 +188,7 @@ void main(void){
     }
     else if(display_IPFG){
       display_1 = "";
-      HEXtoBCD(trackTimer*FIVE_MSEC);
+      HEXtoBCD(trackTimer/FOR_ONE_SECOND);
       display_2 = adc_char;;
       ipPtr=firstipBuff;
       display_3=ipPtr;
@@ -196,7 +196,7 @@ void main(void){
       display_4=ipPtr;
       if(pingTimer > FOR_FIVE_SECONDS){
         pingTimer = RESET;
-        uart_puts("AT+S.PING=10.139.64.1\r"); //ping gateway
+        uart_puts("AT+S.PING=10.139.64.1\r"); //ping gateway 10.139.64.1
       }
       if(reconnectTimer >= FOR_THIRTY_SECONDS){ //reset IOT
         reconnectTimer = RESET;

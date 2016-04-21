@@ -100,8 +100,8 @@ void commandTree(void){
               display_1 = "  Reverse ";
               time = atoi(numberBuff);
               time /= 5;
-              left_reverse_rate = 7000;
-              right_reverse_rate = 7000;
+              left_reverse_rate = 3500;
+              right_reverse_rate = 3500;
               left_wheel_reverse_on();
               right_wheel_reverse_on();
               Five_msec_Delay(time);
@@ -124,8 +124,8 @@ void commandTree(void){
             time = atoi(numberBuff);
               startTrackFG = TRUE;
               time /= 5;
-              left_forward_rate = 7000;
-              right_forward_rate = 7000;
+              left_forward_rate         = 3500;
+              right_forward_rate        = 3500;
               left_wheel_forward_on();
               right_wheel_forward_on();
               Five_msec_Delay(time);
@@ -153,7 +153,7 @@ void commandTree(void){
               display_1 = "  Right   ";
               time = atoi(numberBuff); //string to number
               time *= 0.638888; //multiplying to enable degrees to be entered 
-              left_forward_rate = 7000;
+              left_forward_rate = 3000;
               left_wheel_forward_on();
               Five_msec_Delay(time);
               left_wheel_forward_off();
@@ -173,7 +173,7 @@ void commandTree(void){
               display_1 = "   Left   ";
               time = atoi(numberBuff); //string to number
               time *= 0.638888; 
-              right_forward_rate = 7000;
+              right_forward_rate = 3000;
               right_wheel_forward_on();
               Five_msec_Delay(time);
               right_wheel_forward_off();

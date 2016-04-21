@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           21/Apr/2016  02:04:21
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           21/Apr/2016  14:43:13
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -341,10 +341,10 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\command_Structure.c
    \   000274   3E400500     MOV.W   #0x5, R14
    \   000278   ........     CALLA   #?DivMod16u
    \   00027C   824C....     MOV.W   R12, &time
-    103                        left_reverse_rate = 7000;
-   \   000280   B240581B.... MOV.W   #0x1b58, &left_reverse_rate
-    104                        right_reverse_rate = 7000;
-   \   000286   B240581B.... MOV.W   #0x1b58, &right_reverse_rate
+    103                        left_reverse_rate = 3500;
+   \   000280   B240AC0D.... MOV.W   #0xdac, &left_reverse_rate
+    104                        right_reverse_rate = 3500;
+   \   000286   B240AC0D.... MOV.W   #0xdac, &right_reverse_rate
     105                        left_wheel_reverse_on();
    \   00028C   ........     CALLA   #left_wheel_reverse_on
     106                        right_wheel_reverse_on();
@@ -444,10 +444,10 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\command_Structure.c
    \   00039E   3E400500     MOV.W   #0x5, R14
    \   0003A2   ........     CALLA   #?DivMod16u
    \   0003A6   824C....     MOV.W   R12, &time
-    127                        left_forward_rate = 7000;
-   \   0003AA   B240581B.... MOV.W   #0x1b58, &left_forward_rate
-    128                        right_forward_rate = 7000;
-   \   0003B0   B240581B.... MOV.W   #0x1b58, &right_forward_rate
+    127                        left_forward_rate         = 3500;
+   \   0003AA   B240AC0D.... MOV.W   #0xdac, &left_forward_rate
+    128                        right_forward_rate        = 3500;
+   \   0003B0   B240AC0D.... MOV.W   #0xdac, &right_forward_rate
     129                        left_wheel_forward_on();
    \   0003B6   ........     CALLA   #left_wheel_forward_on
     130                        right_wheel_forward_on();
@@ -572,8 +572,8 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\command_Structure.c
    \   00050C   ........     CALLA   #_Mul32f
    \   000510   ........     CALLA   #_Cast32fto32u
    \   000514   824C....     MOV.W   R12, &time
-    156                        left_forward_rate = 7000;
-   \   000518   B240581B.... MOV.W   #0x1b58, &left_forward_rate
+    156                        left_forward_rate = 3000;
+   \   000518   B240B80B.... MOV.W   #0xbb8, &left_forward_rate
     157                        left_wheel_forward_on();
    \   00051E   ........     CALLA   #left_wheel_forward_on
     158                        Five_msec_Delay(time);
@@ -671,8 +671,8 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\command_Structure.c
    \   000630   ........     CALLA   #_Mul32f
    \   000634   ........     CALLA   #_Cast32fto32u
    \   000638   824C....     MOV.W   R12, &time
-    176                        right_forward_rate = 7000;
-   \   00063C   B240581B.... MOV.W   #0x1b58, &right_forward_rate
+    176                        right_forward_rate = 3000;
+   \   00063C   B240B80B.... MOV.W   #0xbb8, &right_forward_rate
     177                        right_wheel_forward_on();
    \   000642   ........     CALLA   #right_wheel_forward_on
     178                        Five_msec_Delay(time);
