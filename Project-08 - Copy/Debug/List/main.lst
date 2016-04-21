@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           20/Apr/2016  23:24:19
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           21/Apr/2016  02:24:24
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -48,11 +48,6 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
    \                                 In  segment DATA16_AN, at 0x322
    \   union <unnamed> _A_PJOUT_L
    \                     _A_PJOUT_L:
-   \   000000                DS8 2
-
-   \                                 In  segment DATA16_AN, at 0x5e6
-   \   union <unnamed> _A_UCA1BRW_L
-   \                     _A_UCA1BRW_L:
    \   000000                DS8 2
      15          #include  "functions.h"
      16          
@@ -312,163 +307,174 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
 
    \                                 In  segment DATA16_Z, align 1, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-     99          char firstipBuff[11];
+     99          char firstipBuff[11] = "";
    \                     firstipBuff:
    \   000000                DS8 11
 
    \                                 In  segment DATA16_Z, align 1, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-    100          char secondipBuff[11];
+    100          char secondipBuff[11] = "";
    \                     secondipBuff:
-   \   000000                DS8 11
-
-   \                                 In  segment DATA16_Z, align 1, align-sorted
-   \   000000                REQUIRE ?cstart_init_zero
-    101          char firstMacBuff[11];
-   \                     firstMacBuff:
-   \   000000                DS8 11
-
-   \                                 In  segment DATA16_Z, align 1, align-sorted
-   \   000000                REQUIRE ?cstart_init_zero
-    102          char secondMacBuff[11];
-   \                     secondMacBuff:
    \   000000                DS8 11
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-    103          char *macPtr;
+    101          char *macPtr;
    \                     macPtr:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-    104          char *ipPtr;
+    102          char *ipPtr;
    \                     ipPtr:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-    105          char *SSIDPtr;
+    103          char *SSIDPtr;
    \                     SSIDPtr:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-    106          unsigned int countP = FALSE;
+    104          unsigned int countP = FALSE;
    \                     countP:
    \   000000                DS8 2
 
    \                                 In  segment DATA16_Z, align 1, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-    107          volatile char receiving[100];
+    105          volatile char receiving[100];
    \                     receiving:
    \   000000                DS8 100
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-    108          volatile unsigned int receivingInd=0;
+    106          volatile unsigned int receivingInd=0;
    \                     receivingInd:
    \   000000                DS8 2
-    109          //project 8
+    107          //project 8
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-    110          unsigned int start_on_whiteFG = FALSE;
+    108          unsigned int start_on_whiteFG = FALSE;
    \                     start_on_whiteFG:
    \   000000                DS8 2
-    111          extern volatile unsigned int right_forward_rate;
-    112          extern volatile unsigned int right_reverse_rate;
-    113          extern volatile unsigned int left_forward_rate;
-    114          extern volatile unsigned int left_reverse_rate;
-    115          extern unsigned int startBlackLine;
+    109          extern volatile unsigned int right_forward_rate;
+    110          extern volatile unsigned int right_reverse_rate;
+    111          extern volatile unsigned int left_forward_rate;
+    112          extern volatile unsigned int left_reverse_rate;
+    113          extern unsigned int startBlackLine;
 
    \                                 In  segment DATA16_Z, align 2, align-sorted
    \   000000                REQUIRE ?cstart_init_zero
-    116          unsigned int black_line_stop=RESET;
+    114          unsigned int black_line_stop=RESET;
    \                     black_line_stop:
    \   000000                DS8 2
-    117          
-    118          
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+    115          unsigned int display_IPFG;
+   \                     display_IPFG:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+    116          volatile unsigned int reconnectTimer = RESET;
+   \                     reconnectTimer:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+    117          volatile unsigned int pingTimer = RESET;
+   \                     pingTimer:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+    118          volatile unsigned int trackTimer = RESET;
+   \                     trackTimer:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+    119          unsigned int startTrackFG = FALSE;
+   \                     startTrackFG:
+   \   000000                DS8 2
+    120          
+    121          
 
    \                                 In  segment CODE, align 2
-    119          void main(void){
+    122          void main(void){
    \                     main:
-    120          //==============================================================================
-    121          // Main Program
-    122          // 
-    123          // Description: This function contains the while loop that runs continuously
-    124          // to act for the operating system. It also calls all the functions to
-    125          // initialize the system.
-    126          //
-    127          // Passed : no variables passed
-    128          // Locals: no variables declared
-    129          // Returned: no values returned
-    130          // Globals:     volatile unsigned int Time_Sequence;
-    131          //              volatile char one_time;
-    132          //              char* display_1
-    133          //              char* display_2
-    134          //              char* display_3
-    135          //              char* display_4
-    136          //              slow_input_down
-    137          //              control_state[CNTL_STATE_INDEX]
-    138          //              char big
-    139          //              char size_count;
-    140          //              char posL1
-    141          //              char posL2
-    142          //              char posL3
-    143          //              char posL4
-    144          //
-    145          // Author: David Pryor
-    146          // Date: Feb 2016
-    147          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
-    148          //==============================================================================
-    149            Init_Ports();                             // Initialize Ports
+    123          //==============================================================================
+    124          // Main Program
+    125          // 
+    126          // Description: This function contains the while loop that runs continuously
+    127          // to act for the operating system. It also calls all the functions to
+    128          // initialize the system.
+    129          //
+    130          // Passed : no variables passed
+    131          // Locals: no variables declared
+    132          // Returned: no values returned
+    133          // Globals:     volatile unsigned int Time_Sequence;
+    134          //              volatile char one_time;
+    135          //              char* display_1
+    136          //              char* display_2
+    137          //              char* display_3
+    138          //              char* display_4
+    139          //              slow_input_down
+    140          //              control_state[CNTL_STATE_INDEX]
+    141          //              char big
+    142          //              char size_count;
+    143          //              char posL1
+    144          //              char posL2
+    145          //              char posL3
+    146          //              char posL4
+    147          //
+    148          // Author: David Pryor
+    149          // Date: Feb 2016
+    150          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    151          //==============================================================================
+    152            Init_Ports();                             // Initialize Ports
    \   000000   ........     CALLA   #Init_Ports
-    150            Init_Clocks();                            // Initialize Clock System 
+    153            Init_Clocks();                            // Initialize Clock System 
    \   000004   ........     CALLA   #Init_Clocks
-    151            Init_Conditions();
+    154            Init_Conditions();
    \   000008   ........     CALLA   #Init_Conditions
-    152            Init_Timers();                            // Initialize Timers
+    155            Init_Timers();                            // Initialize Timers
    \   00000C   ........     CALLA   #Init_Timers
-    153            Init_LEDs();                              // Initialize LEDs
+    156            Init_LEDs();                              // Initialize LEDs
    \   000010   ........     CALLA   #Init_LEDs
-    154            Init_LCD();                               // Initialize LCD
+    157            Init_LCD();                               // Initialize LCD
    \   000014   ........     CALLA   #Init_LCD
-    155            Init_ADC();                               // Initialize ADC
+    158            Init_ADC();                               // Initialize ADC
    \   000018   ........     CALLA   #Init_ADC
-    156            Init_Serial_UCA1(0);                      // BAUD rate 115200
+    159            Init_Serial_UCA1(0);                      // BAUD rate 115200
    \   00001C   0C43         MOV.W   #0x0, R12
    \   00001E   ........     CALLA   #Init_Serial_UCA1
-    157            Init_Serial_UCA0(1);                      // BAUD rate 9600
+    160            Init_Serial_UCA0(1);                      // BAUD rate 9600
    \   000022   1C43         MOV.W   #0x1, R12
    \   000024   ........     CALLA   #Init_Serial_UCA0
-    158            Five_msec_Delay(1);
+    161            Five_msec_Delay(1);
    \   000028   1C43         MOV.W   #0x1, R12
    \   00002A   ........     CALLA   #Five_msec_Delay
-    159            PJOUT |= IOT_STA_MINIAP; //turning on miniap (only works this way)
+    162            PJOUT |= IOT_STA_MINIAP; //turning on miniap (only works this way)
    \   00002E   A2D22203     BIS.W   #0x4, &0x322
-    160            IR_LED_OFF();
+    163            IR_LED_OFF();
    \   000032   ........     CALLA   #IR_LED_OFF
-    161            lcd_BIG_mid();
+    164            lcd_BIG_mid();
    \   000036   ........     CALLA   #lcd_BIG_mid
-    162            display_1 = "  Waiting  ";
+    165            display_1 = "  Waiting  ";
    \   00003A   B240........ MOV.W   #`?<Constant "  Waiting  ">`, &display_1
-    163            display_2 = "    for";  
+    166            display_2 = "    for";  
    \   000040   B240........ MOV.W   #`?<Constant "    for">`, &display_2
-    164            display_3 = "  Command  ";
+    167            display_3 = "  Command  ";
    \   000046   B240........ MOV.W   #`?<Constant "  Command  ">`, &display_3
-    165            display_4 = "";
+    168            display_4 = "";
    \   00004C   B240........ MOV.W   #`?<Constant "">`, &display_4
-    166            Display_Process();
+    169            Display_Process();
    \   000052   ........     CALLA   #Display_Process
-    167            left_forward_rate     = 1800;
-   \   000056   B2400807.... MOV.W   #0x708, &left_forward_rate
-    168            right_forward_rate    = 1800;
-   \   00005C   B2400807.... MOV.W   #0x708, &right_forward_rate
-    169            left_reverse_rate     = 2500;
-   \   000062   B240C409.... MOV.W   #0x9c4, &left_reverse_rate
-    170            right_reverse_rate    = 2500;
-   \   000068   B240C409.... MOV.W   #0x9c4, &right_reverse_rate
+    170          
     171          
     172          
     173          
@@ -479,408 +485,382 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
     178              
     179              ADC_Process();              // call sampling function
    \                     ??main_0:
-   \   00006E   ........     CALLA   #ADC_Process
+   \   000056   ........     CALLA   #ADC_Process
     180              if(MainFG){
-   \   000072   8293....     CMP.W   #0x0, &MainFG
-   \   000076   0324         JEQ     ??main_1
-    181                  Menu_Process();
-   \   000078   ........     CALLA   #Menu_Process
-   \   00007C   0B3C         JMP     ??main_2
+   \   00005A   8293....     CMP.W   #0x0, &MainFG
+   \   00005E   0324         JEQ     ??main_1
+    181                Menu_Process();
+   \   000060   ........     CALLA   #Menu_Process
+   \   000064   3E3C         JMP     ??main_2
     182              }
-    183              else if(BaudMenuFG==TRUE){
+    183              else if(BaudMenuFG){
    \                     ??main_1:
-   \   00007E   9293....     CMP.W   #0x1, &BaudMenuFG
-   \   000082   0320         JNE     ??main_3
-    184                  Baud_Menu(); 
-   \   000084   ........     CALLA   #Baud_Menu
-   \   000088   053C         JMP     ??main_2
+   \   000066   8293....     CMP.W   #0x0, &BaudMenuFG
+   \   00006A   0324         JEQ     ??main_3
+    184                Baud_Menu(); 
+   \   00006C   ........     CALLA   #Baud_Menu
+   \   000070   383C         JMP     ??main_2
     185              }
-    186              else if(IOTMenuFG==TRUE){
+    186              else if(IOTMenuFG){
    \                     ??main_3:
-   \   00008A   9293....     CMP.W   #0x1, &IOTMenuFG
-   \   00008E   0220         JNE     ??main_2
-    187                  IOT_Menu();
-   \   000090   ........     CALLA   #IOT_Menu
+   \   000072   8293....     CMP.W   #0x0, &IOTMenuFG
+   \   000076   0324         JEQ     ??main_4
+    187                IOT_Menu();
+   \   000078   ........     CALLA   #IOT_Menu
+   \   00007C   323C         JMP     ??main_2
     188              }
-    189              
-    190              if(startBlackLine){
-   \                     ??main_2:
-   \   000094   8293....     CMP.W   #0x0, &startBlackLine
-   \   000098   0924         JEQ     ??main_4
-    191                blackline();
-   \   00009A   ........     CALLA   #blackline
-    192                if(black_line_stop >= 2){
-   \   00009E   A293....     CMP.W   #0x2, &black_line_stop
-   \   0000A2   0428         JNC     ??main_4
-    193                  startBlackLine = FALSE;
-   \   0000A4   8243....     MOV.W   #0x0, &startBlackLine
-    194                  IR_LED_OFF();
-   \   0000A8   ........     CALLA   #IR_LED_OFF
-    195                }
-    196              }
-    197              
-    198              if(StartCommandFG){ //StartCommandFG is true once "." has been received
+    189              else if(display_IPFG){
    \                     ??main_4:
-   \   0000AC   8293....     CMP.W   #0x0, &StartCommandFG
-   \   0000B0   0224         JEQ     ??main_5
-    199                  commandTree();
-   \   0000B2   ........     CALLA   #commandTree
-    200              }
-    201              printMacAddress(); //prints mac address to screen
+   \   00007E   8293....     CMP.W   #0x0, &display_IPFG
+   \   000082   2F24         JEQ     ??main_2
+    190                display_1 = "";
+   \   000084   B240........ MOV.W   #`?<Constant "">`, &display_1
+    191                HEXtoBCD(trackTimer*FIVE_MSEC);
+   \   00008A   1C42....     MOV.W   &trackTimer, R12
+   \   00008E   0F4C         MOV.W   R12, R15
+   \   000090   5C06         RLAM.W  #0x2, R12
+   \   000092   0C5F         ADD.W   R15, R12
+   \   000094   ........     CALLA   #HEXtoBCD
+    192                display_2 = adc_char;;
+   \   000098   B240........ MOV.W   #adc_char, &display_2
+    193                ipPtr=firstipBuff;
+   \   00009E   B240........ MOV.W   #firstipBuff, &ipPtr
+    194                display_3=ipPtr;
+   \   0000A4   9242........ MOV.W   &ipPtr, &display_3
+    195                ipPtr=secondipBuff;
+   \   0000AA   B240........ MOV.W   #secondipBuff, &ipPtr
+    196                display_4=ipPtr;
+   \   0000B0   9242........ MOV.W   &ipPtr, &display_4
+    197                if(pingTimer > FOR_FIVE_SECONDS){
+   \   0000B6   B290E903.... CMP.W   #0x3e9, &pingTimer
+   \   0000BC   0628         JNC     ??main_5
+    198                  pingTimer = RESET;
+   \   0000BE   8243....     MOV.W   #0x0, &pingTimer
+    199                  uart_puts("AT+S.PING=10.139.64.1\r"); //ping gateway
+   \   0000C2   3C40....     MOV.W   #`?<Constant "AT+S.PING=10.139.64.1\\r">`, R12
+   \   0000C6   ........     CALLA   #uart_puts
+    200                }
+    201                if(reconnectTimer >= FOR_THIRTY_SECONDS){ //reset IOT
    \                     ??main_5:
-   \   0000B6   ........     CALLA   #printMacAddress
-    202              macFG=FALSE; //turn off command to print mac address
-   \   0000BA   8243....     MOV.W   #0x0, &macFG
-    203              clearReceiveBuffer();
-   \   0000BE   ........     CALLA   #clearReceiveBuffer
-    204              parseIOTData();
-   \   0000C2   ........     CALLA   #parseIOTData
-   \   0000C6   D33F         JMP     ??main_0
-   \   0000C8   0343         NOP
-   \   0000CA                REQUIRE _A_PJOUT_L
-    205            }
-    206          //------------------------------------------------------------------------------
-    207          }
-    208          
-    209          
+   \   0000CA   B2907017.... CMP.W   #0x1770, &reconnectTimer
+   \   0000D0   0828         JNC     ??main_2
+    202                  reconnectTimer = RESET;
+   \   0000D2   8243....     MOV.W   #0x0, &reconnectTimer
+    203                  uart_puts("AT+CFUN=1\r"); 
+   \   0000D6   3C40....     MOV.W   #`?<Constant "AT+CFUN=1\\r">`, R12
+   \   0000DA   ........     CALLA   #uart_puts
+    204                  IOTHardwareReset();
+   \   0000DE   ........     CALLA   #IOTHardwareReset
+    205                }
+    206              }
+    207              
+    208              
+    209              if(startBlackLine){
+   \                     ??main_2:
+   \   0000E2   8293....     CMP.W   #0x0, &startBlackLine
+   \   0000E6   0224         JEQ     ??main_6
+    210                blackline(); //run black line detection code  
+   \   0000E8   ........     CALLA   #blackline
+    211              }
+    212              
+    213              if(black_line_stop >= 2){ //did i get the command to stop blackline detection?
+   \                     ??main_6:
+   \   0000EC   A293....     CMP.W   #0x2, &black_line_stop
+   \   0000F0   1028         JNC     ??main_7
+    214                  startTrackFG = FALSE;
+   \   0000F2   8243....     MOV.W   #0x0, &startTrackFG
+    215                  black_line_stop = 0;
+   \   0000F6   8243....     MOV.W   #0x0, &black_line_stop
+    216                  startBlackLine = FALSE;
+   \   0000FA   8243....     MOV.W   #0x0, &startBlackLine
+    217                  IR_LED_OFF();
+   \   0000FE   ........     CALLA   #IR_LED_OFF
+    218                  left_wheel_reverse_off();
+   \   000102   ........     CALLA   #left_wheel_reverse_off
+    219                  right_wheel_forward_off();
+   \   000106   ........     CALLA   #right_wheel_forward_off
+    220                  right_wheel_reverse_off();
+   \   00010A   ........     CALLA   #right_wheel_reverse_off
+    221                  left_wheel_forward_off();
+   \   00010E   ........     CALLA   #left_wheel_forward_off
+    222              }
+    223              
+    224              if(StartCommandFG){ //StartCommandFG is true once "." has been received
+   \                     ??main_7:
+   \   000112   8293....     CMP.W   #0x0, &StartCommandFG
+   \   000116   0224         JEQ     ??main_8
+    225                  commandTree();
+   \   000118   ........     CALLA   #commandTree
+    226              }
+    227          
+    228              clearReceiveBuffer();
+   \                     ??main_8:
+   \   00011C   ........     CALLA   #clearReceiveBuffer
+    229              parseIOTData();
+   \   000120   ........     CALLA   #parseIOTData
+   \   000124   983F         JMP     ??main_0
+   \   000126   0343         NOP
+   \   000128                REQUIRE _A_PJOUT_L
+    230            }
+    231          //------------------------------------------------------------------------------
+    232          }
+    233          
+    234          
 
    \                                 In  segment CODE, align 2
-    210          void clearReceiveBuffer(void){
+    235          void clearReceiveBuffer(void){
    \                     clearReceiveBuffer:
-    211              if(newLineFG==TRUE){
+    236              if(newLineFG==TRUE){
    \   000000   9293....     CMP.W   #0x1, &newLineFG
    \   000004   1120         JNE     ??clearReceiveBuffer_1
-    212                  newLineFG=FALSE;
+    237                  newLineFG=FALSE;
    \   000006   8243....     MOV.W   #0x0, &newLineFG
-    213                  receivingInd=0; //reset index
+    238                  receivingInd=0; //reset index
    \   00000A   8243....     MOV.W   #0x0, &receivingInd
-    214                  for(i=0;i<100;i++){ //clear buffer
+    239                  for(i=0;i<100;i++){ //clear buffer
    \   00000E   8243....     MOV.W   #0x0, &i
    \                     ??clearReceiveBuffer_0:
    \   000012   B2906400.... CMP.W   #0x64, &i
    \   000018   072C         JC      ??clearReceiveBuffer_1
-    215                      receiving[i]='\0';
+    240                      receiving[i]='\0';
    \   00001A   1F42....     MOV.W   &i, R15
    \   00001E   CF43....     MOV.B   #0x0, receiving(R15)
-    216                  }
+    241                  }
    \   000022   9253....     ADD.W   #0x1, &i
    \   000026   F53F         JMP     ??clearReceiveBuffer_0
-    217              }
-    218          }
+    242              }
+    243          }
    \                     ??clearReceiveBuffer_1:
    \   000028   1001         RETA
-    219          
+    244          
+    245          
 
    \                                 In  segment CODE, align 2
-    220          void printMacAddress(void){
-   \                     printMacAddress:
-    221              if(macFG==TRUE && UCA1BRW == 52){ //when mac address needed, will take from buffer, and print to screen.
-   \   000000   9293....     CMP.W   #0x1, &macFG
-   \   000004   5020         JNE     ??printMacAddress_4
-   \   000006   B2903400E605 CMP.W   #0x34, &0x5e6
-   \   00000C   4C20         JNE     ??printMacAddress_4
-    222                 while(IOTBufferReceive[37]=='\0'); //wait until all received
-   \                     ??printMacAddress_0:
-   \   00000E   C293....     CMP.B   #0x0, &IOTBufferReceive + 37
-   \   000012   FD27         JEQ     ??printMacAddress_0
-    223                 for(i=21;i<=28;i++){ //capture first half of MAC address
-   \   000014   B2401500.... MOV.W   #0x15, &i
-   \                     ??printMacAddress_1:
-   \   00001A   B2901D00.... CMP.W   #0x1d, &i
-   \   000020   0A2C         JC      ??printMacAddress_5
-    224                     firstMacBuff[i-21]=IOTBufferReceive[i];
-   \   000022   1F42....     MOV.W   &i, R15
-   \   000026   1E42....     MOV.W   &i, R14
-   \   00002A   DE4F........ MOV.B   IOTBufferReceive(R15), LWRD(firstMacBuff + 65515)(R14)
-    225                 }
-   \   000030   9253....     ADD.W   #0x1, &i
-   \   000034   F23F         JMP     ??printMacAddress_1
-    226                 for(i=30;i<=37;i++){ //capture second half of MAC address
-   \                     ??printMacAddress_5:
-   \   000036   B2401E00.... MOV.W   #0x1e, &i
-   \                     ??printMacAddress_2:
-   \   00003C   B2902600.... CMP.W   #0x26, &i
-   \   000042   0A2C         JC      ??printMacAddress_6
-    227                     secondMacBuff[i-30]=IOTBufferReceive[i];
-   \   000044   1F42....     MOV.W   &i, R15
-   \   000048   1E42....     MOV.W   &i, R14
-   \   00004C   DE4F........ MOV.B   IOTBufferReceive(R15), LWRD(secondMacBuff + 65506)(R14)
-    228                 }
-   \   000052   9253....     ADD.W   #0x1, &i
-   \   000056   F23F         JMP     ??printMacAddress_2
-    229                 lcd_4line();
-   \                     ??printMacAddress_6:
-   \   000058   ........     CALLA   #lcd_4line
-    230                 display_1="Mac Addr:";
-   \   00005C   B240........ MOV.W   #`?<Constant "Mac Addr:">`, &display_1
-    231                 macPtr=firstMacBuff;
-   \   000062   B240........ MOV.W   #firstMacBuff, &macPtr
-    232                 display_2=macPtr;
-   \   000068   9242........ MOV.W   &macPtr, &display_2
-    233                 macPtr=secondMacBuff;
-   \   00006E   B240........ MOV.W   #secondMacBuff, &macPtr
-    234                 display_3=macPtr;
-   \   000074   9242........ MOV.W   &macPtr, &display_3
-    235                 display_4="          ";
-   \   00007A   B240........ MOV.W   #`?<Constant "          ">`, &display_4
-    236                 Display_Process();
-   \   000080   ........     CALLA   #Display_Process
-    237                 macFG=FALSE;
-   \   000084   8243....     MOV.W   #0x0, &macFG
-    238                 
-    239                 for(i=0;i<40;i++){ //clear IOT buffer so that junk isnt written to terminal after junk-->command
-   \   000088   8243....     MOV.W   #0x0, &i
-   \                     ??printMacAddress_3:
-   \   00008C   B2902800.... CMP.W   #0x28, &i
-   \   000092   072C         JC      ??printMacAddress_7
-    240                     IOTBufferReceive[i]='\0';
-   \   000094   1F42....     MOV.W   &i, R15
-   \   000098   CF43....     MOV.B   #0x0, IOTBufferReceive(R15)
-    241                 }
-   \   00009C   9253....     ADD.W   #0x1, &i
-   \   0000A0   F53F         JMP     ??printMacAddress_3
-    242                 
-    243                 IOTIndexReceive=0;
-   \                     ??printMacAddress_7:
-   \   0000A2   8243....     MOV.W   #0x0, &IOTIndexReceive
-    244             }
-    245          }
-   \                     ??printMacAddress_4:
-   \   0000A6   1001         RETA
-   \   0000A8                REQUIRE _A_UCA1BRW_L
-    246          
-
-   \                                 In  segment CODE, align 2
-    247          void parseIOTData(void){
+    246          void parseIOTData(void){
    \                     parseIOTData:
-    248              for(i=0;i<=100-3;i++){ //search through received strings
+    247              for(i=0;i<=100-3;i++){ //search through received strings
    \   000000   8243....     MOV.W   #0x0, &i
    \                     ??parseIOTData_3:
    \   000004   B2906200.... CMP.W   #0x62, &i
-   \   00000A   EF2C         JC      ??parseIOTData_6
-    249                  if(receiving[i]=='D'){
+   \   00000A   E42C         JC      ??parseIOTData_6
+    248                  if(receiving[i]=='D'){
    \   00000C   1F42....     MOV.W   &i, R15
    \   000010   FF904400.... CMP.B   #0x44, receiving(R15)
-   \   000016   E620         JNE     ??parseIOTData_7
-    250                      if(receiving[i+1]==':'){
+   \   000016   DB20         JNE     ??parseIOTData_7
+    249                      if(receiving[i+1]==':'){
    \   000018   1F42....     MOV.W   &i, R15
    \   00001C   FF903A00.... CMP.B   #0x3a, receiving + 1(R15)
-   \   000022   E020         JNE     ??parseIOTData_7
-    251                          if(receiving[i+2]=='2'){
+   \   000022   D520         JNE     ??parseIOTData_7
+    250                          if(receiving[i+2]=='2'){
    \   000024   1F42....     MOV.W   &i, R15
    \   000028   FF903200.... CMP.B   #0x32, receiving + 2(R15)
-   \   00002E   B020         JNE     ??parseIOTData_8
-    252                              Five_msec_Delay(1);
+   \   00002E   A520         JNE     ??parseIOTData_8
+    251                              Five_msec_Delay(1);
    \   000030   1C43         MOV.W   #0x1, R12
    \   000032   ........     CALLA   #Five_msec_Delay
-    253                              if(receiving[i+3]=='1'){
+    252                              if(receiving[i+3]=='1'){
    \   000036   1F42....     MOV.W   &i, R15
    \   00003A   FF903100.... CMP.B   #0x31, receiving + 3(R15)
    \   000040   0620         JNE     ??parseIOTData_9
-    254                                  display_4="Scanning";
+    253                                  display_4="Scanning";
    \   000042   B240........ MOV.W   #`?<Constant "Scanning">`, &display_4
-    255                                  Display_Process();
+    254                                  Display_Process();
    \   000048   ........     CALLA   #Display_Process
-   \   00004C   CB3C         JMP     ??parseIOTData_7
-    256                              }
-    257                              else if(receiving[i+3]=='4'){
+   \   00004C   C03C         JMP     ??parseIOTData_7
+    255                              }
+    256                              else if(receiving[i+3]=='4'){
    \                     ??parseIOTData_9:
    \   00004E   1F42....     MOV.W   &i, R15
    \   000052   FF903400.... CMP.B   #0x34, receiving + 3(R15)
-   \   000058   6D20         JNE     ??parseIOTData_10
-    258                                  countP=0; //initialize period counter
+   \   000058   6920         JNE     ??parseIOTData_10
+    257                                  countP=0; //initialize period counter
    \   00005A   8243....     MOV.W   #0x0, &countP
-    259                                  Five_msec_Delay(3); //short delay to allow all characters to enter
+    258                                  Five_msec_Delay(3); //short delay to allow all characters to enter
    \   00005E   3C400300     MOV.W   #0x3, R12
    \   000062   ........     CALLA   #Five_msec_Delay
-    260                                  j=0;
+    259                                  j=0;
    \   000066   8243....     MOV.W   #0x0, &j
-    261                                  for(i=17;receiving[i] != '\r';i++){ //go from beginning of address until 2nd period hit (2nd group)
+    260                                  for(i=17;receiving[i] != '\r';i++){ //go from beginning of address until 2nd period hit (2nd group)
    \   00006A   B2401100.... MOV.W   #0x11, &i
    \                     ??parseIOTData_0:
    \   000070   1F42....     MOV.W   &i, R15
    \   000074   FF900D00.... CMP.B   #0xd, receiving(R15)
    \   00007A   1724         JEQ     ??parseIOTData_5
-    262                                      if(receiving[i] == '.'){
+    261                                      if(receiving[i] == '.'){
    \   00007C   1F42....     MOV.W   &i, R15
    \   000080   FF902E00.... CMP.B   #0x2e, receiving(R15)
    \   000086   0220         JNE     ??parseIOTData_11
-    263                                          countP++;
+    262                                          countP++;
    \   000088   9253....     ADD.W   #0x1, &countP
-    264                                      }
-    265                                      if(countP >=2){ //stop copying to buffer if 2nd period has been hit (2nd "group" is copied)
+    263                                      }
+    264                                      if(countP >=2){ //stop copying to buffer if 2nd period has been hit (2nd "group" is copied)
    \                     ??parseIOTData_11:
    \   00008C   A293....     CMP.W   #0x2, &countP
    \   000090   0C2C         JC      ??parseIOTData_5
-    266                                          break;
-    267                                      }
-    268                                      firstipBuff[j]=receiving[i];
+    265                                          break;
+    266                                      }
+    267                                      firstipBuff[j]=receiving[i];
    \   000092   1F42....     MOV.W   &i, R15
    \   000096   1E42....     MOV.W   &j, R14
    \   00009A   DE4F........ MOV.B   receiving(R15), firstipBuff(R14)
-    269                                      j++;
+    268                                      j++;
    \   0000A0   9253....     ADD.W   #0x1, &j
-    270                                  }
+    269                                  }
    \   0000A4   9253....     ADD.W   #0x1, &i
    \   0000A8   E33F         JMP     ??parseIOTData_0
-    271                                  posL3=(10-j)/2; //center first half of ip address
+    270                                  posL3=(10-j)/2; //center first half of ip address
    \                     ??parseIOTData_5:
    \   0000AA   3E400A00     MOV.W   #0xa, R14
    \   0000AE   1E82....     SUB.W   &j, R14
    \   0000B2   5E03         RRUM.W  #0x1, R14
    \   0000B4   C24E....     MOV.B   R14, &posL3
-    272                                  i++; //skip the period
+    271                                  i++; //skip the period
    \   0000B8   9253....     ADD.W   #0x1, &i
-    273                                  for(j=0;receiving[i] != '\r';i++){
+    272                                  for(j=0;receiving[i] != '\r';i++){
    \   0000BC   8243....     MOV.W   #0x0, &j
    \                     ??parseIOTData_1:
    \   0000C0   1F42....     MOV.W   &i, R15
    \   0000C4   FF900D00.... CMP.B   #0xd, receiving(R15)
    \   0000CA   0C24         JEQ     ??parseIOTData_12
-    274                                      secondipBuff[j]=receiving[i];
+    273                                      secondipBuff[j]=receiving[i];
    \   0000CC   1F42....     MOV.W   &i, R15
    \   0000D0   1E42....     MOV.W   &j, R14
    \   0000D4   DE4F........ MOV.B   receiving(R15), secondipBuff(R14)
-    275                                      j++;
+    274                                      j++;
    \   0000DA   9253....     ADD.W   #0x1, &j
-    276                                  }
+    275                                  }
    \   0000DE   9253....     ADD.W   #0x1, &i
    \   0000E2   EE3F         JMP     ??parseIOTData_1
-    277                                  posL4=(10-j)/2; //center second half of ip address
+    276                                  posL4=(10-j)/2; //center second half of ip address
    \                     ??parseIOTData_12:
    \   0000E4   3E400A00     MOV.W   #0xa, R14
    \   0000E8   1E82....     SUB.W   &j, R14
    \   0000EC   5E03         RRUM.W  #0x1, R14
    \   0000EE   C24E....     MOV.B   R14, &posL4
-    278                                  display_1=SSIDPtr; //from D:25 
-   \   0000F2   9242........ MOV.W   &SSIDPtr, &display_1
-    279                                  display_2="  ipaddr  ";
-   \   0000F8   B240........ MOV.W   #`?<Constant "  ipaddr  ">`, &display_2
-    280                                  ipPtr=firstipBuff;
-   \   0000FE   B240........ MOV.W   #firstipBuff, &ipPtr
-    281                                  display_3=ipPtr;
-   \   000104   9242........ MOV.W   &ipPtr, &display_3
-    282                                  ipPtr=secondipBuff;
-   \   00010A   B240........ MOV.W   #secondipBuff, &ipPtr
-    283                                  display_4=ipPtr;
-   \   000110   9242........ MOV.W   &ipPtr, &display_4
-    284                                  lcd_4line();
-   \   000116   ........     CALLA   #lcd_4line
-    285                                  Display_Process();
-   \   00011A   ........     CALLA   #Display_Process
-    286                                  Five_msec_Delay(600); //display IP for 3 seconds before screen gets cleared by menus
-   \   00011E   3C405802     MOV.W   #0x258, R12
-   \   000122   ........     CALLA   #Five_msec_Delay
-    287                                  posL1=0; //reset line positions back to beginning
-   \   000126   C243....     MOV.B   #0x0, &posL1
-    288                                  posL3=0;
-   \   00012A   C243....     MOV.B   #0x0, &posL3
-    289                                  posL4=0;
-   \   00012E   C243....     MOV.B   #0x0, &posL4
-   \   000132   583C         JMP     ??parseIOTData_7
-    290                                  
-    291                              }
-    292                              else if(receiving[i+3]=='5'){
+    277                                  ipPtr=firstipBuff;
+   \   0000F2   B240........ MOV.W   #firstipBuff, &ipPtr
+    278                                  display_3=ipPtr;
+   \   0000F8   9242........ MOV.W   &ipPtr, &display_3
+    279                                  ipPtr=secondipBuff;
+   \   0000FE   B240........ MOV.W   #secondipBuff, &ipPtr
+    280                                  display_4=ipPtr;
+   \   000104   9242........ MOV.W   &ipPtr, &display_4
+    281                                  lcd_4line();
+   \   00010A   ........     CALLA   #lcd_4line
+    282                                  Display_Process();
+   \   00010E   ........     CALLA   #Display_Process
+    283                                  Five_msec_Delay(600); //display IP for 3 seconds before screen gets cleared by menus
+   \   000112   3C405802     MOV.W   #0x258, R12
+   \   000116   ........     CALLA   #Five_msec_Delay
+    284                                  
+    285                                  display_IPFG = TRUE;
+   \   00011A   9243....     MOV.W   #0x1, &display_IPFG
+    286                                  MainFG = FALSE;
+   \   00011E   8243....     MOV.W   #0x0, &MainFG
+    287                                  BaudMenuFG = FALSE;
+   \   000122   8243....     MOV.W   #0x0, &BaudMenuFG
+    288                                  IOTMenuFG = FALSE;
+   \   000126   8243....     MOV.W   #0x0, &IOTMenuFG
+   \   00012A   513C         JMP     ??parseIOTData_7
+    289                                  
+    290                              }
+    291                              else if(receiving[i+3]=='5'){
    \                     ??parseIOTData_10:
-   \   000134   1F42....     MOV.W   &i, R15
-   \   000138   FF903500.... CMP.B   #0x35, receiving + 3(R15)
-   \   00013E   5220         JNE     ??parseIOTData_7
-    293                                  Five_msec_Delay(5);//short delay to allow all characters to enter
-   \   000140   3C400500     MOV.W   #0x5, R12
-   \   000144   ........     CALLA   #Five_msec_Delay
-    294                                  for(i=32;receiving[i] != '\'' && i<=42 ;i++){ //copy SSID until end of quoted name or until max size for LCD is hit
-   \   000148   B2402000.... MOV.W   #0x20, &i
+   \   00012C   1F42....     MOV.W   &i, R15
+   \   000130   FF903500.... CMP.B   #0x35, receiving + 3(R15)
+   \   000136   4B20         JNE     ??parseIOTData_7
+    292                                  Five_msec_Delay(5);//short delay to allow all characters to enter
+   \   000138   3C400500     MOV.W   #0x5, R12
+   \   00013C   ........     CALLA   #Five_msec_Delay
+    293                                  for(i=32;receiving[i] != '\'' && i<=42 ;i++){ //copy SSID until end of quoted name or until max size for LCD is hit
+   \   000140   B2402000.... MOV.W   #0x20, &i
    \                     ??parseIOTData_2:
-   \   00014E   1F42....     MOV.W   &i, R15
-   \   000152   FF902700.... CMP.B   #0x27, receiving(R15)
-   \   000158   0E24         JEQ     ??parseIOTData_13
-   \   00015A   B2902B00.... CMP.W   #0x2b, &i
-   \   000160   0A2C         JC      ??parseIOTData_13
-    295                                      SSIDBuff[i-32]=receiving[i];
-   \   000162   1F42....     MOV.W   &i, R15
-   \   000166   1E42....     MOV.W   &i, R14
-   \   00016A   DE4F........ MOV.B   receiving(R15), LWRD(SSIDBuff + 65504)(R14)
-    296                                  }
-   \   000170   9253....     ADD.W   #0x1, &i
-   \   000174   EC3F         JMP     ??parseIOTData_2
-    297                                  SSIDPtr=SSIDBuff;
+   \   000146   1F42....     MOV.W   &i, R15
+   \   00014A   FF902700.... CMP.B   #0x27, receiving(R15)
+   \   000150   0E24         JEQ     ??parseIOTData_13
+   \   000152   B2902B00.... CMP.W   #0x2b, &i
+   \   000158   0A2C         JC      ??parseIOTData_13
+    294                                      SSIDBuff[i-32]=receiving[i];
+   \   00015A   1F42....     MOV.W   &i, R15
+   \   00015E   1E42....     MOV.W   &i, R14
+   \   000162   DE4F........ MOV.B   receiving(R15), LWRD(SSIDBuff + 65504)(R14)
+    295                                  }
+   \   000168   9253....     ADD.W   #0x1, &i
+   \   00016C   EC3F         JMP     ??parseIOTData_2
+    296                                  SSIDPtr=SSIDBuff;
    \                     ??parseIOTData_13:
-   \   000176   B240........ MOV.W   #SSIDBuff, &SSIDPtr
-    298                                  posL1=(10-(i-32))/2; //center SSID
-   \   00017C   3E400A00     MOV.W   #0xa, R14
-   \   000180   1E82....     SUB.W   &i, R14
-   \   000184   3E80E0FF     SUB.W   #0xffe0, R14
-   \   000188   5E03         RRUM.W  #0x1, R14
-   \   00018A   C24E....     MOV.B   R14, &posL1
-   \   00018E   2A3C         JMP     ??parseIOTData_7
-    299                                  //SSID is displayed in D:24
-    300                              }
-    301                              
-    302                          }
-    303                          else if(receiving[i+2]=='3'){ //clear display once scanning is complete
+   \   00016E   B240........ MOV.W   #SSIDBuff, &SSIDPtr
+    297                                  posL1=0;
+   \   000174   C243....     MOV.B   #0x0, &posL1
+   \   000178   2A3C         JMP     ??parseIOTData_7
+    298                                  //SSID is displayed in D:24
+    299                              }
+    300                              
+    301                          }
+    302                          else if(receiving[i+2]=='3'){ //clear display once scanning is complete
    \                     ??parseIOTData_8:
-   \   000190   1F42....     MOV.W   &i, R15
-   \   000194   FF903300.... CMP.B   #0x33, receiving + 2(R15)
-   \   00019A   0C20         JNE     ??parseIOTData_14
-    304                              if(receiving[i+3]=='5'){
-   \   00019C   1F42....     MOV.W   &i, R15
-   \   0001A0   FF903500.... CMP.B   #0x35, receiving + 3(R15)
-   \   0001A6   1E20         JNE     ??parseIOTData_7
-    305                                  display_4="          "; 
-   \   0001A8   B240........ MOV.W   #`?<Constant "          ">`, &display_4
-    306                                  Display_Process();
-   \   0001AE   ........     CALLA   #Display_Process
-   \   0001B2   183C         JMP     ??parseIOTData_7
-    307                              }
-    308                          }
-    309                          else if(receiving[i+2]=='4'){ //detect disassociation --> reassociate by resetting module
+   \   00017A   1F42....     MOV.W   &i, R15
+   \   00017E   FF903300.... CMP.B   #0x33, receiving + 2(R15)
+   \   000184   0C20         JNE     ??parseIOTData_14
+    303                              if(receiving[i+3]=='5'){
+   \   000186   1F42....     MOV.W   &i, R15
+   \   00018A   FF903500.... CMP.B   #0x35, receiving + 3(R15)
+   \   000190   1E20         JNE     ??parseIOTData_7
+    304                                  display_4="          "; 
+   \   000192   B240........ MOV.W   #`?<Constant "          ">`, &display_4
+    305                                  Display_Process();
+   \   000198   ........     CALLA   #Display_Process
+   \   00019C   183C         JMP     ??parseIOTData_7
+    306                              }
+    307                          }
+    308                          else if(receiving[i+2]=='4'){ //detect disassociation --> reassociate by resetting module
    \                     ??parseIOTData_14:
-   \   0001B4   1F42....     MOV.W   &i, R15
-   \   0001B8   FF903400.... CMP.B   #0x34, receiving + 2(R15)
-   \   0001BE   1220         JNE     ??parseIOTData_7
-    310                              if(receiving[i+3]=='1'){
-   \   0001C0   1F42....     MOV.W   &i, R15
-   \   0001C4   FF903100.... CMP.B   #0x31, receiving + 3(R15)
-   \   0001CA   0C20         JNE     ??parseIOTData_7
-    311                                  uart_puts("AT+CFUN=1\r"); //Get SSID to ncsu
-   \   0001CC   3C40....     MOV.W   #`?<Constant "AT+CFUN=1\\r">`, R12
-   \   0001D0   ........     CALLA   #uart_puts
-    312                                  PJOUT &= ~IOT_RESET; //reset IOT
-   \   0001D4   B2C22203     BIC.W   #0x8, &0x322
-    313                                  Five_msec_Delay(10); //wait 50 ms
-   \   0001D8   3C400A00     MOV.W   #0xa, R12
-   \   0001DC   ........     CALLA   #Five_msec_Delay
-    314                                  PJOUT |= IOT_RESET; //turn IOT back on (stop reset)
-   \   0001E0   B2D22203     BIS.W   #0x8, &0x322
-    315                              }
-    316                          }
-    317                      }
-    318                  }
-    319              }
+   \   00019E   1F42....     MOV.W   &i, R15
+   \   0001A2   FF903400.... CMP.B   #0x34, receiving + 2(R15)
+   \   0001A8   1220         JNE     ??parseIOTData_7
+    309                              if(receiving[i+3]=='1'){
+   \   0001AA   1F42....     MOV.W   &i, R15
+   \   0001AE   FF903100.... CMP.B   #0x31, receiving + 3(R15)
+   \   0001B4   0C20         JNE     ??parseIOTData_7
+    310                                  uart_puts("AT+CFUN=1\r"); //Get SSID to ncsu
+   \   0001B6   3C40....     MOV.W   #`?<Constant "AT+CFUN=1\\r">`, R12
+   \   0001BA   ........     CALLA   #uart_puts
+    311                                  PJOUT &= ~IOT_RESET; //reset IOT
+   \   0001BE   B2C22203     BIC.W   #0x8, &0x322
+    312                                  Five_msec_Delay(10); //wait 50 ms
+   \   0001C2   3C400A00     MOV.W   #0xa, R12
+   \   0001C6   ........     CALLA   #Five_msec_Delay
+    313                                  PJOUT |= IOT_RESET; //turn IOT back on (stop reset)
+   \   0001CA   B2D22203     BIS.W   #0x8, &0x322
+    314                              }
+    315                          }
+    316                      }
+    317                  }
+    318              }
    \                     ??parseIOTData_7:
-   \   0001E4   9253....     ADD.W   #0x1, &i
-   \   0001E8   0D3F         JMP     ??parseIOTData_3
-    320          }
+   \   0001CE   9253....     ADD.W   #0x1, &i
+   \   0001D2   183F         JMP     ??parseIOTData_3
+    319          }
    \                     ??parseIOTData_6:
-   \   0001EA   1001         RETA
-   \   0001EC                REQUIRE _A_PJOUT_L
-    321          
+   \   0001D4   1001         RETA
+   \   0001D6                REQUIRE _A_PJOUT_L
+    320          
 
    \                                 In  segment CODE, align 2
-    322          int atoi(char *string){
+    321          int atoi(char *string){
    \                     atoi:
    \   000000   0E4C         MOV.W   R12, R14
-    323            int l, converted;
-    324            converted = RESET;
+    322            int l, converted;
+    323            converted = RESET;
    \   000002   0C43         MOV.W   #0x0, R12
-    325            for(l=RESET; string[l] != '\0'; ++l){
+    324            for(l=RESET; string[l] != '\0'; ++l){
    \   000004   0D43         MOV.W   #0x0, R13
    \                     ??atoi_0:
    \   000006   0F4E         MOV.W   R14, R15
    \   000008   0F5D         ADD.W   R13, R15
    \   00000A   CF930000     CMP.B   #0x0, 0(R15)
    \   00000E   0B24         JEQ     ??atoi_1
-    326              converted = converted*10 + string[l] - '0';
+    325              converted = converted*10 + string[l] - '0';
    \   000010   0F4E         MOV.W   R14, R15
    \   000012   0F5D         ADD.W   R13, R15
    \   000014   6F4F         MOV.B   @R15, R15
@@ -889,13 +869,13 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
    \   000018   49180F5C     ADDX.W  R12, R15
    \   00001C   0C4F         MOV.W   R15, R12
    \   00001E   3C50D0FF     ADD.W   #0xffd0, R12
-    327            }
+    326            }
    \   000022   1D53         ADD.W   #0x1, R13
    \   000024   F03F         JMP     ??atoi_0
-    328            return converted;
+    327            return converted;
    \                     ??atoi_1:
    \   000026   1001         RETA
-    329          }
+    328          }
 
    \                                 In  segment DATA16_ID, align 2, align-sorted
    \                     `?<Initializer for transmitFG>`:
@@ -921,14 +901,16 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
    \   000000   00           DC8 ""
 
    \                                 In  segment DATA16_C, align 1, align-sorted
-   \                     `?<Constant "Mac Addr:">`:
-   \   000000   4D6163204164 DC8 "Mac Addr:"
-   \            64723A00    
+   \                     `?<Constant "AT+S.PING=10.139.64.1\\r">`:
+   \   000000   41542B532E50 DC8 "AT+S.PING=10.139.64.1\015"
+   \            494E473D3130
+   \            2E3133392E36
+   \            342E310D00  
 
    \                                 In  segment DATA16_C, align 1, align-sorted
-   \                     `?<Constant "          ">`:
-   \   000000   202020202020 DC8 "          "
-   \            2020202000  
+   \                     `?<Constant "AT+CFUN=1\\r">`:
+   \   000000   41542B434655 DC8 "AT+CFUN=1\015"
+   \            4E3D310D00  
 
    \                                 In  segment DATA16_C, align 1, align-sorted
    \                     `?<Constant "Scanning">`:
@@ -936,14 +918,10 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
    \            6E6700      
 
    \                                 In  segment DATA16_C, align 1, align-sorted
-   \                     `?<Constant "  ipaddr  ">`:
-   \   000000   202069706164 DC8 "  ipaddr  "
-   \            6472202000  
-
-   \                                 In  segment DATA16_C, align 1, align-sorted
-   \                     `?<Constant "AT+CFUN=1\\r">`:
-   \   000000   41542B434655 DC8 "AT+CFUN=1\015"
-   \            4E3D310D00  
+   \                     `?<Constant "          ">`:
+   \   000000   202020202020 DC8 "          "
+   \            2020202000  
+    329          
     330          
     331          
     332          
@@ -951,7 +929,6 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
     334          
     335          
     336          
-    337          
 
    Maximum stack usage in bytes:
 
@@ -964,6 +941,8 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
         4   -> Baud_Menu
         4   -> Display_Process
         4   -> Five_msec_Delay
+        4   -> HEXtoBCD
+        4   -> IOTHardwareReset
         4   -> IOT_Menu
         4   -> IR_LED_OFF
         4   -> Init_ADC
@@ -980,16 +959,17 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
         4   -> clearReceiveBuffer
         4   -> commandTree
         4   -> lcd_BIG_mid
+        4   -> left_wheel_forward_off
+        4   -> left_wheel_reverse_off
         4   -> parseIOTData
-        4   -> printMacAddress
+        4   -> right_wheel_forward_off
+        4   -> right_wheel_reverse_off
+        4   -> uart_puts
       4   parseIOTData
         4   -> Display_Process
         4   -> Five_msec_Delay
         4   -> lcd_4line
         4   -> uart_puts
-      4   printMacAddress
-        4   -> Display_Process
-        4   -> lcd_4line
 
 
    Segment part sizes:
@@ -1000,10 +980,9 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
        8  ?<Constant "    for">
       12  ?<Constant "  Command  ">
       12  ?<Constant "  Waiting  ">
-      11  ?<Constant "  ipaddr  ">
        1  ?<Constant "">
       11  ?<Constant "AT+CFUN=1\r">
-      10  ?<Constant "Mac Addr:">
+      23  ?<Constant "AT+S.PING=10.139.64.1\r">
        9  ?<Constant "Scanning">
        2  ?<Initializer for transmitFG>
        2  ADC_Left_Detector
@@ -1016,7 +995,6 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
        2  SSIDPtr
        2  StartCommandFG
        2  _A_PJOUT_L
-       2  _A_UCA1BRW_L
        5  adc_char
       40  atoi
        2  black_line_stop
@@ -1025,8 +1003,8 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
        2  commandIndex
        3  control_state
        2  countP
+       2  display_IPFG
        2  display_count
-      11  firstMacBuff
       11  firstipBuff
        2  five_msec_delay
        2  i
@@ -1038,39 +1016,41 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
        2  left_calibration_white
        2  macFG
        2  macPtr
-     202  main
+     296  main
        2  menu_items
        2  newLineFG
        1  one_time
-     492  parseIOTData
+     470  parseIOTData
+       2  pingTimer
        1  posL1
        1  posL2
        1  posL3
        1  posL4
-     168  printMacAddress
      100  receiving
        2  receivingInd
+       2  reconnectTimer
        2  right_calibration_black
        2  right_calibration_white
-      11  secondMacBuff
       11  secondipBuff
+       2  startTrackFG
        2  start_on_whiteFG
        2  thresholdL
        2  thresholdR
+       2  trackTimer
        2  transmitFG
        2  writeCommandFG
 
  
- 944 bytes in segment CODE
-   4 bytes in segment DATA16_AN
-  85 bytes in segment DATA16_C
+ 848 bytes in segment CODE
+   2 bytes in segment DATA16_AN
+  87 bytes in segment DATA16_C
    2 bytes in segment DATA16_I
    2 bytes in segment DATA16_ID
- 357 bytes in segment DATA16_Z
+ 345 bytes in segment DATA16_Z
  
- 944 bytes of CODE  memory
-  87 bytes of CONST memory
- 359 bytes of DATA  memory (+ 4 bytes shared)
+ 848 bytes of CODE  memory
+  89 bytes of CONST memory
+ 347 bytes of DATA  memory (+ 2 bytes shared)
 
 Errors: none
 Warnings: none

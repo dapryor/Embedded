@@ -21,6 +21,11 @@ extern volatile unsigned int debounce_count_two;
 extern char *display_4;
 extern volatile unsigned int display_count;
 volatile unsigned int motor_time=RESET;
+extern volatile unsigned int reconnectTimer;
+extern volatile unsigned int pingTimer;
+extern volatile unsigned int trackTimer;
+extern unsigned int startTrackFG;
+
 //------------------------------------------------------------------------------
 // TimerA0 0 Interrupt handler
 #pragma vector = TIMER0_A0_VECTOR
@@ -100,6 +105,11 @@ __interrupt void TIMER0_A1_ISR(void){
       Display_Process();
       display_count = SWITCH_OFF;
  }
+ pingTimer++;
+ reconnectTimer++;
+ if(startTrackFG){
+  trackTimer++;
+ } 
  TA0CCR1 += TA0CCR1_INTERVAL;   // Add Offset to TACCR1
  break;
  

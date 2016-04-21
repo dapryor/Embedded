@@ -112,6 +112,7 @@
 #define FOR_THIRTY_MSEC                         (6)
 #define FOR_TWOHUNDRED_MSEC                     (40)
 #define FOR_FIVE_SECONDS                        (1000)
+#define FOR_THIRTY_SECONDS                      (6000)
 #define FIVE_MSEC                               (5)
 #define HALF                                    (2)
 //DUTY CYCLES ------------------------------------------------------------------

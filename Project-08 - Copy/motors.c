@@ -184,7 +184,10 @@ void blackline(void){
   unsigned int errorR=FALSE;
   unsigned int errorL=FALSE;
   unsigned int motor_time_prev=RESET;
-  
+  left_forward_rate     = 1800;
+  right_forward_rate    = 1800;
+  left_reverse_rate     = 2500;
+  right_reverse_rate    = 2500;
   if(start_on_whiteFG){
     start_on_whiteFG = FALSE; //only want this first time
     left_wheel_forward_on(); //go forward

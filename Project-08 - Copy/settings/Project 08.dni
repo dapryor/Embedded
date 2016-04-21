@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=948735515
+Checksum=-242991450
 [Stack]
 FillEnabled=0
 OverflowWarningsEnabled=1
@@ -23,8 +23,7 @@ ShowArgs=0
 [Disassembly]
 MixedMode=1
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\command_Structure.c}.212.14" 1 0 0 0 "" 0 ""
-Count=1
+Count=0
 [FET]
 Clock mode=46
 Extended Clock mode=1039

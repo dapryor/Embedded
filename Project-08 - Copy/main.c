@@ -96,10 +96,8 @@ volatile unsigned int IOTIndexTransmit = FALSE;
 volatile unsigned int IOTIndexReceive = FALSE;
 volatile unsigned int newLineFG=FALSE;
 char SSIDBuff[11];
-char firstipBuff[11];
-char secondipBuff[11];
-char firstMacBuff[11];
-char secondMacBuff[11];
+char firstipBuff[11] = "";
+char secondipBuff[11] = "";
 char *macPtr;
 char *ipPtr;
 char *SSIDPtr;
@@ -114,6 +112,11 @@ extern volatile unsigned int left_forward_rate;
 extern volatile unsigned int left_reverse_rate;
 extern unsigned int startBlackLine;
 unsigned int black_line_stop=RESET;
+unsigned int display_IPFG;
+volatile unsigned int reconnectTimer = RESET;
+volatile unsigned int pingTimer = RESET;
+volatile unsigned int trackTimer = RESET;
+unsigned int startTrackFG = FALSE;
 
 
 void main(void){
@@ -164,10 +167,7 @@ void main(void){
   display_3 = "  Command  ";
   display_4 = "";
   Display_Process();
-  left_forward_rate     = 1800;
-  right_forward_rate    = 1800;
-  left_reverse_rate     = 2500;
-  right_reverse_rate    = 2500;
+
 
 
 
@@ -178,28 +178,53 @@ void main(void){
     
     ADC_Process();              // call sampling function
     if(MainFG){
-        Menu_Process();
+      Menu_Process();
     }
-    else if(BaudMenuFG==TRUE){
-        Baud_Menu(); 
+    else if(BaudMenuFG){
+      Baud_Menu(); 
     }
-    else if(IOTMenuFG==TRUE){
-        IOT_Menu();
+    else if(IOTMenuFG){
+      IOT_Menu();
+    }
+    else if(display_IPFG){
+      display_1 = "";
+      HEXtoBCD(trackTimer*FIVE_MSEC);
+      display_2 = adc_char;;
+      ipPtr=firstipBuff;
+      display_3=ipPtr;
+      ipPtr=secondipBuff;
+      display_4=ipPtr;
+      if(pingTimer > FOR_FIVE_SECONDS){
+        pingTimer = RESET;
+        uart_puts("AT+S.PING=10.139.64.1\r"); //ping gateway
+      }
+      if(reconnectTimer >= FOR_THIRTY_SECONDS){ //reset IOT
+        reconnectTimer = RESET;
+        uart_puts("AT+CFUN=1\r"); 
+        IOTHardwareReset();
+      }
     }
     
+    
     if(startBlackLine){
-      blackline();
-      if(black_line_stop >= 2){
+      blackline(); //run black line detection code  
+    }
+    
+    if(black_line_stop >= 2){ //did i get the command to stop blackline detection?
+        startTrackFG = FALSE;
+        black_line_stop = 0;
         startBlackLine = FALSE;
         IR_LED_OFF();
-      }
+        left_wheel_reverse_off();
+        right_wheel_forward_off();
+        right_wheel_reverse_off();
+        left_wheel_forward_off();
     }
     
     if(StartCommandFG){ //StartCommandFG is true once "." has been received
         commandTree();
     }
-    printMacAddress(); //prints mac address to screen
-    macFG=FALSE; //turn off command to print mac address
+
     clearReceiveBuffer();
     parseIOTData();
   }
@@ -217,32 +242,6 @@ void clearReceiveBuffer(void){
     }
 }
 
-void printMacAddress(void){
-    if(macFG==TRUE && UCA1BRW == 52){ //when mac address needed, will take from buffer, and print to screen.
-       while(IOTBufferReceive[37]=='\0'); //wait until all received
-       for(i=21;i<=28;i++){ //capture first half of MAC address
-           firstMacBuff[i-21]=IOTBufferReceive[i];
-       }
-       for(i=30;i<=37;i++){ //capture second half of MAC address
-           secondMacBuff[i-30]=IOTBufferReceive[i];
-       }
-       lcd_4line();
-       display_1="Mac Addr:";
-       macPtr=firstMacBuff;
-       display_2=macPtr;
-       macPtr=secondMacBuff;
-       display_3=macPtr;
-       display_4="          ";
-       Display_Process();
-       macFG=FALSE;
-       
-       for(i=0;i<40;i++){ //clear IOT buffer so that junk isnt written to terminal after junk-->command
-           IOTBufferReceive[i]='\0';
-       }
-       
-       IOTIndexReceive=0;
-   }
-}
 
 void parseIOTData(void){
     for(i=0;i<=100-3;i++){ //search through received strings
@@ -275,8 +274,6 @@ void parseIOTData(void){
                             j++;
                         }
                         posL4=(10-j)/2; //center second half of ip address
-                        display_1=SSIDPtr; //from D:25 
-                        display_2="  ipaddr  ";
                         ipPtr=firstipBuff;
                         display_3=ipPtr;
                         ipPtr=secondipBuff;
@@ -284,9 +281,11 @@ void parseIOTData(void){
                         lcd_4line();
                         Display_Process();
                         Five_msec_Delay(600); //display IP for 3 seconds before screen gets cleared by menus
-                        posL1=0; //reset line positions back to beginning
-                        posL3=0;
-                        posL4=0;
+                        
+                        display_IPFG = TRUE;
+                        MainFG = FALSE;
+                        BaudMenuFG = FALSE;
+                        IOTMenuFG = FALSE;
                         
                     }
                     else if(receiving[i+3]=='5'){
@@ -295,7 +294,7 @@ void parseIOTData(void){
                             SSIDBuff[i-32]=receiving[i];
                         }
                         SSIDPtr=SSIDBuff;
-                        posL1=(10-(i-32))/2; //center SSID
+                        posL1=0;
                         //SSID is displayed in D:24
                     }
                     

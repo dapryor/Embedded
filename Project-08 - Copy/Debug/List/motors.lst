@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           20/Apr/2016  23:15:01
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           21/Apr/2016  01:35:54
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -383,149 +383,156 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\motors.c
    \   000004   0B43         MOV.W   #0x0, R11
     186            unsigned int motor_time_prev=RESET;
    \   000006   0843         MOV.W   #0x0, R8
-    187            
-    188            if(start_on_whiteFG){
-   \   000008   8293....     CMP.W   #0x0, &start_on_whiteFG
-   \   00000C   1224         JEQ     ??blackline_8
-    189              start_on_whiteFG = FALSE; //only want this first time
-   \   00000E   8243....     MOV.W   #0x0, &start_on_whiteFG
-    190              left_wheel_forward_on(); //go forward
-   \   000012   ........     CALLA   #left_wheel_forward_on
-    191              right_wheel_forward_on();
-   \   000016   ........     CALLA   #right_wheel_forward_on
-    192              while(ADC_Left_Detector < thresholdL && ADC_Right_Detector < thresholdR); //do this until on black line
+    187            left_forward_rate     = 1800;
+   \   000008   B2400807.... MOV.W   #0x708, &left_forward_rate
+    188            right_forward_rate    = 1800;
+   \   00000E   B2400807.... MOV.W   #0x708, &right_forward_rate
+    189            left_reverse_rate     = 2500;
+   \   000014   B240C409.... MOV.W   #0x9c4, &left_reverse_rate
+    190            right_reverse_rate    = 2500;
+   \   00001A   B240C409.... MOV.W   #0x9c4, &right_reverse_rate
+    191            if(start_on_whiteFG){
+   \   000020   8293....     CMP.W   #0x0, &start_on_whiteFG
+   \   000024   1224         JEQ     ??blackline_8
+    192              start_on_whiteFG = FALSE; //only want this first time
+   \   000026   8243....     MOV.W   #0x0, &start_on_whiteFG
+    193              left_wheel_forward_on(); //go forward
+   \   00002A   ........     CALLA   #left_wheel_forward_on
+    194              right_wheel_forward_on();
+   \   00002E   ........     CALLA   #right_wheel_forward_on
+    195              while(ADC_Left_Detector < thresholdL && ADC_Right_Detector < thresholdR); //do this until on black line
    \                     ??blackline_0:
-   \   00001A   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
-   \   000020   042C         JC      ??blackline_9
-   \   000022   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
-   \   000028   F82B         JNC     ??blackline_0
-    193              left_wheel_forward_off();
+   \   000032   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
+   \   000038   042C         JC      ??blackline_9
+   \   00003A   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
+   \   000040   F82B         JNC     ??blackline_0
+    196              left_wheel_forward_off();
    \                     ??blackline_9:
-   \   00002A   ........     CALLA   #left_wheel_forward_off
-    194              right_wheel_forward_off();
-   \   00002E   ........     CALLA   #right_wheel_forward_off
-    195            }
-    196            motor_time = RESET; //clear time counter to zero
+   \   000042   ........     CALLA   #left_wheel_forward_off
+    197              right_wheel_forward_off();
+   \   000046   ........     CALLA   #right_wheel_forward_off
+    198            }
+    199            motor_time = RESET; //clear time counter to zero
    \                     ??blackline_8:
-   \   000032   8243....     MOV.W   #0x0, &motor_time
-    197                  
-    198            while(ADC_Right_Detector < thresholdR){//while loop for pivot correcting back from right sensor leaving
+   \   00004A   8243....     MOV.W   #0x0, &motor_time
+    200                  
+    201            while(ADC_Right_Detector < thresholdR){//while loop for pivot correcting back from right sensor leaving
    \                     ??blackline_2:
-   \   000036   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
-   \   00003C   0E2C         JC      ??blackline_10
-    199              left_wheel_forward_off();
-   \   00003E   ........     CALLA   #left_wheel_forward_off
-    200              right_wheel_forward_on();
-   \   000042   ........     CALLA   #right_wheel_forward_on
-    201              while(ADC_Right_Detector < thresholdR); //do this until right sensor back on line
+   \   00004E   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
+   \   000054   0E2C         JC      ??blackline_10
+    202              left_wheel_forward_off();
+   \   000056   ........     CALLA   #left_wheel_forward_off
+    203              right_wheel_forward_on();
+   \   00005A   ........     CALLA   #right_wheel_forward_on
+    204              while(ADC_Right_Detector < thresholdR); //do this until right sensor back on line
    \                     ??blackline_1:
-   \   000046   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
-   \   00004C   FC2B         JNC     ??blackline_1
-    202              right_wheel_forward_off();
-   \   00004E   ........     CALLA   #right_wheel_forward_off
-    203              active_breaking_right();
-   \   000052   ........     CALLA   #active_breaking_right
-    204              errorR = TRUE;
-   \   000056   1A43         MOV.W   #0x1, R10
-   \   000058   EE3F         JMP     ??blackline_2
-    205            }
-    206            motor_time_prev = motor_time/3;//assign current time/2 count to temp time count for error correcting
+   \   00005E   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
+   \   000064   FC2B         JNC     ??blackline_1
+    205              right_wheel_forward_off();
+   \   000066   ........     CALLA   #right_wheel_forward_off
+    206              active_breaking_right();
+   \   00006A   ........     CALLA   #active_breaking_right
+    207              errorR = TRUE;
+   \   00006E   1A43         MOV.W   #0x1, R10
+   \   000070   EE3F         JMP     ??blackline_2
+    208            }
+    209            motor_time_prev = motor_time/3;//assign current time/2 count to temp time count for error correcting
    \                     ??blackline_10:
-   \   00005A   1C42....     MOV.W   &motor_time, R12
-   \   00005E   3E400300     MOV.W   #0x3, R14
-   \   000062   ........     CALLA   #?DivMod16u
-   \   000066   084C         MOV.W   R12, R8
-    207            if(errorR){//if statement checking if left spin correction needed from correcting right pivot
-   \   000068   0A93         CMP.W   #0x0, R10
-   \   00006A   1124         JEQ     ??blackline_11
-    208              left_wheel_forward_on();
-   \   00006C   ........     CALLA   #left_wheel_forward_on
-    209              right_wheel_reverse_on();
-   \   000070   ........     CALLA   #right_wheel_reverse_on
-    210              motor_time = RESET; //to count back up to previous time;
-   \   000074   8243....     MOV.W   #0x0, &motor_time
-    211              while(motor_time < motor_time_prev && motor_time <= 500); //turn until time reached
+   \   000072   1C42....     MOV.W   &motor_time, R12
+   \   000076   3E400300     MOV.W   #0x3, R14
+   \   00007A   ........     CALLA   #?DivMod16u
+   \   00007E   084C         MOV.W   R12, R8
+    210            if(errorR){//if statement checking if left spin correction needed from correcting right pivot
+   \   000080   0A93         CMP.W   #0x0, R10
+   \   000082   1124         JEQ     ??blackline_11
+    211              left_wheel_forward_on();
+   \   000084   ........     CALLA   #left_wheel_forward_on
+    212              right_wheel_reverse_on();
+   \   000088   ........     CALLA   #right_wheel_reverse_on
+    213              motor_time = RESET; //to count back up to previous time;
+   \   00008C   8243....     MOV.W   #0x0, &motor_time
+    214              while(motor_time < motor_time_prev && motor_time <= 500); //turn until time reached
    \                     ??blackline_3:
-   \   000078   8298....     CMP.W   R8, &motor_time
-   \   00007C   042C         JC      ??blackline_12
-   \   00007E   B290F501.... CMP.W   #0x1f5, &motor_time
-   \   000084   F92B         JNC     ??blackline_3
-    212              right_wheel_reverse_off();
+   \   000090   8298....     CMP.W   R8, &motor_time
+   \   000094   042C         JC      ??blackline_12
+   \   000096   B290F501.... CMP.W   #0x1f5, &motor_time
+   \   00009C   F92B         JNC     ??blackline_3
+    215              right_wheel_reverse_off();
    \                     ??blackline_12:
-   \   000086   ........     CALLA   #right_wheel_reverse_off
-    213              left_wheel_forward_off();
-   \   00008A   ........     CALLA   #left_wheel_forward_off
-    214            }
-    215                  
-    216            motor_time = RESET; //clear time counter to zero
+   \   00009E   ........     CALLA   #right_wheel_reverse_off
+    216              left_wheel_forward_off();
+   \   0000A2   ........     CALLA   #left_wheel_forward_off
+    217            }
+    218                  
+    219            motor_time = RESET; //clear time counter to zero
    \                     ??blackline_11:
-   \   00008E   8243....     MOV.W   #0x0, &motor_time
-    217                  
-    218            while((ADC_Left_Detector) < thresholdL){//while loop for pivot correcting back from left sensor leaving
+   \   0000A6   8243....     MOV.W   #0x0, &motor_time
+    220                  
+    221            while((ADC_Left_Detector) < thresholdL){//while loop for pivot correcting back from left sensor leaving
    \                     ??blackline_5:
-   \   000092   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
-   \   000098   0E2C         JC      ??blackline_13
-    219              right_wheel_forward_off();
-   \   00009A   ........     CALLA   #right_wheel_forward_off
-    220              left_wheel_forward_on();
-   \   00009E   ........     CALLA   #left_wheel_forward_on
-    221              while(ADC_Left_Detector < thresholdL); //do this until left sensor back on line
+   \   0000AA   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
+   \   0000B0   0E2C         JC      ??blackline_13
+    222              right_wheel_forward_off();
+   \   0000B2   ........     CALLA   #right_wheel_forward_off
+    223              left_wheel_forward_on();
+   \   0000B6   ........     CALLA   #left_wheel_forward_on
+    224              while(ADC_Left_Detector < thresholdL); //do this until left sensor back on line
    \                     ??blackline_4:
-   \   0000A2   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
-   \   0000A8   FC2B         JNC     ??blackline_4
-    222              left_wheel_forward_off();
-   \   0000AA   ........     CALLA   #left_wheel_forward_off
-    223              active_breaking_left();
-   \   0000AE   ........     CALLA   #active_breaking_left
-    224              errorL = TRUE;
-   \   0000B2   1B43         MOV.W   #0x1, R11
-   \   0000B4   EE3F         JMP     ??blackline_5
-    225            }
-    226            motor_time_prev = motor_time/3;//assign current time/2 count to temp time count for error correcting
+   \   0000BA   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
+   \   0000C0   FC2B         JNC     ??blackline_4
+    225              left_wheel_forward_off();
+   \   0000C2   ........     CALLA   #left_wheel_forward_off
+    226              active_breaking_left();
+   \   0000C6   ........     CALLA   #active_breaking_left
+    227              errorL = TRUE;
+   \   0000CA   1B43         MOV.W   #0x1, R11
+   \   0000CC   EE3F         JMP     ??blackline_5
+    228            }
+    229            motor_time_prev = motor_time/3;//assign current time/2 count to temp time count for error correcting
    \                     ??blackline_13:
-   \   0000B6   1C42....     MOV.W   &motor_time, R12
-   \   0000BA   3E400300     MOV.W   #0x3, R14
-   \   0000BE   ........     CALLA   #?DivMod16u
-   \   0000C2   084C         MOV.W   R12, R8
-    227            if(errorL){//if statement checking if right spin correction needed from correcting left pivot
-   \   0000C4   0B93         CMP.W   #0x0, R11
-   \   0000C6   1124         JEQ     ??blackline_7
-    228              right_wheel_forward_on();
-   \   0000C8   ........     CALLA   #right_wheel_forward_on
-    229              left_wheel_reverse_on();
-   \   0000CC   ........     CALLA   #left_wheel_reverse_on
-    230              motor_time = RESET; //to count back up to previous time;
-   \   0000D0   8243....     MOV.W   #0x0, &motor_time
-    231              while(motor_time < motor_time_prev && motor_time <= 500); //turn until time reached
+   \   0000CE   1C42....     MOV.W   &motor_time, R12
+   \   0000D2   3E400300     MOV.W   #0x3, R14
+   \   0000D6   ........     CALLA   #?DivMod16u
+   \   0000DA   084C         MOV.W   R12, R8
+    230            if(errorL){//if statement checking if right spin correction needed from correcting left pivot
+   \   0000DC   0B93         CMP.W   #0x0, R11
+   \   0000DE   1124         JEQ     ??blackline_7
+    231              right_wheel_forward_on();
+   \   0000E0   ........     CALLA   #right_wheel_forward_on
+    232              left_wheel_reverse_on();
+   \   0000E4   ........     CALLA   #left_wheel_reverse_on
+    233              motor_time = RESET; //to count back up to previous time;
+   \   0000E8   8243....     MOV.W   #0x0, &motor_time
+    234              while(motor_time < motor_time_prev && motor_time <= 500); //turn until time reached
    \                     ??blackline_6:
-   \   0000D4   8298....     CMP.W   R8, &motor_time
-   \   0000D8   042C         JC      ??blackline_14
-   \   0000DA   B290F501.... CMP.W   #0x1f5, &motor_time
-   \   0000E0   F92B         JNC     ??blackline_6
-    232              left_wheel_reverse_off();
+   \   0000EC   8298....     CMP.W   R8, &motor_time
+   \   0000F0   042C         JC      ??blackline_14
+   \   0000F2   B290F501.... CMP.W   #0x1f5, &motor_time
+   \   0000F8   F92B         JNC     ??blackline_6
+    235              left_wheel_reverse_off();
    \                     ??blackline_14:
-   \   0000E2   ........     CALLA   #left_wheel_reverse_off
-    233              right_wheel_forward_off();
-   \   0000E6   ........     CALLA   #right_wheel_forward_off
-    234            }
-    235                  
-    236                
-    237            while((ADC_Left_Detector) >= thresholdL && ADC_Right_Detector >= thresholdR){//if both sensors on black then go forward (WHILE)
+   \   0000FA   ........     CALLA   #left_wheel_reverse_off
+    236              right_wheel_forward_off();
+   \   0000FE   ........     CALLA   #right_wheel_forward_off
+    237            }
+    238                  
+    239                
+    240            while((ADC_Left_Detector) >= thresholdL && ADC_Right_Detector >= thresholdR){//if both sensors on black then go forward (WHILE)
    \                     ??blackline_7:
-   \   0000EA   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
-   \   0000F0   0928         JNC     ??blackline_15
-   \   0000F2   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
-   \   0000F8   0528         JNC     ??blackline_15
-    238              left_wheel_forward_on(); //go forward
-   \   0000FA   ........     CALLA   #left_wheel_forward_on
-    239              right_wheel_forward_on();
-   \   0000FE   ........     CALLA   #right_wheel_forward_on
-   \   000102   F33F         JMP     ??blackline_7
-    240            }
-    241          }
+   \   000102   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
+   \   000108   0928         JNC     ??blackline_15
+   \   00010A   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
+   \   000110   0528         JNC     ??blackline_15
+    241              left_wheel_forward_on(); //go forward
+   \   000112   ........     CALLA   #left_wheel_forward_on
+    242              right_wheel_forward_on();
+   \   000116   ........     CALLA   #right_wheel_forward_on
+   \   00011A   F33F         JMP     ??blackline_7
+    243            }
+    244          }
    \                     ??blackline_15:
-   \   000104   3817         POPM.W  #0x4, R11
-   \   000106   1001         RETA
+   \   00011C   3817         POPM.W  #0x4, R11
+   \   00011E   1001         RETA
 
    Maximum stack usage in bytes:
 
@@ -582,7 +589,7 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\motors.c
        2  _A_PBSEL1_L
       14  active_breaking_left
       14  active_breaking_right
-     264  blackline
+     288  blackline
       18  left_wheel_forward_off
       30  left_wheel_forward_on
       18  left_wheel_reverse_off
@@ -593,10 +600,10 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\motors.c
       32  right_wheel_reverse_on
 
  
- 502 bytes in segment CODE
+ 526 bytes in segment CODE
   14 bytes in segment DATA16_AN
  
- 502 bytes of CODE memory
+ 526 bytes of CODE memory
    0 bytes of DATA memory (+ 14 bytes shared)
 
 Errors: none
