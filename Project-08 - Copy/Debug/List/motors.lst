@@ -1,0 +1,603 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           20/Apr/2016  23:15:01
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  
+#        C:\Users\David\Documents\ECE 306\Project-08 - Copy\motors.c
+#    Command line  =  
+#        "C:\Users\David\Documents\ECE 306\Project-08 - Copy\motors.c" -lC
+#        "C:\Users\David\Documents\ECE 306\Project-08 - Copy\Debug\List" -o
+#        "C:\Users\David\Documents\ECE 306\Project-08 - Copy\Debug\Obj"
+#        --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\Documents\ECE 306\Project-08 -
+#        Copy\Debug\List\motors.lst
+#    Object file   =  
+#        C:\Users\David\Documents\ECE 306\Project-08 -
+#        Copy\Debug\Obj\motors.r43
+#
+###############################################################################
+
+C:\Users\David\Documents\ECE 306\Project-08 - Copy\motors.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : motors.c
+      3          //
+      4          //  Description: This files contains functions for straight lines and turns
+      5          //
+      6          //
+      7          //  David Pryor
+      8          //  Feb 2016
+      9          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+     10          //------------------------------------------------------------------------------
+     11          //
+     12          #include  "macros.h"
+     13          #include  "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x202
+   \   union <unnamed> _A_PAOUT_L
+   \                     _A_PAOUT_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x22a
+   \   union <unnamed> _A_PBSEL0_L
+   \                     _A_PBSEL0_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x22c
+   \   union <unnamed> _A_PBSEL1_L
+   \                     _A_PBSEL1_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x414
+   \   unsigned short volatile TB1CCR1
+   \                     TB1CCR1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x416
+   \   unsigned short volatile TB1CCR2
+   \                     TB1CCR2:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x454
+   \   unsigned short volatile TB2CCR1
+   \                     TB2CCR1:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x456
+   \   unsigned short volatile TB2CCR2
+   \                     TB2CCR2:
+   \   000000                DS8 2
+     14          #include  "functions.h"
+     15          extern volatile unsigned int right_forward_rate;
+     16          extern volatile unsigned int right_reverse_rate;
+     17          extern volatile unsigned int left_forward_rate;
+     18          extern volatile unsigned int left_reverse_rate;
+     19          extern unsigned int start_on_whiteFG;
+     20          extern volatile unsigned int motor_time;
+     21          extern volatile unsigned int ADC_Left_Detector;
+     22          extern volatile unsigned int ADC_Right_Detector;
+     23          extern volatile unsigned int right_forward_rate;
+     24          extern volatile unsigned int right_reverse_rate;
+     25          extern volatile unsigned int left_forward_rate;
+     26          extern volatile unsigned int left_reverse_rate;
+     27          extern unsigned int thresholdR;
+     28          extern unsigned int thresholdL;
+     29          
+     30          // MACROS ----------------------------------------------------------------------
+     31          // R_FORWARD        	                (0x10) // This was LED 5
+     32          // R_REVERSE        	                (0x20) // This was LED 6
+     33          // L_FORWARD        	                (0x40) // This was LED 7
+     34          // L_REVERSE        	                (0x80) // This was LED 8
+     35          //------------------------------------------------------------------------------
+     36          
+
+   \                                 In  segment CODE, align 2
+     37          void left_wheel_forward_on(void){
+   \                     left_wheel_forward_on:
+     38          //==============================================================================
+     39          // Left Wheel Forward On
+     40          // 
+     41          // Description: This function turns on the left motor for forward use
+     42          //
+     43          // Passed : no variables passed
+     44          // Locals: no variables declared
+     45          // Returned: no values returned
+     46          // Globals:  no global variables
+     47          //
+     48          // Author: David Pryor
+     49          // Date: Feb 2016
+     50          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     51          //==============================================================================  
+     52            P3SEL0  |= L_FORWARD;      // L_FORWARD selected	TB		(0)        
+   \   000000   F2D040002A02 BIS.B   #0x40, &0x22a
+     53            P3SEL1  &= ~L_FORWARD;	// L_FORWARD selected   TB		(1)
+   \   000006   F2C040002C02 BIC.B   #0x40, &0x22c
+     54               
+     55            if(!(P3SEL0 & L_REVERSE)){ // is the LEFT wheel NOT going forward?
+   \   00000C   C2932A02     CMP.B   #0x0, &0x22a
+   \   000010   0538         JL      ??left_wheel_forward_on_0
+     56              left_wheel_reverse_off();
+   \   000012   ........     CALLA   #left_wheel_reverse_off
+     57              TB2CCR1 = left_forward_rate;
+   \   000016   9242....5404 MOV.W   &left_forward_rate, &0x454
+     58            }
+     59          }
+   \                     ??left_wheel_forward_on_0:
+   \   00001C   1001         RETA
+   \   00001E                REQUIRE _A_PBSEL0_L
+   \   00001E                REQUIRE _A_PBSEL1_L
+   \   00001E                REQUIRE TB2CCR1
+     60          
+
+   \                                 In  segment CODE, align 2
+     61          void left_wheel_forward_off(void){
+   \                     left_wheel_forward_off:
+     62          //==============================================================================
+     63          // Left Wheel Forward Off
+     64          // 
+     65          // Description: This function turns the left motor off
+     66          //
+     67          // Passed : no variables passed
+     68          // Locals: no variables declared
+     69          // Returned: no values returned
+     70          // Globals:  no global variables
+     71          //
+     72          // Author: David Pryor
+     73          // Date: Feb 2016
+     74          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     75          //==============================================================================  
+     76            P3SEL0  &= ~L_FORWARD;      // L_FORWARD selected	GPIO		(0)        
+   \   000000   F2C040002A02 BIC.B   #0x40, &0x22a
+     77            P3SEL1  &= ~L_FORWARD;	// L_FORWARD selected	GPIO		(0)
+   \   000006   F2C040002C02 BIC.B   #0x40, &0x22c
+     78            //if(P3IN & L_FORWARD){ // is the left wheel going forward?
+     79              TB2CCR1 = SWITCH_OFF;
+   \   00000C   82435404     MOV.W   #0x0, &0x454
+     80            //}
+     81          }
+   \   000010   1001         RETA
+   \   000012                REQUIRE _A_PBSEL0_L
+   \   000012                REQUIRE _A_PBSEL1_L
+   \   000012                REQUIRE TB2CCR1
+     82          
+
+   \                                 In  segment CODE, align 2
+     83          void right_wheel_forward_on(void){
+   \                     right_wheel_forward_on:
+     84          //==============================================================================
+     85          // Right Wheel Forward On
+     86          // 
+     87          // Description: This function turns on the right motor for forward use
+     88          //
+     89          // Passed : no variables passed
+     90          // Locals: no variables declared
+     91          // Returned: no values returned
+     92          // Globals:  no global variables
+     93          //
+     94          // Author: David Pryor
+     95          // Date: Feb 2016
+     96          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     97          //==============================================================================
+     98            P3SEL0  |= R_FORWARD;      // R_FORWARD selected	TB		(0)        
+   \   000000   F2D010002A02 BIS.B   #0x10, &0x22a
+     99            P3SEL1  &= ~R_FORWARD;	// R_FORWARD selected   TB		(1)
+   \   000006   F2C010002C02 BIC.B   #0x10, &0x22c
+    100          
+    101            if(!(P3SEL0 & R_REVERSE)){ // is the RIGHT wheel NOT going forward?
+   \   00000C   F2B020002A02 BIT.B   #0x20, &0x22a
+   \   000012   052C         JC      ??right_wheel_forward_on_0
+    102              right_wheel_reverse_off(); // making sure RIGHT wheel is NOT reversing
+   \   000014   ........     CALLA   #right_wheel_reverse_off
+    103              TB1CCR1 = right_forward_rate;
+   \   000018   9242....1404 MOV.W   &right_forward_rate, &0x414
+    104            }
+    105          }
+   \                     ??right_wheel_forward_on_0:
+   \   00001E   1001         RETA
+   \   000020                REQUIRE _A_PBSEL0_L
+   \   000020                REQUIRE _A_PBSEL1_L
+   \   000020                REQUIRE TB1CCR1
+    106          
+
+   \                                 In  segment CODE, align 2
+    107          void right_wheel_forward_off(void){
+   \                     right_wheel_forward_off:
+    108          //==============================================================================
+    109          // Right Wheel Forward Off
+    110          // 
+    111          // Description: This function turns the right motor off
+    112          //
+    113          // Passed : no variables passed
+    114          // Locals: no variables declared
+    115          // Returned: no values returned
+    116          // Globals:  no global variables
+    117          //
+    118          // Author: David Pryor
+    119          // Date: Feb 2016
+    120          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    121          //==============================================================================
+    122            P3SEL0  &= ~R_FORWARD;      // R_FORWARD selected	GPIO		(0)        
+   \   000000   F2C010002A02 BIC.B   #0x10, &0x22a
+    123            P3SEL1  &= ~R_FORWARD;	// R_FORWARD selected	GPIO		(0)
+   \   000006   F2C010002C02 BIC.B   #0x10, &0x22c
+    124            //if(P3IN & R_FORWARD){         // is the RIGHT wheel going forward?
+    125              TB1CCR1 =SWITCH_OFF;
+   \   00000C   82431404     MOV.W   #0x0, &0x414
+    126            //}
+    127          }
+   \   000010   1001         RETA
+   \   000012                REQUIRE _A_PBSEL0_L
+   \   000012                REQUIRE _A_PBSEL1_L
+   \   000012                REQUIRE TB1CCR1
+    128          
+
+   \                                 In  segment CODE, align 2
+    129          void left_wheel_reverse_on(void){
+   \                     left_wheel_reverse_on:
+    130            P3SEL0  |= L_REVERSE;      // L_FORWARD selected	TB		(0)        
+   \   000000   F2D080002A02 BIS.B   #0x80, &0x22a
+    131            P3SEL1  &= ~L_REVERSE;	// L_FORWARD selected   TB		(1)
+   \   000006   F2C080002C02 BIC.B   #0x80, &0x22c
+    132            if(!(P3SEL0 & L_FORWARD)){ // is the LEFT wheel going reverse?
+   \   00000C   F2B040002A02 BIT.B   #0x40, &0x22a
+   \   000012   052C         JC      ??left_wheel_reverse_on_0
+    133              left_wheel_forward_off();
+   \   000014   ........     CALLA   #left_wheel_forward_off
+    134              TB2CCR2 = left_reverse_rate;
+   \   000018   9242....5604 MOV.W   &left_reverse_rate, &0x456
+    135            }
+    136          }
+   \                     ??left_wheel_reverse_on_0:
+   \   00001E   1001         RETA
+   \   000020                REQUIRE _A_PBSEL0_L
+   \   000020                REQUIRE _A_PBSEL1_L
+   \   000020                REQUIRE TB2CCR2
+    137          
+
+   \                                 In  segment CODE, align 2
+    138          void left_wheel_reverse_off(void){
+   \                     left_wheel_reverse_off:
+    139            P3SEL0  &= ~L_REVERSE;      // L_REVERSE selected	GPIO		(0)        
+   \   000000   F2C080002A02 BIC.B   #0x80, &0x22a
+    140            P3SEL1  &= ~L_REVERSE;	// L_REVERSE selected	GPIO		(0)
+   \   000006   F2C080002C02 BIC.B   #0x80, &0x22c
+    141            //if(P3IN & L_REVERSE){ // is the LEFT wheel going reverse?
+    142              TB2CCR2 = SWITCH_OFF;
+   \   00000C   82435604     MOV.W   #0x0, &0x456
+    143            //}
+    144          }
+   \   000010   1001         RETA
+   \   000012                REQUIRE _A_PBSEL0_L
+   \   000012                REQUIRE _A_PBSEL1_L
+   \   000012                REQUIRE TB2CCR2
+    145          
+
+   \                                 In  segment CODE, align 2
+    146          void right_wheel_reverse_on(void){
+   \                     right_wheel_reverse_on:
+    147            P3SEL0  |= R_REVERSE;         // R_REVERSE selected	TB		(0)        
+   \   000000   F2D020002A02 BIS.B   #0x20, &0x22a
+    148            P3SEL1  &= ~R_REVERSE;	// R_REVERSE selected   TB		(1)
+   \   000006   F2C020002C02 BIC.B   #0x20, &0x22c
+    149            if(!(P3SEL0 & R_FORWARD)){      // is the RIGHT wheel going reverse?
+   \   00000C   F2B010002A02 BIT.B   #0x10, &0x22a
+   \   000012   052C         JC      ??right_wheel_reverse_on_0
+    150              right_wheel_forward_off();
+   \   000014   ........     CALLA   #right_wheel_forward_off
+    151              TB1CCR2 = right_reverse_rate;   // P3.5 Right Reverse PWM duty cycle
+   \   000018   9242....1604 MOV.W   &right_reverse_rate, &0x416
+    152            }
+    153          }
+   \                     ??right_wheel_reverse_on_0:
+   \   00001E   1001         RETA
+   \   000020                REQUIRE _A_PBSEL0_L
+   \   000020                REQUIRE _A_PBSEL1_L
+   \   000020                REQUIRE TB1CCR2
+    154          
+
+   \                                 In  segment CODE, align 2
+    155          void right_wheel_reverse_off(void){
+   \                     right_wheel_reverse_off:
+    156            P3SEL0  &= ~R_REVERSE;      // R_REVERSE selected	GPIO		(0)        
+   \   000000   F2C020002A02 BIC.B   #0x20, &0x22a
+    157            P3SEL1  &= ~R_REVERSE;	// R_REVERSE selected	GPIO		(0)
+   \   000006   F2C020002C02 BIC.B   #0x20, &0x22c
+    158            //if(P3IN & R_REVERSE){ // is the RIGHT wheel going reverse?
+    159              TB1CCR2 = SWITCH_OFF;
+   \   00000C   82431604     MOV.W   #0x0, &0x416
+    160            //}
+    161          }
+   \   000010   1001         RETA
+   \   000012                REQUIRE _A_PBSEL0_L
+   \   000012                REQUIRE _A_PBSEL1_L
+   \   000012                REQUIRE TB1CCR2
+    162          
+
+   \                                 In  segment CODE, align 2
+    163          void IR_LED_ON(void){
+   \                     IR_LED_ON:
+    164            P1OUT   |= IR_LED;     // P1 IR_LED Port Pin toggle
+   \   000000   E2D20202     BIS.B   #0x4, &0x202
+    165          }
+   \   000004   1001         RETA
+   \   000006                REQUIRE _A_PAOUT_L
+    166          
+
+   \                                 In  segment CODE, align 2
+    167          void IR_LED_OFF(void){
+   \                     IR_LED_OFF:
+    168            P1OUT   &= ~IR_LED;     // P1 IR_LED Port Pin toggle
+   \   000000   E2C20202     BIC.B   #0x4, &0x202
+    169          }
+   \   000004   1001         RETA
+   \   000006                REQUIRE _A_PAOUT_L
+    170          
+
+   \                                 In  segment CODE, align 2
+    171          void active_breaking_left(void){
+   \                     active_breaking_left:
+    172            left_wheel_reverse_on();
+   \   000000   ........     CALLA   #left_wheel_reverse_on
+    173            Five_msec_Delay(1);
+   \   000004   1C43         MOV.W   #0x1, R12
+   \   000006   ........     CALLA   #Five_msec_Delay
+    174            left_wheel_reverse_off();
+   \   00000A   ........     BRA     #left_wheel_reverse_off
+    175          }
+    176          
+
+   \                                 In  segment CODE, align 2
+    177          void active_breaking_right(void){
+   \                     active_breaking_right:
+    178            right_wheel_reverse_on();
+   \   000000   ........     CALLA   #right_wheel_reverse_on
+    179            Five_msec_Delay(1);
+   \   000004   1C43         MOV.W   #0x1, R12
+   \   000006   ........     CALLA   #Five_msec_Delay
+    180            right_wheel_reverse_off();
+   \   00000A   ........     BRA     #right_wheel_reverse_off
+    181          }
+    182          
+
+   \                                 In  segment CODE, align 2
+    183          void blackline(void){
+   \                     blackline:
+   \   000000   3B15         PUSHM.W #0x4, R11
+    184            unsigned int errorR=FALSE;
+   \   000002   0A43         MOV.W   #0x0, R10
+    185            unsigned int errorL=FALSE;
+   \   000004   0B43         MOV.W   #0x0, R11
+    186            unsigned int motor_time_prev=RESET;
+   \   000006   0843         MOV.W   #0x0, R8
+    187            
+    188            if(start_on_whiteFG){
+   \   000008   8293....     CMP.W   #0x0, &start_on_whiteFG
+   \   00000C   1224         JEQ     ??blackline_8
+    189              start_on_whiteFG = FALSE; //only want this first time
+   \   00000E   8243....     MOV.W   #0x0, &start_on_whiteFG
+    190              left_wheel_forward_on(); //go forward
+   \   000012   ........     CALLA   #left_wheel_forward_on
+    191              right_wheel_forward_on();
+   \   000016   ........     CALLA   #right_wheel_forward_on
+    192              while(ADC_Left_Detector < thresholdL && ADC_Right_Detector < thresholdR); //do this until on black line
+   \                     ??blackline_0:
+   \   00001A   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
+   \   000020   042C         JC      ??blackline_9
+   \   000022   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
+   \   000028   F82B         JNC     ??blackline_0
+    193              left_wheel_forward_off();
+   \                     ??blackline_9:
+   \   00002A   ........     CALLA   #left_wheel_forward_off
+    194              right_wheel_forward_off();
+   \   00002E   ........     CALLA   #right_wheel_forward_off
+    195            }
+    196            motor_time = RESET; //clear time counter to zero
+   \                     ??blackline_8:
+   \   000032   8243....     MOV.W   #0x0, &motor_time
+    197                  
+    198            while(ADC_Right_Detector < thresholdR){//while loop for pivot correcting back from right sensor leaving
+   \                     ??blackline_2:
+   \   000036   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
+   \   00003C   0E2C         JC      ??blackline_10
+    199              left_wheel_forward_off();
+   \   00003E   ........     CALLA   #left_wheel_forward_off
+    200              right_wheel_forward_on();
+   \   000042   ........     CALLA   #right_wheel_forward_on
+    201              while(ADC_Right_Detector < thresholdR); //do this until right sensor back on line
+   \                     ??blackline_1:
+   \   000046   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
+   \   00004C   FC2B         JNC     ??blackline_1
+    202              right_wheel_forward_off();
+   \   00004E   ........     CALLA   #right_wheel_forward_off
+    203              active_breaking_right();
+   \   000052   ........     CALLA   #active_breaking_right
+    204              errorR = TRUE;
+   \   000056   1A43         MOV.W   #0x1, R10
+   \   000058   EE3F         JMP     ??blackline_2
+    205            }
+    206            motor_time_prev = motor_time/3;//assign current time/2 count to temp time count for error correcting
+   \                     ??blackline_10:
+   \   00005A   1C42....     MOV.W   &motor_time, R12
+   \   00005E   3E400300     MOV.W   #0x3, R14
+   \   000062   ........     CALLA   #?DivMod16u
+   \   000066   084C         MOV.W   R12, R8
+    207            if(errorR){//if statement checking if left spin correction needed from correcting right pivot
+   \   000068   0A93         CMP.W   #0x0, R10
+   \   00006A   1124         JEQ     ??blackline_11
+    208              left_wheel_forward_on();
+   \   00006C   ........     CALLA   #left_wheel_forward_on
+    209              right_wheel_reverse_on();
+   \   000070   ........     CALLA   #right_wheel_reverse_on
+    210              motor_time = RESET; //to count back up to previous time;
+   \   000074   8243....     MOV.W   #0x0, &motor_time
+    211              while(motor_time < motor_time_prev && motor_time <= 500); //turn until time reached
+   \                     ??blackline_3:
+   \   000078   8298....     CMP.W   R8, &motor_time
+   \   00007C   042C         JC      ??blackline_12
+   \   00007E   B290F501.... CMP.W   #0x1f5, &motor_time
+   \   000084   F92B         JNC     ??blackline_3
+    212              right_wheel_reverse_off();
+   \                     ??blackline_12:
+   \   000086   ........     CALLA   #right_wheel_reverse_off
+    213              left_wheel_forward_off();
+   \   00008A   ........     CALLA   #left_wheel_forward_off
+    214            }
+    215                  
+    216            motor_time = RESET; //clear time counter to zero
+   \                     ??blackline_11:
+   \   00008E   8243....     MOV.W   #0x0, &motor_time
+    217                  
+    218            while((ADC_Left_Detector) < thresholdL){//while loop for pivot correcting back from left sensor leaving
+   \                     ??blackline_5:
+   \   000092   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
+   \   000098   0E2C         JC      ??blackline_13
+    219              right_wheel_forward_off();
+   \   00009A   ........     CALLA   #right_wheel_forward_off
+    220              left_wheel_forward_on();
+   \   00009E   ........     CALLA   #left_wheel_forward_on
+    221              while(ADC_Left_Detector < thresholdL); //do this until left sensor back on line
+   \                     ??blackline_4:
+   \   0000A2   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
+   \   0000A8   FC2B         JNC     ??blackline_4
+    222              left_wheel_forward_off();
+   \   0000AA   ........     CALLA   #left_wheel_forward_off
+    223              active_breaking_left();
+   \   0000AE   ........     CALLA   #active_breaking_left
+    224              errorL = TRUE;
+   \   0000B2   1B43         MOV.W   #0x1, R11
+   \   0000B4   EE3F         JMP     ??blackline_5
+    225            }
+    226            motor_time_prev = motor_time/3;//assign current time/2 count to temp time count for error correcting
+   \                     ??blackline_13:
+   \   0000B6   1C42....     MOV.W   &motor_time, R12
+   \   0000BA   3E400300     MOV.W   #0x3, R14
+   \   0000BE   ........     CALLA   #?DivMod16u
+   \   0000C2   084C         MOV.W   R12, R8
+    227            if(errorL){//if statement checking if right spin correction needed from correcting left pivot
+   \   0000C4   0B93         CMP.W   #0x0, R11
+   \   0000C6   1124         JEQ     ??blackline_7
+    228              right_wheel_forward_on();
+   \   0000C8   ........     CALLA   #right_wheel_forward_on
+    229              left_wheel_reverse_on();
+   \   0000CC   ........     CALLA   #left_wheel_reverse_on
+    230              motor_time = RESET; //to count back up to previous time;
+   \   0000D0   8243....     MOV.W   #0x0, &motor_time
+    231              while(motor_time < motor_time_prev && motor_time <= 500); //turn until time reached
+   \                     ??blackline_6:
+   \   0000D4   8298....     CMP.W   R8, &motor_time
+   \   0000D8   042C         JC      ??blackline_14
+   \   0000DA   B290F501.... CMP.W   #0x1f5, &motor_time
+   \   0000E0   F92B         JNC     ??blackline_6
+    232              left_wheel_reverse_off();
+   \                     ??blackline_14:
+   \   0000E2   ........     CALLA   #left_wheel_reverse_off
+    233              right_wheel_forward_off();
+   \   0000E6   ........     CALLA   #right_wheel_forward_off
+    234            }
+    235                  
+    236                
+    237            while((ADC_Left_Detector) >= thresholdL && ADC_Right_Detector >= thresholdR){//if both sensors on black then go forward (WHILE)
+   \                     ??blackline_7:
+   \   0000EA   9292........ CMP.W   &thresholdL, &ADC_Left_Detector
+   \   0000F0   0928         JNC     ??blackline_15
+   \   0000F2   9292........ CMP.W   &thresholdR, &ADC_Right_Detector
+   \   0000F8   0528         JNC     ??blackline_15
+    238              left_wheel_forward_on(); //go forward
+   \   0000FA   ........     CALLA   #left_wheel_forward_on
+    239              right_wheel_forward_on();
+   \   0000FE   ........     CALLA   #right_wheel_forward_on
+   \   000102   F33F         JMP     ??blackline_7
+    240            }
+    241          }
+   \                     ??blackline_15:
+   \   000104   3817         POPM.W  #0x4, R11
+   \   000106   1001         RETA
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   IR_LED_OFF
+      4   IR_LED_ON
+      4   active_breaking_left
+        4   -> Five_msec_Delay
+        0   -> left_wheel_reverse_off
+        4   -> left_wheel_reverse_on
+      4   active_breaking_right
+        4   -> Five_msec_Delay
+        0   -> right_wheel_reverse_off
+        4   -> right_wheel_reverse_on
+     12   blackline
+       12   -> active_breaking_left
+       12   -> active_breaking_right
+       12   -> left_wheel_forward_off
+       12   -> left_wheel_forward_on
+       12   -> left_wheel_reverse_off
+       12   -> left_wheel_reverse_on
+       12   -> right_wheel_forward_off
+       12   -> right_wheel_forward_on
+       12   -> right_wheel_reverse_off
+       12   -> right_wheel_reverse_on
+       12 ?DivMod16u
+      4   left_wheel_forward_off
+      4   left_wheel_forward_on
+        4   -> left_wheel_reverse_off
+      4   left_wheel_reverse_off
+      4   left_wheel_reverse_on
+        4   -> left_wheel_forward_off
+      4   right_wheel_forward_off
+      4   right_wheel_forward_on
+        4   -> right_wheel_reverse_off
+      4   right_wheel_reverse_off
+      4   right_wheel_reverse_on
+        4   -> right_wheel_forward_off
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       6  IR_LED_OFF
+       6  IR_LED_ON
+       2  TB1CCR1
+       2  TB1CCR2
+       2  TB2CCR1
+       2  TB2CCR2
+       2  _A_PAOUT_L
+       2  _A_PBSEL0_L
+       2  _A_PBSEL1_L
+      14  active_breaking_left
+      14  active_breaking_right
+     264  blackline
+      18  left_wheel_forward_off
+      30  left_wheel_forward_on
+      18  left_wheel_reverse_off
+      32  left_wheel_reverse_on
+      18  right_wheel_forward_off
+      32  right_wheel_forward_on
+      18  right_wheel_reverse_off
+      32  right_wheel_reverse_on
+
+ 
+ 502 bytes in segment CODE
+  14 bytes in segment DATA16_AN
+ 
+ 502 bytes of CODE memory
+   0 bytes of DATA memory (+ 14 bytes shared)
+
+Errors: none
+Warnings: none

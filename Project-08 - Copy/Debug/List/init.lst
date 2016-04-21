@@ -1,0 +1,467 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           20/Apr/2016  23:15:01
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\Documents\ECE 306\Project-08 - Copy\init.c
+#    Command line  =  
+#        "C:\Users\David\Documents\ECE 306\Project-08 - Copy\init.c" -lC
+#        "C:\Users\David\Documents\ECE 306\Project-08 - Copy\Debug\List" -o
+#        "C:\Users\David\Documents\ECE 306\Project-08 - Copy\Debug\Obj"
+#        --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\Documents\ECE 306\Project-08 - Copy\Debug\List\init.lst
+#    Object file   =  
+#        C:\Users\David\Documents\ECE 306\Project-08 - Copy\Debug\Obj\init.r43
+#
+###############################################################################
+
+C:\Users\David\Documents\ECE 306\Project-08 - Copy\init.c
+      1          //------------------------------------------------------------------------------
+      2          //
+      3          //  Description: This file contains the Initialize functions
+      4          //
+      5          //
+      6          //  David Pryor
+      7          //  Jan 2016
+      8          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+      9          //------------------------------------------------------------------------------
+     10          #include "macros.h"
+     11          #include "functions.h"
+     12          #include "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x322
+   \   union <unnamed> _A_PJOUT_L
+   \                     _A_PJOUT_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5c0
+   \   union <unnamed> _A_UCA0CTLW0_L
+   \                     _A_UCA0CTLW0_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5c6
+   \   union <unnamed> _A_UCA0BRW_L
+   \                     _A_UCA0BRW_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5c8
+   \   union <unnamed> _A_UCA0MCTLW_L
+   \                     _A_UCA0MCTLW_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5da
+   \   union <unnamed> _A_UCA0IE_L
+   \                     _A_UCA0IE_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5e0
+   \   union <unnamed> _A_UCA1CTLW0_L
+   \                     _A_UCA1CTLW0_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5e6
+   \   union <unnamed> _A_UCA1BRW_L
+   \                     _A_UCA1BRW_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5e8
+   \   union <unnamed> _A_UCA1MCTLW_L
+   \                     _A_UCA1MCTLW_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x5fa
+   \   union <unnamed> _A_UCA1IE_L
+   \                     _A_UCA1IE_L:
+   \   000000                DS8 2
+     13          //------------------------------------------------------------------------------
+     14          // Required defines
+     15          // IOT_WAKEUP           	                (0x01) // This was LED 1
+     16          // IOT_FACTORY   			        (0x02) // This was LED 2
+     17          // IOT_STA_MINIAP       	                (0x04) // This was LED 3
+     18          // R_FORWARD        	                        (0x10) // This was LED 5
+     19          // R_REVERSE        	                        (0x20) // This was LED 6
+     20          // L_FORWARD        	                        (0x40) // This was LED 7
+     21          // L_REVERSE        	                        (0x80) // This was LED 8
+     22          //------------------------------------------------------------------------------
+     23          // GLOBAL VARIABLES
+     24          extern char display_line_1[LINE_SIZE];
+     25          extern char display_line_2[LINE_SIZE];
+     26          extern char display_line_3[LINE_SIZE];
+     27          extern char display_line_4[LINE_SIZE];
+     28          extern char *display_1;
+     29          extern char *display_2;
+     30          extern char *display_3;
+     31          extern char *display_4;
+     32          extern volatile unsigned int usb_rx_ring_wr0;
+     33          extern volatile unsigned int usb_rx_ring_rd0;
+     34          extern volatile unsigned int usb_tx_ring_wr0;
+     35          extern volatile unsigned int usb_tx_ring_rd0;
+     36          extern volatile unsigned int usb_rx_ring_wr1;
+     37          extern volatile unsigned int usb_rx_ring_rd1;
+     38          extern volatile unsigned int usb_tx_ring_wr1;
+     39          extern volatile unsigned int usb_tx_ring_rd1;
+     40          extern volatile char USB_Char_Rx0[SMALL_RING_SIZE];
+     41          extern volatile char USB_Char_Tx0[LARGE_RING_SIZE];
+     42          extern volatile char USB_Char_Rx1[SMALL_RING_SIZE];
+     43          extern volatile char USB_Char_Tx1[LARGE_RING_SIZE];
+     44          //------------------------------------------------------------------------------
+
+   \                                 In  segment CODE, align 2
+     45          void Init_Conditions(void){
+   \                     Init_Conditions:
+     46          //==============================================================================
+     47          // Initializations Configurations
+     48          // 
+     49          // Description: This function intializes display_1 through 4 pointers to start of LCD lines
+     50          //
+     51          // Passed : no variables passed
+     52          // Locals: no variables declared
+     53          // Returned: no values returned
+     54          // Globals:     volatile unsigned int Time_Sequence;
+     55          //              volatile char one_time;
+     56          //              char* display_1
+     57          //              char* display_2
+     58          //              char* display_3
+     59          //              char* display_4
+     60          //              char display_line_1[LINE_SIZE];
+     61          //              char display_line_2[LINE_SIZE];
+     62          //              char display_line_3[LINE_SIZE];
+     63          //              char display_line_4[LINE_SIZE];
+     64          //
+     65          // Author: David Pryor
+     66          // Date: Feb 2016
+     67          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     68          //==============================================================================
+     69          // Interrupts are disabled by default, enable them. 
+     70            enable_interrupts();
+   \   000000   ........     CALLA   #enable_interrupts
+     71            display_1 = &display_line_1[START];
+   \   000004   B240........ MOV.W   #display_line_1, &display_1
+     72            display_2 = &display_line_2[START];
+   \   00000A   B240........ MOV.W   #display_line_2, &display_2
+     73            display_3 = &display_line_3[START];
+   \   000010   B240........ MOV.W   #display_line_3, &display_3
+     74            display_4 = &display_line_4[START];
+   \   000016   B240........ MOV.W   #display_line_4, &display_4
+     75          
+     76          //------------------------------------------------------------------------------
+     77          }
+   \   00001C   1001         RETA
+     78          
+
+   \                                 In  segment CODE, align 2
+     79          void Init_Timers(void){
+   \                     Init_Timers:
+     80          //==============================================================================
+     81          // Timer Configurations
+     82          // 
+     83          // Description: This function initializes timers used for the board
+     84          //
+     85          // Passed : no variables passed
+     86          // Locals: no variables declared
+     87          // Returned: no values returned
+     88          // Globals:     NONE
+     89          //
+     90          // Author: David Pryor
+     91          // Date: Feb 2016
+     92          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     93          //==============================================================================
+     94            Init_Timer_A0(); //
+   \   000000   ........     CALLA   #Init_Timer_A0
+     95          //  Init_Timer_A1(); // 
+     96          //  Init_Timer_B0(); // 
+     97            Init_Timer_B1(); //  
+   \   000004   ........     CALLA   #Init_Timer_B1
+     98            Init_Timer_B2();   //  Required for provided compiled code to work
+   \   000008   ........     BRA     #Init_Timer_B2
+     99          //------------------------------------------------------------------------------
+    100          }
+    101          
+
+   \                                 In  segment CODE, align 2
+    102          void Init_LEDs(void){
+   \                     Init_LEDs:
+    103          //==============================================================================
+    104          // LED Configurations
+    105          // 
+    106          // Description: This function initializes the LED output to 0
+    107          //
+    108          // Passed : no variables passed
+    109          // Locals: no variables declared
+    110          // Returned: no values returned
+    111          // Globals:     NONE
+    112          //
+    113          // Author: David Pryor
+    114          // Date: Feb 2016
+    115          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    116          //==============================================================================
+    117          //------------------------------------------------------------------------------
+    118          // Turns off all 8 LEDs
+    119            PJOUT &= ~IOT_WAKEUP;
+   \   000000   92C32203     BIC.W   #0x1, &0x322
+    120            PJOUT &= ~IOT_FACTORY;
+   \   000004   A2C32203     BIC.W   #0x2, &0x322
+    121            PJOUT &= ~IOT_STA_MINIAP;
+   \   000008   A2C22203     BIC.W   #0x4, &0x322
+    122          
+    123          //------------------------------------------------------------------------------
+    124          }
+   \   00000C   1001         RETA
+   \   00000E                REQUIRE _A_PJOUT_L
+    125          
+    126          
+
+   \                                 In  segment CODE, align 2
+    127          void Init_Serial_UCA0(int baud_choice){ //1=9600 baud, 0=115200 baud
+   \                     Init_Serial_UCA0:
+    128              int i;
+    129              for(i=0; i<SMALL_RING_SIZE; i++){
+   \   000000   0F43         MOV.W   #0x0, R15
+   \                     ??Init_Serial_UCA0_0:
+   \   000002   3F901000     CMP.W   #0x10, R15
+   \   000006   0434         JGE     ??Init_Serial_UCA0_2
+    130                  USB_Char_Rx0[i] = 0x00; // USB Rx Buffer
+   \   000008   CF43....     MOV.B   #0x0, USB_Char_Rx0(R15)
+    131              }
+   \   00000C   1F53         ADD.W   #0x1, R15
+   \   00000E   F93F         JMP     ??Init_Serial_UCA0_0
+    132              usb_rx_ring_wr0 = BEGINNING;
+   \                     ??Init_Serial_UCA0_2:
+   \   000010   8243....     MOV.W   #0x0, &usb_rx_ring_wr0
+    133              usb_rx_ring_rd0 = BEGINNING;
+   \   000014   8243....     MOV.W   #0x0, &usb_rx_ring_rd0
+    134          
+    135              for(i=0; i<LARGE_RING_SIZE; i++){ // May not use this
+   \   000018   0F43         MOV.W   #0x0, R15
+   \                     ??Init_Serial_UCA0_1:
+   \   00001A   3F901000     CMP.W   #0x10, R15
+   \   00001E   0434         JGE     ??Init_Serial_UCA0_3
+    136                  USB_Char_Tx0[i] = 0x00; // USB Tx Buffer
+   \   000020   CF43....     MOV.B   #0x0, USB_Char_Tx0(R15)
+    137              }
+   \   000024   1F53         ADD.W   #0x1, R15
+   \   000026   F93F         JMP     ??Init_Serial_UCA0_1
+    138              usb_tx_ring_wr0 = BEGINNING;
+   \                     ??Init_Serial_UCA0_3:
+   \   000028   8243....     MOV.W   #0x0, &usb_tx_ring_wr0
+    139              usb_tx_ring_rd0 = BEGINNING;
+   \   00002C   8243....     MOV.W   #0x0, &usb_tx_ring_rd0
+    140              // Configure UART 0
+    141              UCA0CTLW0 = 0; // Use word register
+   \   000030   8243C005     MOV.W   #0x0, &0x5c0
+    142              UCA0CTLW0 |= UCSSEL__SMCLK; // Set SMCLK as fBRCLK
+   \   000034   B2D08000C005 BIS.W   #0x80, &0x5c0
+    143              UCA0CTLW0 |= UCSWRST; // Set Software reset enable bit
+   \   00003A   92D3C005     BIS.W   #0x1, &0x5c0
+    144              // 9,600 Baud Rate
+    145              // 1. Calculate N = fBRCLK / Baudrate
+    146              // N = SMCLK / 9,600 => 8,000,000 / 9,600 = 833.3333333
+    147              // if N > 16 continue with step 3, otherwise with step 2
+    148              // 2. OS16 = 0, UCBRx = INT(N)
+    149              // continue with step 4
+    150              // 3. OS16 = 1,
+    151              // UCx = INT(N/16),
+    152              // = INT(N/16) = 833.333/16 => 52
+    153              // UCFx = INT([(N/16) – INT(N/16)] × 16)
+    154              // = ([833.333/16-INT(833.333/16)]*16)
+    155              // = (52.08333333-52)*16
+    156              // = 0.083*16 = 1
+    157              // 4. UCSx is found by looking up the fractional part of N (= N-INT(N)) in table Table 18-4
+    158              // Decimal of SMCLK / 8,000,000 / 9,600 = 833.3333333 => 0.333 yields 0x49 [Table]
+    159              // 5. If OS16 = 0 was chosen, a detailed error calculation is recommended to be performed
+    160              // TX error (%) RX error (%)
+    161              // BRCLK Baudrate UCOS16 UCBRx UCFx UCSx neg pos neg pos
+    162              // 8000000 9600 1 52 1 0x49 -0.08 0.04 -0.10 0.14
+    163              if(baud_choice==1){
+   \   00003E   1C93         CMP.W   #0x1, R12
+   \   000040   0720         JNE     ??Init_Serial_UCA0_4
+    164                  UCA0BRW = 52; // 9,600 Baud
+   \   000042   B2403400C605 MOV.W   #0x34, &0x5c6
+    165                  // UCA0MCTLW = UCSx concatenate UCFx concatenate UCOS16;
+    166                  // UCA0MCTLW = 0x49 concatenate 1 concatenate 1;
+    167                  UCA0MCTLW = 0x4911 ;
+   \   000048   B2401149C805 MOV.W   #0x4911, &0x5c8
+   \   00004E   073C         JMP     ??Init_Serial_UCA0_5
+    168              }
+    169              else if(baud_choice==0){
+   \                     ??Init_Serial_UCA0_4:
+   \   000050   0C93         CMP.W   #0x0, R12
+   \   000052   0520         JNE     ??Init_Serial_UCA0_5
+    170                  UCA0BRW = 4; // 115,200 Baud
+   \   000054   A242C605     MOV.W   #0x4, &0x5c6
+    171                  // UCA0MCTLW = UCSx concatenate UCFx concatenate UCOS16;
+    172                  // UCA0MCTLW = 0x55 concatenate 5 concatenate 1;
+    173                  UCA0MCTLW = 0x5551 ;
+   \   000058   B2405155C805 MOV.W   #0x5551, &0x5c8
+    174              }
+    175              UCA0CTL1 &= ~UCSWRST; // Release from reset
+   \                     ??Init_Serial_UCA0_5:
+   \   00005E   D2C3C005     BIC.B   #0x1, &0x5c0
+    176              UCA0IE |= UCRXIE; // Enable RX interrupt
+   \   000062   92D3DA05     BIS.W   #0x1, &0x5da
+    177              UCA0IE |= UCTXIE; // Enable TX interrupt
+   \   000066   A2D3DA05     BIS.W   #0x2, &0x5da
+    178          
+    179          }
+   \   00006A   1001         RETA
+   \   00006C                REQUIRE _A_UCA0CTLW0_L
+   \   00006C                REQUIRE _A_UCA0BRW_L
+   \   00006C                REQUIRE _A_UCA0MCTLW_L
+   \   00006C                REQUIRE _A_UCA0IE_L
+    180          
+
+   \                                 In  segment CODE, align 2
+    181          void Init_Serial_UCA1(int baud_choice){ //1=9600 baud, 0=115200 baud
+   \                     Init_Serial_UCA1:
+    182              int i;
+    183              for(i=0; i<SMALL_RING_SIZE; i++){
+   \   000000   0F43         MOV.W   #0x0, R15
+   \                     ??Init_Serial_UCA1_0:
+   \   000002   3F901000     CMP.W   #0x10, R15
+   \   000006   0434         JGE     ??Init_Serial_UCA1_2
+    184                  USB_Char_Rx1[i] = 0x00; // USB Rx Buffer
+   \   000008   CF43....     MOV.B   #0x0, USB_Char_Rx1(R15)
+    185              }
+   \   00000C   1F53         ADD.W   #0x1, R15
+   \   00000E   F93F         JMP     ??Init_Serial_UCA1_0
+    186              usb_rx_ring_wr1 = BEGINNING;
+   \                     ??Init_Serial_UCA1_2:
+   \   000010   8243....     MOV.W   #0x0, &usb_rx_ring_wr1
+    187              usb_rx_ring_rd1 = BEGINNING;
+   \   000014   8243....     MOV.W   #0x0, &usb_rx_ring_rd1
+    188          
+    189              for(i=0; i<LARGE_RING_SIZE; i++){ // May not use this
+   \   000018   0F43         MOV.W   #0x0, R15
+   \                     ??Init_Serial_UCA1_1:
+   \   00001A   3F901000     CMP.W   #0x10, R15
+   \   00001E   0434         JGE     ??Init_Serial_UCA1_3
+    190                 USB_Char_Tx1[i] = 0x00; // USB Tx Buffer
+   \   000020   CF43....     MOV.B   #0x0, USB_Char_Tx1(R15)
+    191              }
+   \   000024   1F53         ADD.W   #0x1, R15
+   \   000026   F93F         JMP     ??Init_Serial_UCA1_1
+    192              usb_tx_ring_wr1 = BEGINNING;
+   \                     ??Init_Serial_UCA1_3:
+   \   000028   8243....     MOV.W   #0x0, &usb_tx_ring_wr1
+    193              usb_tx_ring_rd1 = BEGINNING;
+   \   00002C   8243....     MOV.W   #0x0, &usb_tx_ring_rd1
+    194              // Configure UART 0
+    195              UCA1CTLW0 = 0; // Use word register
+   \   000030   8243E005     MOV.W   #0x0, &0x5e0
+    196              UCA1CTLW0 |= UCSSEL__SMCLK; // Set SMCLK as fBRCLK
+   \   000034   B2D08000E005 BIS.W   #0x80, &0x5e0
+    197              UCA1CTLW0 |= UCSWRST; // Set Software reset enable
+   \   00003A   92D3E005     BIS.W   #0x1, &0x5e0
+    198              // 9,600 Baud Rate
+    199              // 1. Calculate N = fBRCLK / Baudrate
+    200              // N = SMCLK / 9,600 => 8,000,000 / 9,600 = 833.3333333
+    201              // if N > 16 continue with step 3, otherwise with step 2
+    202              // 2. OS16 = 0, UCBRx = INT(N)
+    203              // continue with step 4
+    204              // 3. OS16 = 1,
+    205              // UCx = INT(N/16),
+    206              // = INT(N/16) = 833.333/16 => 52
+    207              // UCFx = INT([(N/16) – INT(N/16)] × 16)
+    208              // = ([833.333/16-INT(833.333/16)]*16)
+    209              // = (52.08333333-52)*16
+    210              // = 0.083*16 = 1
+    211              // 4. UCSx is found by looking up the fractional part of N (= N-INT(N)) in table Table 18-4
+    212              // Decimal of SMCLK / 8,000,000 / 9,600 = 833.3333333 => 0.333 yields 0x49 [Table]
+    213              // 5. If OS16 = 0 was chosen, a detailed error calculation is recommended to be performed
+    214              // TX error (%) RX error (%)
+    215              // BRCLK Baudrate UCOS16 UCBRx UCFx UCSx neg pos neg pos
+    216              // 8000000 9600 1 52 1 0x49 -0.08 0.04 -0.10 0.14
+    217              if(baud_choice==1){
+   \   00003E   1C93         CMP.W   #0x1, R12
+   \   000040   0720         JNE     ??Init_Serial_UCA1_4
+    218                  UCA1BRW = 52; // 9,600 Baud
+   \   000042   B2403400E605 MOV.W   #0x34, &0x5e6
+    219                  // UCA0MCTLW = UCSx concatenate UCFx concatenate UCOS16;
+    220                  // UCA0MCTLW = 0x49 concatenate 1 concatenate 1;
+    221                  UCA1MCTLW = 0x4911 ;
+   \   000048   B2401149E805 MOV.W   #0x4911, &0x5e8
+   \   00004E   073C         JMP     ??Init_Serial_UCA1_5
+    222              }
+    223              else if(baud_choice==0){
+   \                     ??Init_Serial_UCA1_4:
+   \   000050   0C93         CMP.W   #0x0, R12
+   \   000052   0520         JNE     ??Init_Serial_UCA1_5
+    224                  UCA1BRW = 4; // 115,200 Baud
+   \   000054   A242E605     MOV.W   #0x4, &0x5e6
+    225                  // UCA0MCTLW = UCSx concatenate UCFx concatenate UCOS16;
+    226                  // UCA0MCTLW = 0x55 concatenate 5 concatenate 1;
+    227                  UCA1MCTLW = 0x5551 ;
+   \   000058   B2405155E805 MOV.W   #0x5551, &0x5e8
+    228              }
+    229              UCA1CTL1 &= ~UCSWRST; // Release from reset
+   \                     ??Init_Serial_UCA1_5:
+   \   00005E   D2C3E005     BIC.B   #0x1, &0x5e0
+    230              UCA1IE |= UCRXIE; // Enable RX interrupt
+   \   000062   92D3FA05     BIS.W   #0x1, &0x5fa
+    231              UCA1IE |= UCTXIE; // Enable RX interrupt
+   \   000066   A2D3FA05     BIS.W   #0x2, &0x5fa
+    232          
+    233          }
+   \   00006A   1001         RETA
+   \   00006C                REQUIRE _A_UCA1CTLW0_L
+   \   00006C                REQUIRE _A_UCA1BRW_L
+   \   00006C                REQUIRE _A_UCA1MCTLW_L
+   \   00006C                REQUIRE _A_UCA1IE_L
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   Init_Conditions
+        4   -> enable_interrupts
+      4   Init_LEDs
+      4   Init_Serial_UCA0
+      4   Init_Serial_UCA1
+      4   Init_Timers
+        4   -> Init_Timer_A0
+        4   -> Init_Timer_B1
+        0   -> Init_Timer_B2
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      30  Init_Conditions
+      14  Init_LEDs
+     108  Init_Serial_UCA0
+     108  Init_Serial_UCA1
+      12  Init_Timers
+       2  _A_PJOUT_L
+       2  _A_UCA0BRW_L
+       2  _A_UCA0CTLW0_L
+       2  _A_UCA0IE_L
+       2  _A_UCA0MCTLW_L
+       2  _A_UCA1BRW_L
+       2  _A_UCA1CTLW0_L
+       2  _A_UCA1IE_L
+       2  _A_UCA1MCTLW_L
+
+ 
+ 272 bytes in segment CODE
+  18 bytes in segment DATA16_AN
+ 
+ 272 bytes of CODE memory
+   0 bytes of DATA memory (+ 18 bytes shared)
+
+Errors: none
+Warnings: none

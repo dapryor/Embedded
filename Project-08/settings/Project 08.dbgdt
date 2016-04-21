@@ -1,226 +1,123 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<Workspace>
-  <ConfigDictionary>
-    <CurrentConfigs>
-      <Project>Project 08/Debug</Project>
-    </CurrentConfigs>
-  </ConfigDictionary>
+<Project>
   <Desktop>
     <Static>
-      <Workspace>
-        <ColumnWidths>
-          <Column0>139</Column0>
-          <Column1>12</Column1>
-          <Column2>27</Column2>
-          <Column3>0</Column3>
-        </ColumnWidths>
-      </Workspace>
+      <Debug-Log>
+        <ColumnWidth0>20</ColumnWidth0>
+        <ColumnWidth1>1477</ColumnWidth1>
+      </Debug-Log>
       <Build>
         <ColumnWidth0>20</ColumnWidth0>
         <ColumnWidth1>1107</ColumnWidth1>
         <ColumnWidth2>295</ColumnWidth2>
         <ColumnWidth3>73</ColumnWidth3>
       </Build>
-      <Find-All-References>
-        <ColumnWidth0>529</ColumnWidth0>
-        <ColumnWidth1>75</ColumnWidth1>
-        <ColumnWidth2>908</ColumnWidth2>
-      </Find-All-References>
-      <Find-All-Declarations>
-        <ColumnWidth0>529</ColumnWidth0>
-        <ColumnWidth1>75</ColumnWidth1>
-        <ColumnWidth2>908</ColumnWidth2>
-      </Find-All-Declarations>
-      <Debug-Log>
-        <ColumnWidth0>20</ColumnWidth0>
-        <ColumnWidth1>1477</ColumnWidth1>
-      </Debug-Log>
-      <TerminalIO/>
+      <Workspace>
+        <ColumnWidths>
+          <Column0>124</Column0>
+          <Column1>27</Column1>
+          <Column2>27</Column2>
+          <Column3>27</Column3>
+        </ColumnWidths>
+      </Workspace>
+      <Disassembly>
+        <col-names>
+          <item>Disassembly</item>
+          <item>_I0</item>
+        </col-names>
+        <col-widths>
+          <item>500</item>
+          <item>20</item>
+        </col-widths>
+        <DisasmHistory/>
+        <ShowCodeCoverage>1</ShowCodeCoverage>
+        <ShowInstrProfiling>1</ShowInstrProfiling>
+      </Disassembly>
+      <WATCH_1>
+        <expressions>
+          <item>ADC_Left_Detector</item>
+          <item>ADC_Right_Detector</item>
+          <item>thresholdL</item>
+          <item>thresholdR</item>
+          <item>left_calibration_black</item>
+          <item>right_calibration_black</item>
+          <item>right_calibration_white</item>
+          <item>left_calibration_white</item>
+          <item>motor_time_prev</item>
+          <item></item>
+        </expressions>
+        <col-names>
+          <item>Expression</item>
+          <item>Location</item>
+          <item>Type</item>
+          <item>Value</item>
+        </col-names>
+        <col-widths>
+          <item>184</item>
+          <item>150</item>
+          <item>100</item>
+          <item>100</item>
+        </col-widths>
+      </WATCH_1>
     </Static>
     <Windows>
-      <Wnd2>
+      <Wnd4>
         <Tabs>
           <Tab>
-            <Identity>TabID-27302-18859</Identity>
+            <Identity>TabID-172-6755</Identity>
+            <TabName>Debug Log</TabName>
+            <Factory>Debug-Log</Factory>
+            <Session/>
+          </Tab>
+          <Tab>
+            <Identity>TabID-32418-6765</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        </Tabs>
+        <SelectedTab>0</SelectedTab>
+      </Wnd4>
+      <Wnd5>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-10921-6759</Identity>
             <TabName>Workspace</TabName>
             <Factory>Workspace</Factory>
             <Session>
               <NodeDict>
                 <ExpandedNode>Project 08</ExpandedNode>
-                <ExpandedNode>Project 08/main.c</ExpandedNode>
               </NodeDict>
             </Session>
           </Tab>
         </Tabs>
         <SelectedTab>0</SelectedTab>
-      </Wnd2>
-      <Wnd3>
+      </Wnd5>
+      <Wnd6>
         <Tabs>
           <Tab>
-            <Identity>TabID-4237-18882</Identity>
-            <TabName>Build</TabName>
-            <Factory>Build</Factory>
-            <Session/>
-          </Tab>
-          <Tab>
-            <Identity>TabID-6453-19659</Identity>
-            <TabName>References</TabName>
-            <Factory>Find-All-References</Factory>
-            <Session/>
-          </Tab>
-          <Tab>
-            <Identity>TabID-26382-19695</Identity>
-            <TabName>Declarations</TabName>
-            <Factory>Find-All-Declarations</Factory>
-            <Session/>
-          </Tab>
-          <Tab>
-            <Identity>TabID-21606-6354</Identity>
-            <TabName>Debug Log</TabName>
-            <Factory>Debug-Log</Factory>
+            <Identity>TabID-21669-6762</Identity>
+            <TabName>Disassembly</TabName>
+            <Factory>Disassembly</Factory>
             <Session/>
           </Tab>
         </Tabs>
         <SelectedTab>0</SelectedTab>
-      </Wnd3>
+      </Wnd6>
+      <Wnd7>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-16818-9309</Identity>
+            <TabName>Watch 1</TabName>
+            <Factory>WATCH_1</Factory>
+          </Tab>
+        </Tabs>
+        <SelectedTab>0</SelectedTab>
+      </Wnd7>
     </Windows>
     <Editor>
-      <Pane>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\command_Structure.c</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>55</YPos2>
-          <SelStart2>9359</SelStart2>
-          <SelEnd2>9359</SelEnd2>
-        </Tab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\ports.c</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>324</YPos2>
-          <SelStart2>13365</SelStart2>
-          <SelEnd2>13365</SelEnd2>
-        </Tab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\interrupts_timers.c</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>76</YPos2>
-          <SelStart2>3526</SelStart2>
-          <SelEnd2>3526</SelEnd2>
-        </Tab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\timers.c</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>126</YPos2>
-          <SelStart2>5453</SelStart2>
-          <SelEnd2>5469</SelEnd2>
-        </Tab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\macros.h</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>148</YPos2>
-          <SelStart2>9377</SelStart2>
-          <SelEnd2>9377</SelEnd2>
-        </Tab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\adc.c</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>171</YPos2>
-          <SelStart2>6095</SelStart2>
-          <SelEnd2>6095</SelEnd2>
-        </Tab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\motors.c</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>117</YPos2>
-          <SelStart2>4370</SelStart2>
-          <SelEnd2>4370</SelEnd2>
-        </Tab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\functions.h</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>68</YPos2>
-          <SelStart2>2297</SelStart2>
-          <SelEnd2>2297</SelEnd2>
-        </Tab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\menus.c</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>137</YPos2>
-          <SelStart2>5588</SelStart2>
-          <SelEnd2>5588</SelEnd2>
-        </Tab>
-        <ActiveTab>8</ActiveTab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\interrupt_adc.c</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>35</YPos2>
-          <SelStart2>2366</SelStart2>
-          <SelEnd2>2366</SelEnd2>
-        </Tab>
-        <Tab>
-          <Factory>TextEditor</Factory>
-          <Filename>$WS_DIR$\main.c</Filename>
-          <XPos>0</XPos>
-          <YPos>0</YPos>
-          <SelStart>0</SelStart>
-          <SelEnd>0</SelEnd>
-          <XPos2>0</XPos2>
-          <YPos2>129</YPos2>
-          <SelStart2>5259</SelStart2>
-          <SelEnd2>5259</SelEnd2>
-        </Tab>
-      </Pane>
+      <Pane/>
       <ActivePane>0</ActivePane>
       <Sizes>
         <Pane>
@@ -240,10 +137,18 @@
           </Sizes>
         </Row0>
         <Row1>
-          <Sizes/>
+          <Sizes>
+            <Toolbar-073A2258>
+              <key>debuggergui.enu1</key>
+            </Toolbar-073A2258>
+          </Sizes>
         </Row1>
         <Row2>
-          <Sizes/>
+          <Sizes>
+            <Toolbar-073A3900>
+              <key>430fet1</key>
+            </Toolbar-073A3900>
+          </Sizes>
         </Row2>
         <Row3>
           <Sizes/>
@@ -714,28 +619,17 @@
           <Sizes/>
         </Row158>
         <Row159>
-          <Sizes>
-            <Toolbar-073A2258>
-              <key>debuggergui.enu1</key>
-            </Toolbar-073A2258>
-          </Sizes>
+          <Sizes/>
         </Row159>
-        <Row160>
-          <Sizes>
-            <Toolbar-073A3900>
-              <key>430fet1</key>
-            </Toolbar-073A3900>
-          </Sizes>
-        </Row160>
       </Top>
       <Left>
         <Row0>
           <Sizes>
-            <Wnd2>
+            <Wnd5>
               <Rect>
                 <Top>-2</Top>
                 <Left>-2</Left>
-                <Bottom>540</Bottom>
+                <Bottom>492</Bottom>
                 <Right>198</Right>
                 <x>-2</x>
                 <y>-2</y>
@@ -744,21 +638,58 @@
                 <sizeHorzCX>130208</sizeHorzCX>
                 <sizeHorzCY>255428</sizeHorzCY>
                 <sizeVertCX>130208</sizeVertCX>
-                <sizeVertCY>692209</sizeVertCY>
+                <sizeVertCY>630907</sizeVertCY>
               </Rect>
-            </Wnd2>
+            </Wnd5>
           </Sizes>
         </Row0>
       </Left>
       <Right>
         <Row0>
-          <Sizes/>
+          <Sizes>
+            <Wnd6>
+              <Rect>
+                <Top>-2</Top>
+                <Left>-2</Left>
+                <Bottom>492</Bottom>
+                <Right>198</Right>
+                <x>-2</x>
+                <y>-2</y>
+                <xscreen>200</xscreen>
+                <yscreen>200</yscreen>
+                <sizeHorzCX>130208</sizeHorzCX>
+                <sizeHorzCY>255428</sizeHorzCY>
+                <sizeVertCX>130208</sizeVertCX>
+                <sizeVertCY>630907</sizeVertCY>
+              </Rect>
+            </Wnd6>
+          </Sizes>
         </Row0>
+        <Row1>
+          <Sizes>
+            <Wnd7>
+              <Rect>
+                <Top>-2</Top>
+                <Left>196</Left>
+                <Bottom>492</Bottom>
+                <Right>598</Right>
+                <x>196</x>
+                <y>-2</y>
+                <xscreen>200</xscreen>
+                <yscreen>200</yscreen>
+                <sizeHorzCX>130208</sizeHorzCX>
+                <sizeHorzCY>255428</sizeHorzCY>
+                <sizeVertCX>261719</sizeVertCX>
+                <sizeVertCY>630907</sizeVertCY>
+              </Rect>
+            </Wnd7>
+          </Sizes>
+        </Row1>
       </Right>
       <Bottom>
         <Row0>
           <Sizes>
-            <Wnd3>
+            <Wnd4>
               <Rect>
                 <Top>-2</Top>
                 <Left>-2</Left>
@@ -773,7 +704,7 @@
                 <sizeVertCX>130208</sizeVertCX>
                 <sizeVertCY>255428</sizeVertCY>
               </Rect>
-            </Wnd3>
+            </Wnd4>
           </Sizes>
         </Row0>
       </Bottom>
@@ -782,6 +713,6 @@
       </Float>
     </Positions>
   </Desktop>
-</Workspace>
+</Project>
 
 

@@ -1,0 +1,448 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           20/Apr/2016  23:15:01
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430X
+#    __data_model  =  small
+#    __code_model  =  large
+#    Source file   =  C:\Users\David\Documents\ECE 306\Project-08 - Copy\adc.c
+#    Command line  =  
+#        "C:\Users\David\Documents\ECE 306\Project-08 - Copy\adc.c" -lC
+#        "C:\Users\David\Documents\ECE 306\Project-08 - Copy\Debug\List" -o
+#        "C:\Users\David\Documents\ECE 306\Project-08 - Copy\Debug\Obj"
+#        --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430FR5739__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.3\430\lib\dlib\dl430xlsfn.h"
+#        --core=430X --data_model=small -On --multiplier=32
+#        --hw_workaround=CPU40 --code_model=large
+#    List file     =  
+#        C:\Users\David\Documents\ECE 306\Project-08 - Copy\Debug\List\adc.lst
+#    Object file   =  
+#        C:\Users\David\Documents\ECE 306\Project-08 - Copy\Debug\Obj\adc.r43
+#
+###############################################################################
+
+C:\Users\David\Documents\ECE 306\Project-08 - Copy\adc.c
+      1          //------------------------------------------------------------------------------
+      2          //  File Name : interrupts_adc.c
+      3          //
+      4          //  Description: This file contains the interrupts used for switches
+      5          //
+      6          //
+      7          //  David Pryor
+      8          //  Feb 2016
+      9          //  Built with IAR Embedded Workbench Version: V7.3.1.3987 (6.40.1)
+     10          //------------------------------------------------------------------------------
+     11          #include "macros.h"
+     12          #include "functions.h"
+     13          #include "msp430.h"
+
+   \                                 In  segment DATA16_AN, at 0x700
+   \   union <unnamed> _A_ADC10CTL0_L
+   \                     _A_ADC10CTL0_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x702
+   \   union <unnamed> _A_ADC10CTL1_L
+   \                     _A_ADC10CTL1_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x704
+   \   union <unnamed> _A_ADC10CTL2_L
+   \                     _A_ADC10CTL2_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x70a
+   \   union <unnamed> _A_ADC10MCTL0_L
+   \                     _A_ADC10MCTL0_L:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x71a
+   \   union <unnamed> _A_ADC10IE_L
+   \                     _A_ADC10IE_L:
+   \   000000                DS8 2
+     14          extern char adc_char[5];
+     15          extern unsigned int thresholdR;
+     16          extern unsigned int thresholdL;
+     17          extern unsigned int left_calibration_black;
+     18          extern unsigned int right_calibration_black;
+     19          extern unsigned int left_calibration_white;
+     20          extern unsigned int right_calibration_white;
+     21          extern volatile unsigned int ADC_Right_Detector;
+     22          extern volatile unsigned int right_forward_rate;
+     23          extern volatile unsigned int right_reverse_rate;
+     24          extern volatile unsigned int left_forward_rate;
+     25          extern volatile unsigned int left_reverse_rate;
+     26          extern char *display_1;
+     27          extern char *display_2;
+     28          extern char *display_3;
+     29          extern char *display_4;
+     30          extern volatile unsigned int switch_one_pressed;
+     31          extern volatile unsigned int switch_two_pressed;
+     32          extern volatile unsigned int ADC_Left_Detector;
+     33          extern volatile unsigned int ADC_Right_Detector;
+     34          
+
+   \                                 In  segment CODE, align 2
+     35          void ADC_Process(void){
+   \                     ADC_Process:
+     36           //==============================================================================
+     37           // ADC Process
+     38           // 
+     39           // Description: sampling and conversion if ready
+     40           //
+     41           // Passed :     no variables passed
+     42           // Locals:      no variables declared
+     43           // Returned:    no values returned
+     44           // Globals:     ADC_Thumb
+     45           //              ADC_Left_Detector
+     46           //              ADC_Right_Detector
+     47           //
+     48           // Author: David Pryor
+     49           // Date: March 2016
+     50           // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     51           //==============================================================================
+     52            ADC10CTL0 |= ADC10ON;
+   \   000000   B2D010000007 BIS.W   #0x10, &0x700
+     53            while (ADC10CTL1 & BUSY); // Wait if ADC10 core is active
+   \                     ??ADC_Process_0:
+   \   000006   92B30207     BIT.W   #0x1, &0x702
+   \   00000A   FD2F         JC      ??ADC_Process_0
+     54            ADC10CTL0 |= ADC10ENC + ADC10SC; // Sampling and conversion start
+   \   00000C   B2D003000007 BIS.W   #0x3, &0x700
+     55            ADC10CTL0 &= ~ADC10ON;
+   \   000012   B2C010000007 BIC.W   #0x10, &0x700
+     56          }
+   \   000018   1001         RETA
+   \   00001A                REQUIRE _A_ADC10CTL0_L
+   \   00001A                REQUIRE _A_ADC10CTL1_L
+     57          
+
+   \                                 In  segment CODE, align 2
+     58          void Init_ADC(void){
+   \                     Init_ADC:
+     59           //==============================================================================
+     60           // Configure ADC10_B
+     61           // 
+     62           // Description: sets up ISR for ADC
+     63           //
+     64           // Passed :     no variables passed
+     65           // Locals:      no variables declared
+     66           // Returned:    no values returned
+     67           // Globals:     ADC_Thumb
+     68           //              ADC_Left_Detector
+     69           //              ADC_Right_Detector
+     70           //
+     71           // Author: David Pryor
+     72           // Date: March 2016
+     73           // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+     74           //==============================================================================
+     75           ADC10CTL0 = SWITCH_OFF; // Clear ADC10CTL0
+   \   000000   82430007     MOV.W   #0x0, &0x700
+     76           ADC10CTL0 |= ADC10SHT_2; // 16 ADC clocks
+   \   000004   B2D000020007 BIS.W   #0x200, &0x700
+     77           ADC10CTL0 &= ~ADC10MSC; // Single Sequence
+   \   00000A   B2C080000007 BIC.W   #0x80, &0x700
+     78           ADC10CTL0 |= ADC10ON; // ADC ON - Core Enabled
+   \   000010   B2D010000007 BIS.W   #0x10, &0x700
+     79           ADC10CTL1 = SWITCH_OFF; // Clear ADC10CTL1
+   \   000016   82430207     MOV.W   #0x0, &0x702
+     80           ADC10CTL1 |= ADC10SHS_0; // ADC10SC bit
+   \   00001A   924202070207 MOV.W   &0x702, &0x702
+     81           ADC10CTL1 |= ADC10SHP; // SAMPCON signal sourced from sampling timer
+   \   000020   B2D000020207 BIS.W   #0x200, &0x702
+     82           ADC10CTL1 &= ~ADC10ISSH; // The sample-input signal is not inverted.
+   \   000026   B2C000010207 BIC.W   #0x100, &0x702
+     83           ADC10CTL1 |= ADC10DIV_0; // ADC10_B clock divider – Divide by 1.
+   \   00002C   924202070207 MOV.W   &0x702, &0x702
+     84           ADC10CTL1 |= ADC10SSEL_0; // MODCLK
+   \   000032   924202070207 MOV.W   &0x702, &0x702
+     85           ADC10CTL1 |= ADC10CONSEQ_0; // Single-channel, single-conversion
+   \   000038   924202070207 MOV.W   &0x702, &0x702
+     86           ADC10CTL2 = SWITCH_OFF; // Clear ADC10CTL2
+   \   00003E   82430407     MOV.W   #0x0, &0x704
+     87           ADC10CTL2 |= ADC10DIV_0; // Pre-divide by 1
+   \   000042   924204070407 MOV.W   &0x704, &0x704
+     88           ADC10CTL2 |= ADC10RES; // 10-bit resolution
+   \   000048   B2D010000407 BIS.W   #0x10, &0x704
+     89           ADC10CTL2 &= ~ADC10DF; // Binary unsigned
+   \   00004E   B2C20407     BIC.W   #0x8, &0x704
+     90           ADC10CTL2 &= ~ADC10SR; // supports up to approximately 200 ksps
+   \   000052   A2C20407     BIC.W   #0x4, &0x704
+     91           ADC10MCTL0 = SWITCH_OFF; // Clear ADC10MCTL0
+   \   000056   82430A07     MOV.W   #0x0, &0x70a
+     92           ADC10MCTL0 |= ADC10SREF_0; // V(R+) = AVCC and V(R-) = AVSS
+   \   00005A   92420A070A07 MOV.W   &0x70a, &0x70a
+     93           ADC10MCTL0 |= ADC10INCH_3; // Channel A3 Thumb Wheel
+   \   000060   B2D003000A07 BIS.W   #0x3, &0x70a
+     94           ADC10IE |= ADC10IE0; // Enable ADC conversion complete interrupt
+   \   000066   92D31A07     BIS.W   #0x1, &0x71a
+     95          }
+   \   00006A   1001         RETA
+   \   00006C                REQUIRE _A_ADC10CTL0_L
+   \   00006C                REQUIRE _A_ADC10CTL1_L
+   \   00006C                REQUIRE _A_ADC10CTL2_L
+   \   00006C                REQUIRE _A_ADC10MCTL0_L
+   \   00006C                REQUIRE _A_ADC10IE_L
+     96          
+
+   \                                 In  segment CODE, align 2
+     97          void HEXtoBCD(int hex_value){
+   \                     HEXtoBCD:
+     98           //==============================================================================
+     99           // Hex to BCD Conversion
+    100           // 
+    101           // Description: Convert a Hex number to a BCD for display on an LCD or monitor
+    102           //
+    103           // Passed :     no variables passed
+    104           // Locals:      no variables declared
+    105           // Returned:    no values returned
+    106           // Globals:     ADC_Thumb
+    107           //              ADC_Left_Detector
+    108           //              ADC_Right_Detector
+    109           //
+    110           // Author: David Pryor
+    111           // Date: March 2016
+    112           // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    113           //==============================================================================
+    114            
+    115            int value;
+    116            adc_char[0] = '0';
+   \   000000   F2403000.... MOV.B   #0x30, &adc_char
+    117            adc_char[1] = '0';
+   \   000006   F2403000.... MOV.B   #0x30, &adc_char + 1
+    118            adc_char[2] = '0';
+   \   00000C   F2403000.... MOV.B   #0x30, &adc_char + 2
+    119            adc_char[3] = '0';
+   \   000012   F2403000.... MOV.B   #0x30, &adc_char + 3
+    120            if (hex_value > 1000){
+   \   000018   3C90E903     CMP.W   #0x3e9, R12
+   \   00001C   0538         JL      ??HEXtoBCD_2
+    121              hex_value = hex_value - 1000;
+   \   00001E   3C5018FC     ADD.W   #0xfc18, R12
+    122              adc_char[0] = '1';
+   \   000022   F2403100.... MOV.B   #0x31, &adc_char
+    123            }
+    124            value = 0;
+   \                     ??HEXtoBCD_2:
+   \   000028   0F43         MOV.W   #0x0, R15
+    125            while (hex_value > 99){
+   \                     ??HEXtoBCD_0:
+   \   00002A   3C906400     CMP.W   #0x64, R12
+   \   00002E   0C38         JL      ??HEXtoBCD_3
+    126              hex_value = hex_value - 100;
+   \   000030   3C509CFF     ADD.W   #0xff9c, R12
+    127              value = value + 1;
+   \   000034   1F53         ADD.W   #0x1, R15
+    128              adc_char[1] = 0x30 + value;
+   \   000036   0E12         PUSH.W  R14
+   \   000038   C14F0000     MOV.B   R15, 0(SP)
+   \   00003C   3E41         POP.W   R14
+   \   00003E   7E503000     ADD.B   #0x30, R14
+   \   000042   C24E....     MOV.B   R14, &adc_char + 1
+   \   000046   F13F         JMP     ??HEXtoBCD_0
+    129            }
+    130            value = 0;
+   \                     ??HEXtoBCD_3:
+   \   000048   0F43         MOV.W   #0x0, R15
+    131              while (hex_value > 9){
+   \                     ??HEXtoBCD_1:
+   \   00004A   3C900A00     CMP.W   #0xa, R12
+   \   00004E   0C38         JL      ??HEXtoBCD_4
+    132              hex_value = hex_value - 10;
+   \   000050   3C50F6FF     ADD.W   #0xfff6, R12
+    133              value = value + 1;
+   \   000054   1F53         ADD.W   #0x1, R15
+    134              adc_char[2] = 0x30 + value;
+   \   000056   0E12         PUSH.W  R14
+   \   000058   C14F0000     MOV.B   R15, 0(SP)
+   \   00005C   3E41         POP.W   R14
+   \   00005E   7E503000     ADD.B   #0x30, R14
+   \   000062   C24E....     MOV.B   R14, &adc_char + 2
+   \   000066   F13F         JMP     ??HEXtoBCD_1
+    135            }
+    136            adc_char[3] = 0x30 + hex_value;
+   \                     ??HEXtoBCD_4:
+   \   000068   0E12         PUSH.W  R14
+   \   00006A   C14C0000     MOV.B   R12, 0(SP)
+   \   00006E   3E41         POP.W   R14
+   \   000070   7E503000     ADD.B   #0x30, R14
+   \   000074   C24E....     MOV.B   R14, &adc_char + 3
+    137          
+    138          }
+   \   000078   1001         RETA
+    139          //******************************************************************************
+    140          //------------------------------------------------------------------------------
+    141          
+    142          
+
+   \                                 In  segment CODE, align 2
+    143          void IR_Calibration(void){
+   \                     IR_Calibration:
+   \   000000   0A12         PUSH.W  R10
+    144            int proceed = 0;
+   \   000002   0A43         MOV.W   #0x0, R10
+    145            ADC_Process();              // call sampling function
+   \   000004   ........     CALLA   #ADC_Process
+    146            
+    147            IR_LED_ON();
+   \   000008   ........     CALLA   #IR_LED_ON
+    148            Five_msec_Delay(200);
+   \   00000C   3C40C800     MOV.W   #0xc8, R12
+   \   000010   ........     CALLA   #Five_msec_Delay
+    149            display_1 = "White Test";
+   \   000014   B240........ MOV.W   #`?<Constant "White Test">`, &display_1
+    150            display_2 = "Press SW2";
+   \   00001A   B240........ MOV.W   #`?<Constant "Press SW2">`, &display_2
+    151            display_3 = "";  
+   \   000020   B240........ MOV.W   #`?<Constant "">`, &display_3
+    152            display_4 = "";
+   \   000026   B240........ MOV.W   #`?<Constant "">`, &display_4
+    153            Display_Process();
+   \   00002C   ........     CALLA   #Display_Process
+    154            while(proceed == 0){
+   \                     ??IR_Calibration_0:
+   \   000030   0A93         CMP.W   #0x0, R10
+   \   000032   0720         JNE     ??IR_Calibration_2
+    155              if(switch_two_pressed){
+   \   000034   8293....     CMP.W   #0x0, &switch_two_pressed
+   \   000038   FB27         JEQ     ??IR_Calibration_0
+    156                proceed = 1;
+   \   00003A   1A43         MOV.W   #0x1, R10
+    157                switch_two_pressed = FALSE;
+   \   00003C   8243....     MOV.W   #0x0, &switch_two_pressed
+   \   000040   F73F         JMP     ??IR_Calibration_0
+    158              }
+    159            }
+    160            ADC_Process();              // call sampling function
+   \                     ??IR_Calibration_2:
+   \   000042   ........     CALLA   #ADC_Process
+    161            right_calibration_white = ADC_Right_Detector;
+   \   000046   9242........ MOV.W   &ADC_Right_Detector, &right_calibration_white
+    162            left_calibration_white = ADC_Left_Detector;
+   \   00004C   9242........ MOV.W   &ADC_Left_Detector, &left_calibration_white
+    163            proceed = 0;
+   \   000052   0A43         MOV.W   #0x0, R10
+    164            
+    165            display_1 = "Black Test";
+   \   000054   B240........ MOV.W   #`?<Constant "Black Test">`, &display_1
+    166            display_2 = "Press SW2";
+   \   00005A   B240........ MOV.W   #`?<Constant "Press SW2">`, &display_2
+    167            display_3 = "";  
+   \   000060   B240........ MOV.W   #`?<Constant "">`, &display_3
+    168            display_4 = "";
+   \   000066   B240........ MOV.W   #`?<Constant "">`, &display_4
+    169            Display_Process();
+   \   00006C   ........     CALLA   #Display_Process
+    170            while(proceed == 0){
+   \                     ??IR_Calibration_1:
+   \   000070   0A93         CMP.W   #0x0, R10
+   \   000072   0720         JNE     ??IR_Calibration_3
+    171              if(switch_two_pressed){
+   \   000074   8293....     CMP.W   #0x0, &switch_two_pressed
+   \   000078   FB27         JEQ     ??IR_Calibration_1
+    172                proceed = 1;
+   \   00007A   1A43         MOV.W   #0x1, R10
+    173                switch_two_pressed = FALSE;
+   \   00007C   8243....     MOV.W   #0x0, &switch_two_pressed
+   \   000080   F73F         JMP     ??IR_Calibration_1
+    174              }
+    175            }
+    176            ADC_Process();              // call sampling function
+   \                     ??IR_Calibration_3:
+   \   000082   ........     CALLA   #ADC_Process
+    177            right_calibration_black = ADC_Right_Detector;
+   \   000086   9242........ MOV.W   &ADC_Right_Detector, &right_calibration_black
+    178            left_calibration_black = ADC_Left_Detector;
+   \   00008C   9242........ MOV.W   &ADC_Left_Detector, &left_calibration_black
+    179              
+    180            IR_LED_OFF();
+   \   000092   ........     CALLA   #IR_LED_OFF
+    181            thresholdR = ((right_calibration_black + right_calibration_white)/2)+200;
+   \   000096   1F42....     MOV.W   &right_calibration_black, R15
+   \   00009A   1F52....     ADD.W   &right_calibration_white, R15
+   \   00009E   5F03         RRUM.W  #0x1, R15
+   \   0000A0   3F50C800     ADD.W   #0xc8, R15
+   \   0000A4   824F....     MOV.W   R15, &thresholdR
+    182            thresholdL = ((left_calibration_black + left_calibration_white)/2)+200;
+   \   0000A8   1F42....     MOV.W   &left_calibration_black, R15
+   \   0000AC   1F52....     ADD.W   &left_calibration_white, R15
+   \   0000B0   5F03         RRUM.W  #0x1, R15
+   \   0000B2   3F50C800     ADD.W   #0xc8, R15
+   \   0000B6   824F....     MOV.W   R15, &thresholdL
+    183            
+    184          }
+   \   0000BA   3A41         POP.W   R10
+   \   0000BC   1001         RETA
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "White Test">`:
+   \   000000   576869746520 DC8 "White Test"
+   \            5465737400  
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Press SW2">`:
+   \   000000   507265737320 DC8 "Press SW2"
+   \            53573200    
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "">`:
+   \   000000   00           DC8 ""
+
+   \                                 In  segment DATA16_C, align 1, align-sorted
+   \                     `?<Constant "Black Test">`:
+   \   000000   426C61636B20 DC8 "Black Test"
+   \            5465737400  
+    185          
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      4   ADC_Process
+      6   HEXtoBCD
+      6   IR_Calibration
+        6   -> ADC_Process
+        6   -> Display_Process
+        6   -> Five_msec_Delay
+        6   -> IR_LED_OFF
+        6   -> IR_LED_ON
+      4   Init_ADC
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       1  ?<Constant "">
+      11  ?<Constant "Black Test">
+      10  ?<Constant "Press SW2">
+      11  ?<Constant "White Test">
+      26  ADC_Process
+     122  HEXtoBCD
+     190  IR_Calibration
+     108  Init_ADC
+       2  _A_ADC10CTL0_L
+       2  _A_ADC10CTL1_L
+       2  _A_ADC10CTL2_L
+       2  _A_ADC10IE_L
+       2  _A_ADC10MCTL0_L
+
+ 
+ 446 bytes in segment CODE
+  10 bytes in segment DATA16_AN
+  33 bytes in segment DATA16_C
+ 
+ 446 bytes of CODE  memory
+  33 bytes of CONST memory
+   0 bytes of DATA  memory (+ 10 bytes shared)
+
+Errors: none
+Warnings: none
