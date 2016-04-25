@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           21/Apr/2016  01:35:54
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           25/Apr/2016  02:34:36
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -657,14 +657,30 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\ports.c
    \                                 In  segment CODE, align 2
     349          void IOTHardwareReset(void){
    \                     IOTHardwareReset:
-    350              PJOUT &= ~IOT_RESET; //reset IOT
+    350              //==============================================================================
+    351          // IOTHardwareReset
+    352          // 
+    353          // Description: This functions is for a IOT Hardware Reset
+    354          //
+    355          // Passed : no variables passed
+    356          // Locals: no variables declared
+    357          // Returned: no values returned
+    358          // Globals:     NONE
+    359          //
+    360          // Author: David Pryor
+    361          // Date: APRIL 2016
+    362          // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    363          //==============================================================================
+    364          // IOT_RESET		(0x08) // This was LED 4
+    365          //------------------------------------------------------------------------------
+    366              PJOUT &= ~IOT_RESET; //reset IOT
    \   000000   B2C22203     BIC.W   #0x8, &0x322
-    351              Five_msec_Delay(10); //wait 50 ms
+    367              Five_msec_Delay(FOR_FIFTY_MSEC); //wait 50 ms
    \   000004   3C400A00     MOV.W   #0xa, R12
    \   000008   ........     CALLA   #Five_msec_Delay
-    352              PJOUT |= IOT_RESET; //turn IOT back on (stop reset)
+    368              PJOUT |= IOT_RESET; //turn IOT back on (stop reset)
    \   00000C   B2D22203     BIS.W   #0x8, &0x322
-    353          }
+    369          }
    \   000010   1001         RETA
    \   000012                REQUIRE _A_PJOUT_L
 

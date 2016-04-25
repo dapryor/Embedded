@@ -16,9 +16,9 @@ volatile char USB_Char_Tx0[LARGE_RING_SIZE];
 volatile char USB_Char_Rx1[SMALL_RING_SIZE];
 volatile char USB_Char_Tx1[LARGE_RING_SIZE];
 extern char *display_1;
-extern char adc_char[5];
+extern char adc_char[MAX_ADCCHAR_SIZE];
 extern unsigned int writeCommandFG;
-extern volatile char commandBuffer[30];
+extern volatile char commandBuffer[MAX_COMMANDBUF_SIZE];
 extern volatile unsigned int commandIndex;
 extern volatile unsigned int transmitFG;
 extern volatile unsigned int StartCommandFG;
@@ -28,7 +28,7 @@ extern volatile unsigned int IOTIndexTransmit;
 extern volatile unsigned int IOTIndexReceive;
 extern unsigned int macFG;
 extern volatile unsigned int newLineFG;
-extern volatile char receiving[100];
+extern volatile char receiving[MAX_RECEIVE_SIZE];
 extern volatile unsigned int receivingInd;
 extern unsigned int black_line_stop;
 //----------------------------------------------------------------------------//
@@ -37,9 +37,9 @@ extern unsigned int black_line_stop;
 __interrupt void USCI_A0_ISR(void){
     unsigned int temp,temp2;
     switch(__even_in_range(UCA0IV,0x08)){
-        case 0: // Vector 0 - no interrupt
+        case NONE: // Vector 0 - no interrupt
             break;
-        case 2: // Vector 2 - RXIFG
+        case RX: // Vector 2 - RXIFG
             temp = usb_rx_ring_wr0;
             USB_Char_Rx0[temp] = UCA0RXBUF; // RX -> USB_Char_Rx character
             UCA1TXBUF=USB_Char_Rx0[temp];
@@ -58,7 +58,7 @@ __interrupt void USCI_A0_ISR(void){
             
             
             break;
-        case 4: // Vector 4 – TXIFG
+        case TX: // Vector 4 – TXIFG
           transmitFG=TRUE;   
           break;
         default: break;
@@ -69,9 +69,9 @@ __interrupt void USCI_A0_ISR(void){
 __interrupt void USCI_A1_ISR(void){ //IOT
     unsigned int temp,temp2, temp3;
     switch(__even_in_range(UCA1IV,0x08)){
-        case 0: // Vector 0 - no interrupt
+        case NONE: // Vector 0 - no interrupt
             break;
-        case 2: // Vector 2 - RXIFG
+        case RX: // Vector 2 - RXIFG
             temp = usb_rx_ring_wr1;
             USB_Char_Rx1[temp] = UCA1RXBUF; // RX -> USB_Char_Rx character
             UCA0TXBUF=USB_Char_Rx1[temp];
@@ -104,7 +104,7 @@ __interrupt void USCI_A1_ISR(void){ //IOT
             receiving[temp3]=USB_Char_Rx1[temp];
             receivingInd++;
             break;
-        case 4: // Vector 4 – TXIFG
+        case TX: // Vector 4 – TXIFG
             transmitFG=TRUE; 
             break;
         default: break;

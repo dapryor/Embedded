@@ -32,6 +32,8 @@
 #define PREVIOUS                                (1)
 #define WRITING_INDEX                           (9)
 #define THRESHOLD                               (-30)
+#define THRESHOLD_SENSITIVITY                   (250)
+#define LCD_LINE_SIZE                           (10)
 // SWITCHES --------------------------------------------------------------------
 #define SWITCH_OFF				(0x00) 
 #define SWITCH_ON				(0x01)
@@ -115,11 +117,18 @@
 #define FOR_THIRTY_SECONDS                      (6000)
 #define FIVE_MSEC                               (5)
 #define HALF                                    (2)
+
 //DUTY CYCLES ------------------------------------------------------------------
-#define SEVENTYFIVE_PERCENT                     (6000)
+#define TWENTYTWO_PERCENT                       (1800)
+#define TWENTY_PERCENT                          (2000)
+#define TWENTYEIGHT_PERCENT                     (2200)
+#define THIRTYEIGHT_PERCENT                     (3000)
+#define FORTYFOUR_PERCENT                       (3500)
+#define FORTYSEVEN_PERCENT                      (3750)
 #define FIFTY_PERCENT                           (4000)
 #define SIXTYTWO_PERCENT                        (5000)
-#define FORTYSEVEN_PERCENT                      (3750)
+#define SEVENTYFIVE_PERCENT                     (6000)
+
 //LOOP MACROS ------------------------------------------------------------------
 #define INCREMENT_START                         (0)
 #define THREE_ITERATIONS                        (3)
@@ -134,16 +143,16 @@
 #define MENU_ITEM_FOUR                          (3)     
 #define MENU_ITEM_FIVE                          (4)
 #define MENU_ITEM_SIX                           (5)
-#define MENU_ITEM_SEVEN                           (6)
-#define MENU_ITEM_EIGHT                           (7)
-#define MENU_ITEM_NINE                         (8)
-#define MENU_ITEM_TEN                          (9)     
-#define MENU_ITEM_ELEVEN                          (10)
-#define MENU_ITEM_TWELVE                           (11)
-#define MENU_ITEM_THIRTEEN                         (12)
-#define MENU_ITEM_FOURTEEN                          (13)     
-#define MENU_ITEM_FIFTEEN                          (14)
-#define MENU_ITEM_SIXTEEN                           (15)
+#define MENU_ITEM_SEVEN                         (6)
+#define MENU_ITEM_EIGHT                         (7)
+#define MENU_ITEM_NINE                          (8)
+#define MENU_ITEM_TEN                           (9)     
+#define MENU_ITEM_ELEVEN                        (10)
+#define MENU_ITEM_TWELVE                        (11)
+#define MENU_ITEM_THIRTEEN                      (12)
+#define MENU_ITEM_FOURTEEN                      (13)     
+#define MENU_ITEM_FIFTEEN                       (14)
+#define MENU_ITEM_SIXTEEN                       (15)
 
 #define BITSHIFT_R_SIX(X)                       ((X)>>(6))
 #define BITSHIFT_R_SEVEN(X)                       ((X)>>(7))
@@ -189,3 +198,31 @@
 #define SMALL_RING_SIZE                         (16)
 #define LARGE_RING_SIZE                         (16)
 #define BEGINNING                               (0)
+#define IOT_9600                                (1)
+#define IOT_115200                                (0)
+#define TX                                      (4)
+#define RX                                      (2)
+#define NONE                                    (0)
+//BLACKLINE --------------------------------------------------------------------
+#define MAX_CORRECTION_TIME                     (500) //max correction time for black line
+#define TIME_RATIO                              (3) //time ratio for correcting movement
+#define DEGREE_RATIO                            (0.638888) // ratio for accepting degree input
+#define MAX_NUMBERBUF_SIZE                      (5)
+#define MAX_ADCCHAR_SIZE                      (5)
+#define MAX_COMMANDBUF_SIZE                     (30)
+#define MAX_RECEIVE_SIZE                     (100)
+
+#define FIRST_ELEMENT                           (0)
+#define SECOND_ELEMENT                          (1)
+#define THIRD_ELEMENT                           (2)        
+#define FOURTH_ELEMENT                          (3)
+#define FIFTH_ELEMENT                           (4)
+#define SIXTH_ELEMENT                           (5)
+#define SEVENTH_ELEMENT                         (6)
+
+#define TENS                                    (10)
+#define HUNDREDS                                (100)
+#define THOUSANDS                               (1000)
+
+#define IP_START_ADDR                           (17)
+#define SSID_START_INDEX                        (32)

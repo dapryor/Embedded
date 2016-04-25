@@ -190,15 +190,15 @@ void main(void){
       display_1 = "";
       HEXtoBCD(trackTimer/FOR_ONE_SECOND);
       display_2 = adc_char;;
-      ipPtr=firstipBuff;
-      display_3=ipPtr;
-      ipPtr=secondipBuff;
-      display_4=ipPtr;
+      //ipPtr=firstipBuff;
+      //display_3=ipPtr;
+      //ipPtr=secondipBuff;
+      //display_4=ipPtr;
       if(pingTimer > FOR_FIVE_SECONDS){
         pingTimer = RESET;
         uart_puts("AT+S.PING=10.139.64.1\r"); //ping gateway 10.139.64.1
       }
-      if(reconnectTimer >= FOR_THIRTY_SECONDS){ //reset IOT
+      if((reconnectTimer >= FOR_THIRTY_SECONDS) && !startBlackLine){ //reset IOT
         reconnectTimer = RESET;
         uart_puts("AT+CFUN=1\r"); 
         IOTHardwareReset();
@@ -212,7 +212,7 @@ void main(void){
     
     if(black_line_stop >= 2){ //did i get the command to stop blackline detection?
         startTrackFG = FALSE;
-        black_line_stop = 0;
+        black_line_stop = RESET;
         startBlackLine = FALSE;
         IR_LED_OFF();
         left_wheel_reverse_off();
@@ -233,10 +233,27 @@ void main(void){
 
 
 void clearReceiveBuffer(void){
+  //==============================================================================
+  // clearReceiveBuffer
+  // 
+  // Description: This function is used to clear the receiving buffer
+  //
+  // Passed : no variables passed
+  // Locals: no variables declared
+  // Returned: no values returned
+  // Globals:   newLineFG
+  //            i
+  //            receiving
+  //            receivingInd
+  //
+  // Author: David Pryor
+  // Date: APRIL 2016
+  // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+  //=========================================10.138.6=====================================
     if(newLineFG==TRUE){
         newLineFG=FALSE;
-        receivingInd=0; //reset index
-        for(i=0;i<100;i++){ //clear buffer
+        receivingInd=RESET; //reset index
+        for(i=RESET;i<MAX_RECEIVE_SIZE;i++){ //clear buffer
             receiving[i]='\0';
         }
     }
@@ -244,43 +261,60 @@ void clearReceiveBuffer(void){
 
 
 void parseIOTData(void){
-    for(i=0;i<=100-3;i++){ //search through received strings
+  //==============================================================================
+  // parseIOTData
+  // 
+  // Description: This function is used to parse through the lines of text sent by the IOT
+  //
+  // Passed : no variables passed
+  // Locals: no variables declared
+  // Returned: no values returned
+  // Globals:   newLineFG
+  //            i
+  //            receiving
+  //            receivingInd
+  //
+  // Author: David Pryor
+  // Date: APRIL 2016
+  // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+  //=========================================10.138.6=====================================
+    for(i=RESET;i<=MAX_RECEIVE_SIZE-FOURTH_ELEMENT;i++){ //search through received strings
         if(receiving[i]=='D'){
-            if(receiving[i+1]==':'){
-                if(receiving[i+2]=='2'){
-                    Five_msec_Delay(1);
-                    if(receiving[i+3]=='1'){
+            if(receiving[i+SECOND_ELEMENT]==':'){
+                if(receiving[i+THIRD_ELEMENT]=='2'){
+                    Five_msec_Delay(TRUE);
+                    if(receiving[i+FOURTH_ELEMENT]=='1'){
                         display_4="Scanning";
                         Display_Process();
                     }
-                    else if(receiving[i+3]=='4'){
-                        countP=0; //initialize period counter
-                        Five_msec_Delay(3); //short delay to allow all characters to enter
-                        j=0;
-                        for(i=17;receiving[i] != '\r';i++){ //go from beginning of address until 2nd period hit (2nd group)
+                    else if(receiving[i+FOURTH_ELEMENT]=='4'){
+                        countP=RESET; //period counter
+                        Five_msec_Delay(FOR_THIRTY_MSEC/HALF); //allowing all characters to enter
+                        j=RESET;
+                        for(i=IP_START_ADDR;receiving[i] != '\r';i++){ //go from beginning of address until 2nd period hit
                             if(receiving[i] == '.'){
                                 countP++;
                             }
-                            if(countP >=2){ //stop copying to buffer if 2nd period has been hit (2nd "group" is copied)
+                            if(countP >=THIRD_ELEMENT){ //stop copying to buffer if 2nd period has been hit 
                                 break;
                             }
                             firstipBuff[j]=receiving[i];
                             j++;
                         }
-                        posL3=(10-j)/2; //center first half of ip address
+                        posL3=(LCD_LINE_SIZE-j)/HALF; //center first half of ip address
                         i++; //skip the period
-                        for(j=0;receiving[i] != '\r';i++){
+                        for(j=RESET;receiving[i] != '\r';i++){
                             secondipBuff[j]=receiving[i];
                             j++;
                         }
-                        posL4=(10-j)/2; //center second half of ip address
+                        posL4=(LCD_LINE_SIZE-j)/HALF; //center second half of ip address
                         ipPtr=firstipBuff;
                         display_3=ipPtr;
                         ipPtr=secondipBuff;
                         display_4=ipPtr;
                         lcd_4line();
                         Display_Process();
-                        Five_msec_Delay(600); //display IP for 3 seconds before screen gets cleared by menus
+                        Five_msec_Delay(FOR_ONE_SECOND); //display IP for 1 seconds 
                         
                         display_IPFG = TRUE;
                         MainFG = FALSE;
@@ -288,28 +322,28 @@ void parseIOTData(void){
                         IOTMenuFG = FALSE;
                         
                     }
-                    else if(receiving[i+3]=='5'){
-                        Five_msec_Delay(5);//short delay to allow all characters to enter
-                        for(i=32;receiving[i] != '\'' && i<=42 ;i++){ //copy SSID until end of quoted name or until max size for LCD is hit
-                            SSIDBuff[i-32]=receiving[i];
+                    else if(receiving[i+FOURTH_ELEMENT]=='5'){
+                        Five_msec_Delay(FOR_FIFTY_MSEC/HALF);//short delay to allow all characters to enter
+                        for(i=SSID_START_INDEX;receiving[i] != '\'' && i<=(SSID_START_INDEX+LCD_LINE_SIZE) ;i++){ //copy SSID until end of quoted name or until max size for LCD is hit
+                            SSIDBuff[i-SSID_START_INDEX]=receiving[i];
                         }
                         SSIDPtr=SSIDBuff;
-                        posL1=0;
+                        posL1=RESET;
                         //SSID is displayed in D:24
                     }
                     
                 }
-                else if(receiving[i+2]=='3'){ //clear display once scanning is complete
-                    if(receiving[i+3]=='5'){
+                else if(receiving[i+THIRD_ELEMENT]=='3'){ //clear display once scanning is complete
+                    if(receiving[i+FOURTH_ELEMENT]=='5'){
                         display_4="          "; 
                         Display_Process();
                     }
                 }
-                else if(receiving[i+2]=='4'){ //detect disassociation --> reassociate by resetting module
-                    if(receiving[i+3]=='1'){
+                else if(receiving[i+THIRD_ELEMENT]=='4'){ //detect disassociation --> reassociate by resetting module
+                    if(receiving[i+FOURTH_ELEMENT]=='1'){
                         uart_puts("AT+CFUN=1\r"); //Get SSID to ncsu
                         PJOUT &= ~IOT_RESET; //reset IOT
-                        Five_msec_Delay(10); //wait 50 ms
+                        Five_msec_Delay(FOR_FIFTY_MSEC); //wait 50 ms
                         PJOUT |= IOT_RESET; //turn IOT back on (stop reset)
                     }
                 }
@@ -322,7 +356,7 @@ int atoi(char *string){
   int l, converted;
   converted = RESET;
   for(l=RESET; string[l] != '\0'; ++l){
-    converted = converted*10 + string[l] - '0';
+    converted = converted*TENS + string[l] - '0';
   }
   return converted;
 }

@@ -347,7 +347,23 @@ PJOUT |= IOT_RESET;	              //output set to 0
 }
 
 void IOTHardwareReset(void){
+    //==============================================================================
+// IOTHardwareReset
+// 
+// Description: This functions is for a IOT Hardware Reset
+//
+// Passed : no variables passed
+// Locals: no variables declared
+// Returned: no values returned
+// Globals:     NONE
+//
+// Author: David Pryor
+// Date: APRIL 2016
+// Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+//==============================================================================
+// IOT_RESET		(0x08) // This was LED 4
+//------------------------------------------------------------------------------
     PJOUT &= ~IOT_RESET; //reset IOT
-    Five_msec_Delay(10); //wait 50 ms
+    Five_msec_Delay(FOR_FIFTY_MSEC); //wait 50 ms
     PJOUT |= IOT_RESET; //turn IOT back on (stop reset)
 }

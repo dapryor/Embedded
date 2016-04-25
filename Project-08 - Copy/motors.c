@@ -127,6 +127,20 @@ void right_wheel_forward_off(void){
 }
 
 void left_wheel_reverse_on(void){
+  //==============================================================================
+  // left_wheel_reverse_on
+  // 
+  // Description: This function is used to turn on left reverse
+  //
+  // Passed : no variables passed
+  // Locals:    none
+  // Returned: no values returned
+  // Globals:   none
+  //
+  // Author: David Pryor
+  // Date: April 2016
+  // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+  //============================================================================== 
   P3SEL0  |= L_REVERSE;      // L_FORWARD selected	TB		(0)        
   P3SEL1  &= ~L_REVERSE;	// L_FORWARD selected   TB		(1)
   if(!(P3SEL0 & L_FORWARD)){ // is the LEFT wheel going reverse?
@@ -136,14 +150,40 @@ void left_wheel_reverse_on(void){
 }
 
 void left_wheel_reverse_off(void){
+  //==============================================================================
+  // left_wheel_reverse_off
+  // 
+  // Description: This function is used to turn off left reverse
+  //
+  // Passed : no variables passed
+  // Locals:    none
+  // Returned: no values returned
+  // Globals:   none
+  //
+  // Author: David Pryor
+  // Date: April 2016
+  // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+  //============================================================================== 
   P3SEL0  &= ~L_REVERSE;      // L_REVERSE selected	GPIO		(0)        
   P3SEL1  &= ~L_REVERSE;	// L_REVERSE selected	GPIO		(0)
-  //if(P3IN & L_REVERSE){ // is the LEFT wheel going reverse?
-    TB2CCR2 = SWITCH_OFF;
-  //}
+  TB2CCR2 = SWITCH_OFF;
 }
 
 void right_wheel_reverse_on(void){
+  //==============================================================================
+  // right_wheel_reverse_on
+  // 
+  // Description: This function is used to turn on right reverse
+  //
+  // Passed : no variables passed
+  // Locals:    none
+  // Returned: no values returned
+  // Globals:   none
+  //
+  // Author: David Pryor
+  // Date: April 2016
+  // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+  //============================================================================== 
   P3SEL0  |= R_REVERSE;         // R_REVERSE selected	TB		(0)        
   P3SEL1  &= ~R_REVERSE;	// R_REVERSE selected   TB		(1)
   if(!(P3SEL0 & R_FORWARD)){      // is the RIGHT wheel going reverse?
@@ -153,41 +193,134 @@ void right_wheel_reverse_on(void){
 }
 
 void right_wheel_reverse_off(void){
+  //==============================================================================
+  // right_wheel_reverse_off
+  // 
+  // Description: This function is used to turn off right reverse
+  //
+  // Passed : no variables passed
+  // Locals:    none
+  // Returned: no values returned
+  // Globals:   none
+  //
+  // Author: David Pryor
+  // Date: April 2016
+  // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+  //============================================================================== 
   P3SEL0  &= ~R_REVERSE;      // R_REVERSE selected	GPIO		(0)        
   P3SEL1  &= ~R_REVERSE;	// R_REVERSE selected	GPIO		(0)
-  //if(P3IN & R_REVERSE){ // is the RIGHT wheel going reverse?
-    TB1CCR2 = SWITCH_OFF;
-  //}
+  TB1CCR2 = SWITCH_OFF;
 }
 
 void IR_LED_ON(void){
+  //==============================================================================
+  // IR LED ON 
+  // 
+  // Description: This function is used to turn on ir led
+  //
+  // Passed : no variables passed
+  // Locals:    none
+  // Returned: no values returned
+  // Globals:   none
+  //
+  // Author: David Pryor
+  // Date: April 2016
+  // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+  //============================================================================== 
   P1OUT   |= IR_LED;     // P1 IR_LED Port Pin toggle
 }
 
 void IR_LED_OFF(void){
+  //==============================================================================
+  // IR LED OFF 
+  // 
+  // Description: This function is used to turn off ir led
+  //
+  // Passed : no variables passed
+  // Locals:    none
+  // Returned: no values returned
+  // Globals:   none
+  //
+  // Author: David Pryor
+  // Date: April 2016
+  // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+  //============================================================================== 
   P1OUT   &= ~IR_LED;     // P1 IR_LED Port Pin toggle
 }
 
 void active_breaking_left(void){
+  //==============================================================================
+  // active breaking LEFT
+  // 
+  // Description: This function is used for active breaking of the LEFT wheel
+  //
+  // Passed : no variables passed
+  // Locals:    none
+  // Returned: no values returned
+  // Globals:   none
+  //
+  // Author: David Pryor
+  // Date: April 2016
+  // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+  //============================================================================== 
   left_wheel_reverse_on();
-  Five_msec_Delay(1);
+  Five_msec_Delay(TRUE);
   left_wheel_reverse_off();
 }
 
 void active_breaking_right(void){
+  //==============================================================================
+  // active breaking right
+  // 
+  // Description: This function is used for active breaking of the right wheel
+  //
+  // Passed : no variables passed
+  // Locals:    none
+  // Returned: no values returned
+  // Globals:   none
+  //
+  // Author: David Pryor
+  // Date: April 2016
+  // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+  //============================================================================== 
   right_wheel_reverse_on();
-  Five_msec_Delay(1);
+  Five_msec_Delay(TRUE);
   right_wheel_reverse_off();
 }
 
 void blackline(void){
+  //==============================================================================
+  // Black Line
+  // 
+  // Description: This function is used for blackline detection
+  //
+  // Passed : no variables passed
+  // Locals:    errorR
+  //            errorL  
+  //            motor_time_prev
+  // Returned: no values returned
+  // Globals:   left_forward_rate
+  //            right_forward_rate 
+  //            left_reverse_rate
+  //            right_reverse_rate
+  //            start_on_whiteFG
+  //            ADC_Left_Detector
+  //            ADC_Right_Detector
+  //            thresholdL
+  //            thresholdR
+  //            motor_time
+  //
+  // Author: David Pryor
+  // Date: April 2016
+  // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+  //============================================================================== 
   unsigned int errorR=FALSE;
   unsigned int errorL=FALSE;
   unsigned int motor_time_prev=RESET;
-  left_forward_rate     = 1800;
-  right_forward_rate    = 1800;
-  left_reverse_rate     = 2500;
-  right_reverse_rate    = 2500;
+  left_forward_rate     = TWENTYTWO_PERCENT;
+  right_forward_rate    = TWENTYTWO_PERCENT;
+  left_reverse_rate     = TWENTYEIGHT_PERCENT;
+  right_reverse_rate    = TWENTYEIGHT_PERCENT;
   if(start_on_whiteFG){
     start_on_whiteFG = FALSE; //only want this first time
     left_wheel_forward_on(); //go forward
@@ -206,12 +339,12 @@ void blackline(void){
     active_breaking_right();
     errorR = TRUE;
   }
-  motor_time_prev = motor_time/3;//assign current time/2 count to temp time count for error correcting
+  motor_time_prev = motor_time/TIME_RATIO;//assign current time/2 count to temp time count for error correcting
   if(errorR){//if statement checking if left spin correction needed from correcting right pivot
     left_wheel_forward_on();
     right_wheel_reverse_on();
     motor_time = RESET; //to count back up to previous time;
-    while(motor_time < motor_time_prev && motor_time <= 500); //turn until time reached
+    while(motor_time < motor_time_prev && motor_time <= MAX_CORRECTION_TIME); //turn until time reached
     right_wheel_reverse_off();
     left_wheel_forward_off();
   }
@@ -226,18 +359,20 @@ void blackline(void){
     active_breaking_left();
     errorL = TRUE;
   }
-  motor_time_prev = motor_time/3;//assign current time/2 count to temp time count for error correcting
+  motor_time_prev = motor_time/TIME_RATIO;//assign current time/2 count to temp time count for error correcting
   if(errorL){//if statement checking if right spin correction needed from correcting left pivot
     right_wheel_forward_on();
     left_wheel_reverse_on();
     motor_time = RESET; //to count back up to previous time;
-    while(motor_time < motor_time_prev && motor_time <= 500); //turn until time reached
+    while(motor_time < motor_time_prev && motor_time <= MAX_CORRECTION_TIME); //turn until time reached
     left_wheel_reverse_off();
     right_wheel_forward_off();
   }
         
       
   while((ADC_Left_Detector) >= thresholdL && ADC_Right_Detector >= thresholdR){//if both sensors on black then go forward (WHILE)
+    left_forward_rate     = TWENTY_PERCENT;
+    right_forward_rate    = TWENTY_PERCENT;
     left_wheel_forward_on(); //go forward
     right_wheel_forward_on();
   }

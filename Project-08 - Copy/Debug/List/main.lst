@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           21/Apr/2016  14:47:49
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           25/Apr/2016  02:34:35
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -491,7 +491,7 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
    \   00005E   0324         JEQ     ??main_1
     181                Menu_Process();
    \   000060   ........     CALLA   #Menu_Process
-   \   000064   3F3C         JMP     ??main_2
+   \   000064   363C         JMP     ??main_2
     182              }
     183              else if(BaudMenuFG){
    \                     ??main_1:
@@ -499,7 +499,7 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
    \   00006A   0324         JEQ     ??main_3
     184                Baud_Menu(); 
    \   00006C   ........     CALLA   #Baud_Menu
-   \   000070   393C         JMP     ??main_2
+   \   000070   303C         JMP     ??main_2
     185              }
     186              else if(IOTMenuFG){
    \                     ??main_3:
@@ -507,12 +507,12 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
    \   000076   0324         JEQ     ??main_4
     187                IOT_Menu();
    \   000078   ........     CALLA   #IOT_Menu
-   \   00007C   333C         JMP     ??main_2
+   \   00007C   2A3C         JMP     ??main_2
     188              }
     189              else if(display_IPFG){
    \                     ??main_4:
    \   00007E   8293....     CMP.W   #0x0, &display_IPFG
-   \   000082   3024         JEQ     ??main_2
+   \   000082   2724         JEQ     ??main_2
     190                display_1 = "";
    \   000084   B240........ MOV.W   #`?<Constant "">`, &display_1
     191                HEXtoBCD(trackTimer/FOR_ONE_SECOND);
@@ -522,84 +522,82 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
    \   000096   ........     CALLA   #HEXtoBCD
     192                display_2 = adc_char;;
    \   00009A   B240........ MOV.W   #adc_char, &display_2
-    193                ipPtr=firstipBuff;
-   \   0000A0   B240........ MOV.W   #firstipBuff, &ipPtr
-    194                display_3=ipPtr;
-   \   0000A6   9242........ MOV.W   &ipPtr, &display_3
-    195                ipPtr=secondipBuff;
-   \   0000AC   B240........ MOV.W   #secondipBuff, &ipPtr
-    196                display_4=ipPtr;
-   \   0000B2   9242........ MOV.W   &ipPtr, &display_4
+    193                //ipPtr=firstipBuff;
+    194                //display_3=ipPtr;
+    195                //ipPtr=secondipBuff;
+    196                //display_4=ipPtr;
     197                if(pingTimer > FOR_FIVE_SECONDS){
-   \   0000B8   B290E903.... CMP.W   #0x3e9, &pingTimer
-   \   0000BE   0628         JNC     ??main_5
+   \   0000A0   B290E903.... CMP.W   #0x3e9, &pingTimer
+   \   0000A6   0628         JNC     ??main_5
     198                  pingTimer = RESET;
-   \   0000C0   8243....     MOV.W   #0x0, &pingTimer
+   \   0000A8   8243....     MOV.W   #0x0, &pingTimer
     199                  uart_puts("AT+S.PING=10.139.64.1\r"); //ping gateway 10.139.64.1
-   \   0000C4   3C40....     MOV.W   #`?<Constant "AT+S.PING=10.139.64.1\\r">`, R12
-   \   0000C8   ........     CALLA   #uart_puts
+   \   0000AC   3C40....     MOV.W   #`?<Constant "AT+S.PING=10.139.64.1\\r">`, R12
+   \   0000B0   ........     CALLA   #uart_puts
     200                }
-    201                if(reconnectTimer >= FOR_THIRTY_SECONDS){ //reset IOT
+    201                if((reconnectTimer >= FOR_THIRTY_SECONDS) && !startBlackLine){ //reset IOT
    \                     ??main_5:
-   \   0000CC   B2907017.... CMP.W   #0x1770, &reconnectTimer
-   \   0000D2   0828         JNC     ??main_2
+   \   0000B4   B2907017.... CMP.W   #0x1770, &reconnectTimer
+   \   0000BA   0B28         JNC     ??main_2
+   \   0000BC   8293....     CMP.W   #0x0, &startBlackLine
+   \   0000C0   0820         JNE     ??main_2
     202                  reconnectTimer = RESET;
-   \   0000D4   8243....     MOV.W   #0x0, &reconnectTimer
+   \   0000C2   8243....     MOV.W   #0x0, &reconnectTimer
     203                  uart_puts("AT+CFUN=1\r"); 
-   \   0000D8   3C40....     MOV.W   #`?<Constant "AT+CFUN=1\\r">`, R12
-   \   0000DC   ........     CALLA   #uart_puts
+   \   0000C6   3C40....     MOV.W   #`?<Constant "AT+CFUN=1\\r">`, R12
+   \   0000CA   ........     CALLA   #uart_puts
     204                  IOTHardwareReset();
-   \   0000E0   ........     CALLA   #IOTHardwareReset
+   \   0000CE   ........     CALLA   #IOTHardwareReset
     205                }
     206              }
     207              
     208              
     209              if(startBlackLine){
    \                     ??main_2:
-   \   0000E4   8293....     CMP.W   #0x0, &startBlackLine
-   \   0000E8   0224         JEQ     ??main_6
+   \   0000D2   8293....     CMP.W   #0x0, &startBlackLine
+   \   0000D6   0224         JEQ     ??main_6
     210                blackline(); //run black line detection code  
-   \   0000EA   ........     CALLA   #blackline
+   \   0000D8   ........     CALLA   #blackline
     211              }
     212              
     213              if(black_line_stop >= 2){ //did i get the command to stop blackline detection?
    \                     ??main_6:
-   \   0000EE   A293....     CMP.W   #0x2, &black_line_stop
-   \   0000F2   1028         JNC     ??main_7
+   \   0000DC   A293....     CMP.W   #0x2, &black_line_stop
+   \   0000E0   1028         JNC     ??main_7
     214                  startTrackFG = FALSE;
-   \   0000F4   8243....     MOV.W   #0x0, &startTrackFG
+   \   0000E2   8243....     MOV.W   #0x0, &startTrackFG
     215                  black_line_stop = 0;
-   \   0000F8   8243....     MOV.W   #0x0, &black_line_stop
+   \   0000E6   8243....     MOV.W   #0x0, &black_line_stop
     216                  startBlackLine = FALSE;
-   \   0000FC   8243....     MOV.W   #0x0, &startBlackLine
+   \   0000EA   8243....     MOV.W   #0x0, &startBlackLine
     217                  IR_LED_OFF();
-   \   000100   ........     CALLA   #IR_LED_OFF
+   \   0000EE   ........     CALLA   #IR_LED_OFF
     218                  left_wheel_reverse_off();
-   \   000104   ........     CALLA   #left_wheel_reverse_off
+   \   0000F2   ........     CALLA   #left_wheel_reverse_off
     219                  right_wheel_forward_off();
-   \   000108   ........     CALLA   #right_wheel_forward_off
+   \   0000F6   ........     CALLA   #right_wheel_forward_off
     220                  right_wheel_reverse_off();
-   \   00010C   ........     CALLA   #right_wheel_reverse_off
+   \   0000FA   ........     CALLA   #right_wheel_reverse_off
     221                  left_wheel_forward_off();
-   \   000110   ........     CALLA   #left_wheel_forward_off
+   \   0000FE   ........     CALLA   #left_wheel_forward_off
     222              }
     223              
     224              if(StartCommandFG){ //StartCommandFG is true once "." has been received
    \                     ??main_7:
-   \   000114   8293....     CMP.W   #0x0, &StartCommandFG
-   \   000118   0224         JEQ     ??main_8
+   \   000102   8293....     CMP.W   #0x0, &StartCommandFG
+   \   000106   0224         JEQ     ??main_8
     225                  commandTree();
-   \   00011A   ........     CALLA   #commandTree
+   \   000108   ........     CALLA   #commandTree
     226              }
     227          
     228              clearReceiveBuffer();
    \                     ??main_8:
-   \   00011E   ........     CALLA   #clearReceiveBuffer
+   \   00010C   ........     CALLA   #clearReceiveBuffer
     229              parseIOTData();
-   \   000122   ........     CALLA   #parseIOTData
-   \   000126   973F         JMP     ??main_0
-   \   000128   0343         NOP
-   \   00012A                REQUIRE _A_PJOUT_L
+   \   000110   ........     CALLA   #parseIOTData
+   \   000114   A03F         JMP     ??main_0
+   \   000116   0343         NOP
+   \   000118                REQUIRE _A_PJOUT_L
     230            }
     231          //------------------------------------------------------------------------------
     232          }
@@ -1016,7 +1014,7 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
        2  left_calibration_white
        2  macFG
        2  macPtr
-     298  main
+     280  main
        2  menu_items
        2  newLineFG
        1  one_time
@@ -1041,14 +1039,14 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\main.c
        2  writeCommandFG
 
  
- 850 bytes in segment CODE
+ 832 bytes in segment CODE
    2 bytes in segment DATA16_AN
   87 bytes in segment DATA16_C
    2 bytes in segment DATA16_I
    2 bytes in segment DATA16_ID
  345 bytes in segment DATA16_Z
  
- 850 bytes of CODE  memory
+ 832 bytes of CODE  memory
   89 bytes of CONST memory
  347 bytes of DATA  memory (+ 2 bytes shared)
 

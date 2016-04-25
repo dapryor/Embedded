@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           21/Apr/2016  01:35:54
+# IAR C/C++ Compiler V6.40.1.950/W32 for MSP430           25/Apr/2016  02:34:35
 # Copyright 1996-2015 IAR Systems AB.
 # Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.40
 #
@@ -68,7 +68,7 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\adc.c
    \   union <unnamed> _A_ADC10IE_L
    \                     _A_ADC10IE_L:
    \   000000                DS8 2
-     14          extern char adc_char[5];
+     14          extern char adc_char[MAX_ADCCHAR_SIZE];
      15          extern unsigned int thresholdR;
      16          extern unsigned int thresholdL;
      17          extern unsigned int left_calibration_black;
@@ -214,34 +214,34 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\adc.c
     113           //==============================================================================
     114            
     115            int value;
-    116            adc_char[0] = '0';
+    116            adc_char[FIRST_ELEMENT] = '0';//CLEARING ADC_CHAR
    \   000000   F2403000.... MOV.B   #0x30, &adc_char
-    117            adc_char[1] = '0';
+    117            adc_char[SECOND_ELEMENT] = '0';
    \   000006   F2403000.... MOV.B   #0x30, &adc_char + 1
-    118            adc_char[2] = '0';
+    118            adc_char[THIRD_ELEMENT] = '0';
    \   00000C   F2403000.... MOV.B   #0x30, &adc_char + 2
-    119            adc_char[3] = '0';
+    119            adc_char[FOURTH_ELEMENT] = '0';
    \   000012   F2403000.... MOV.B   #0x30, &adc_char + 3
-    120            if (hex_value > 1000){
+    120            if (hex_value > THOUSANDS){
    \   000018   3C90E903     CMP.W   #0x3e9, R12
    \   00001C   0538         JL      ??HEXtoBCD_2
-    121              hex_value = hex_value - 1000;
+    121              hex_value = hex_value - THOUSANDS;
    \   00001E   3C5018FC     ADD.W   #0xfc18, R12
-    122              adc_char[0] = '1';
+    122              adc_char[FIRST_ELEMENT] = '1';
    \   000022   F2403100.... MOV.B   #0x31, &adc_char
     123            }
-    124            value = 0;
+    124            value = RESET;
    \                     ??HEXtoBCD_2:
    \   000028   0F43         MOV.W   #0x0, R15
-    125            while (hex_value > 99){
+    125            while (hex_value > (HUNDREDS-TRUE)){
    \                     ??HEXtoBCD_0:
    \   00002A   3C906400     CMP.W   #0x64, R12
    \   00002E   0C38         JL      ??HEXtoBCD_3
-    126              hex_value = hex_value - 100;
+    126              hex_value = hex_value - HUNDREDS;
    \   000030   3C509CFF     ADD.W   #0xff9c, R12
-    127              value = value + 1;
+    127              value = value + TRUE;
    \   000034   1F53         ADD.W   #0x1, R15
-    128              adc_char[1] = 0x30 + value;
+    128              adc_char[SECOND_ELEMENT] = '0' + value;
    \   000036   0E12         PUSH.W  R14
    \   000038   C14F0000     MOV.B   R15, 0(SP)
    \   00003C   3E41         POP.W   R14
@@ -249,18 +249,18 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\adc.c
    \   000042   C24E....     MOV.B   R14, &adc_char + 1
    \   000046   F13F         JMP     ??HEXtoBCD_0
     129            }
-    130            value = 0;
+    130            value = RESET;
    \                     ??HEXtoBCD_3:
    \   000048   0F43         MOV.W   #0x0, R15
-    131              while (hex_value > 9){
+    131              while (hex_value > (TENS-TRUE)){
    \                     ??HEXtoBCD_1:
    \   00004A   3C900A00     CMP.W   #0xa, R12
    \   00004E   0C38         JL      ??HEXtoBCD_4
-    132              hex_value = hex_value - 10;
+    132              hex_value = hex_value - TENS;
    \   000050   3C50F6FF     ADD.W   #0xfff6, R12
-    133              value = value + 1;
+    133              value = value + TRUE;
    \   000054   1F53         ADD.W   #0x1, R15
-    134              adc_char[2] = 0x30 + value;
+    134              adc_char[THIRD_ELEMENT] = '0' + value;
    \   000056   0E12         PUSH.W  R14
    \   000058   C14F0000     MOV.B   R15, 0(SP)
    \   00005C   3E41         POP.W   R14
@@ -268,7 +268,7 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\adc.c
    \   000062   C24E....     MOV.B   R14, &adc_char + 2
    \   000066   F13F         JMP     ??HEXtoBCD_1
     135            }
-    136            adc_char[3] = 0x30 + hex_value;
+    136            adc_char[FOURTH_ELEMENT] = '0' + hex_value;
    \                     ??HEXtoBCD_4:
    \   000068   0E12         PUSH.W  R14
    \   00006A   C14C0000     MOV.B   R12, 0(SP)
@@ -287,98 +287,124 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\adc.c
     143          void IR_Calibration(void){
    \                     IR_Calibration:
    \   000000   0A12         PUSH.W  R10
-    144            int proceed = 0;
+    144            //==============================================================================
+    145            // COMMANDTREE
+    146            // 
+    147            // Description: This function is used as a command tree for input commands
+    148            //
+    149            // Passed : no variables passed
+    150            // Locals:    proceed
+    151            // Returned: no values returned
+    152            // Globals:   ADC_Left_Detector
+    153            //            ADC_Right_Detector
+    154            //            thresholdL
+    155            //            thresholdR
+    156            //            left_calibration_black
+    157            //            right_calibration_black
+    158            //            left_calibration_white
+    159            //            right_calibration_white
+    160            //            display_1
+    161            //            display_2
+    162            //            display_3
+    163            //            display_4
+    164            //            switch_two_pressed
+    165            //
+    166            // Author: David Pryor
+    167            // Date: April 2016
+    168            // Compiler: Built with IAR Embedded Workbench Version: V4.10A/W32 (6.4.1)
+    169            //============================================================================== 
+    170            int proceed = RESET;
    \   000002   0A43         MOV.W   #0x0, R10
-    145            ADC_Process();              // call sampling function
+    171            ADC_Process();              // call sampling function
    \   000004   ........     CALLA   #ADC_Process
-    146            
-    147            IR_LED_ON();
+    172            
+    173            IR_LED_ON();
    \   000008   ........     CALLA   #IR_LED_ON
-    148            Five_msec_Delay(200);
+    174            Five_msec_Delay(FOR_ONE_SECOND);
    \   00000C   3C40C800     MOV.W   #0xc8, R12
    \   000010   ........     CALLA   #Five_msec_Delay
-    149            display_1 = "White Test";
+    175            display_1 = "White Test";
    \   000014   B240........ MOV.W   #`?<Constant "White Test">`, &display_1
-    150            display_2 = "Press SW2";
+    176            display_2 = "Press SW2";
    \   00001A   B240........ MOV.W   #`?<Constant "Press SW2">`, &display_2
-    151            display_3 = "";  
+    177            display_3 = "";  
    \   000020   B240........ MOV.W   #`?<Constant "">`, &display_3
-    152            display_4 = "";
+    178            display_4 = "";
    \   000026   B240........ MOV.W   #`?<Constant "">`, &display_4
-    153            Display_Process();
+    179            Display_Process();
    \   00002C   ........     CALLA   #Display_Process
-    154            while(proceed == 0){
+    180            while(proceed == FALSE){
    \                     ??IR_Calibration_0:
    \   000030   0A93         CMP.W   #0x0, R10
    \   000032   0720         JNE     ??IR_Calibration_2
-    155              if(switch_two_pressed){
+    181              if(switch_two_pressed){
    \   000034   8293....     CMP.W   #0x0, &switch_two_pressed
    \   000038   FB27         JEQ     ??IR_Calibration_0
-    156                proceed = 1;
+    182                proceed = TRUE;
    \   00003A   1A43         MOV.W   #0x1, R10
-    157                switch_two_pressed = FALSE;
+    183                switch_two_pressed = FALSE;
    \   00003C   8243....     MOV.W   #0x0, &switch_two_pressed
    \   000040   F73F         JMP     ??IR_Calibration_0
-    158              }
-    159            }
-    160            ADC_Process();              // call sampling function
+    184              }
+    185            }
+    186            ADC_Process();              // call sampling function
    \                     ??IR_Calibration_2:
    \   000042   ........     CALLA   #ADC_Process
-    161            right_calibration_white = ADC_Right_Detector;
+    187            right_calibration_white = ADC_Right_Detector;
    \   000046   9242........ MOV.W   &ADC_Right_Detector, &right_calibration_white
-    162            left_calibration_white = ADC_Left_Detector;
+    188            left_calibration_white = ADC_Left_Detector;
    \   00004C   9242........ MOV.W   &ADC_Left_Detector, &left_calibration_white
-    163            proceed = 0;
+    189            proceed = RESET;
    \   000052   0A43         MOV.W   #0x0, R10
-    164            
-    165            display_1 = "Black Test";
+    190            
+    191            display_1 = "Black Test";
    \   000054   B240........ MOV.W   #`?<Constant "Black Test">`, &display_1
-    166            display_2 = "Press SW2";
+    192            display_2 = "Press SW2";
    \   00005A   B240........ MOV.W   #`?<Constant "Press SW2">`, &display_2
-    167            display_3 = "";  
+    193            display_3 = "";  
    \   000060   B240........ MOV.W   #`?<Constant "">`, &display_3
-    168            display_4 = "";
+    194            display_4 = "";
    \   000066   B240........ MOV.W   #`?<Constant "">`, &display_4
-    169            Display_Process();
+    195            Display_Process();
    \   00006C   ........     CALLA   #Display_Process
-    170            while(proceed == 0){
+    196            while(proceed == FALSE){
    \                     ??IR_Calibration_1:
    \   000070   0A93         CMP.W   #0x0, R10
    \   000072   0720         JNE     ??IR_Calibration_3
-    171              if(switch_two_pressed){
+    197              if(switch_two_pressed){
    \   000074   8293....     CMP.W   #0x0, &switch_two_pressed
    \   000078   FB27         JEQ     ??IR_Calibration_1
-    172                proceed = 1;
+    198                proceed = TRUE;
    \   00007A   1A43         MOV.W   #0x1, R10
-    173                switch_two_pressed = FALSE;
+    199                switch_two_pressed = FALSE;
    \   00007C   8243....     MOV.W   #0x0, &switch_two_pressed
    \   000080   F73F         JMP     ??IR_Calibration_1
-    174              }
-    175            }
-    176            ADC_Process();              // call sampling function
+    200              }
+    201            }
+    202            ADC_Process();              // call sampling function
    \                     ??IR_Calibration_3:
    \   000082   ........     CALLA   #ADC_Process
-    177            right_calibration_black = ADC_Right_Detector;
+    203            right_calibration_black = ADC_Right_Detector;
    \   000086   9242........ MOV.W   &ADC_Right_Detector, &right_calibration_black
-    178            left_calibration_black = ADC_Left_Detector;
+    204            left_calibration_black = ADC_Left_Detector;
    \   00008C   9242........ MOV.W   &ADC_Left_Detector, &left_calibration_black
-    179              
-    180            IR_LED_OFF();
+    205              
+    206            IR_LED_OFF();
    \   000092   ........     CALLA   #IR_LED_OFF
-    181            thresholdR = ((right_calibration_black + right_calibration_white)/2)+200;
+    207            thresholdR = ((right_calibration_black + right_calibration_white)/HALF)+THRESHOLD_SENSITIVITY;
    \   000096   1F42....     MOV.W   &right_calibration_black, R15
    \   00009A   1F52....     ADD.W   &right_calibration_white, R15
    \   00009E   5F03         RRUM.W  #0x1, R15
-   \   0000A0   3F50C800     ADD.W   #0xc8, R15
+   \   0000A0   3F50FA00     ADD.W   #0xfa, R15
    \   0000A4   824F....     MOV.W   R15, &thresholdR
-    182            thresholdL = ((left_calibration_black + left_calibration_white)/2)+200;
+    208            thresholdL = ((left_calibration_black + left_calibration_white)/HALF)+THRESHOLD_SENSITIVITY;
    \   0000A8   1F42....     MOV.W   &left_calibration_black, R15
    \   0000AC   1F52....     ADD.W   &left_calibration_white, R15
    \   0000B0   5F03         RRUM.W  #0x1, R15
-   \   0000B2   3F50C800     ADD.W   #0xc8, R15
+   \   0000B2   3F50FA00     ADD.W   #0xfa, R15
    \   0000B6   824F....     MOV.W   R15, &thresholdL
-    183            
-    184          }
+    209            
+    210          }
    \   0000BA   3A41         POP.W   R10
    \   0000BC   1001         RETA
 
@@ -400,7 +426,7 @@ C:\Users\David\Documents\ECE 306\Project-08 - Copy\adc.c
    \                     `?<Constant "Black Test">`:
    \   000000   426C61636B20 DC8 "Black Test"
    \            5465737400  
-    185          
+    211          
 
    Maximum stack usage in bytes:
 
